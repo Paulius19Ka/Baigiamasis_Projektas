@@ -1,0 +1,31 @@
+{
+  "name": "baigiamasis_projektas",
+  "version": "1.0.0",
+  "description": "Pauliaus Karbausko CodeAcademy Front-end/Typescript kurso baigiamasis darbas",
+  "keywords": [
+    "full-stack",
+    "codeacademy",
+    "react",
+    "exam"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "Baigiamasis_Projektas"
+  },
+  "license": "ISC",
+  "author": "Paulius19Ka",
+  "type": "commonjs",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "dependencies": {
+    "bcrypt": "^6.0.0",
+    "cors": "^2.8.5",
+    "dotenv": "^16.5.0",
+    "express": "^5.1.0",
+    "jsonwebtoken": "^9.0.2",
+    "mongodb": "^6.17.0",
+    "uuid": "^11.1.0"
+  }
+}
