@@ -17,7 +17,6 @@ const login = async (req, res) => {
     };
     const { password, _id, ...user } = DB_RESPONSE;
     const JWT_accessToken = createAccessJWT(user);
-    // console.log(JWT_accessToken);
     res.header('Authorization', JWT_accessToken).send({ success: `[${user.email}] was logged in successfully`, userData: user });
   } catch(err){
     console.error(err);
@@ -28,18 +27,6 @@ const login = async (req, res) => {
 };
 
 const autoLogin = async (req, res) => {
-  // // extract authetication header from request, contains the JWT token in format { Authorization: Bearer <token> }
-  // const authHeader = req.headers.authorization;
-  // // if thea authentication header is empty, send a message that user needs to re-authenticate
-  // if(!authHeader){
-  //   return res.status(401).send({ error: 'Token does not exist. Please log in again.' });
-  // };
-  // // extract the access token from the header and validate
-  // const accessToken = authHeader.split(' ')[1];
-  // const verifyResults = validateJWT(accessToken);
-  // if(verifyResults.error){
-  //   return res.status(verifyResults.status).send(verifyResults);
-  // };
   res.send({ success: 'User was authenticated.', userData: req.user });
 };
 
@@ -103,7 +90,7 @@ const editUser = async (req, res) => {
     };
 
     // define editable fields, check for invalid fields in request body and disallow editing other than the fields listed in editableFields array
-    const editableFields = ['email', 'username', 'password', 'gender'];
+    const editableFields = ['email', 'username', 'oldPassword', 'password', 'gender'];
 
     const invalidFields = Object.keys(req.body).filter(field => !editableFields.includes(field));
     if(invalidFields.length){
@@ -117,9 +104,25 @@ const editUser = async (req, res) => {
         return user;
       }, {});
 
+    // if editing password, enter the old password, check if they match, then hash and update the password
     if(updateFields.password){
+      if(!req.body.oldPassword){
+        return res.status(400).send({ error: `To edit Your password, the old password must be entered.` });
+      };
+
+      const user = await client.db('Final_Project').collection('users').findOne(filter);
+      if(!user){
+        return res.status(404).send({ error: `User with ID: ${id} was not found.`});
+      };
+
+      const passwordsMatch = await bcrypt.compare(req.body.oldPassword, user.password);
+      if(!passwordsMatch){
+        return res.status(400).send({ error: `The old password is incorrect.`});
+      };
       updateFields.password = await bcrypt.hash(updateFields.password, 12);
     };
+
+    delete updateFields.oldPassword; // exclude old password from updated fields
 
     let update = { $set: updateFields };
     const DB_Response = await client.db('Final_Project').collection('users').updateOne(filter, update);
