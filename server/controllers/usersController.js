@@ -1,7 +1,7 @@
-import { v4 as genID } from 'uuid';
+import { v4 as genID, validate as uuidValidate } from 'uuid';
 import bcrypt from 'bcrypt';
 
-import { connectToDB, createAccessJWT, validateJWT } from "./helper.js";
+import { connectToDB, createAccessJWT } from "./helper.js";
 
 const login = async (req, res) => {
   const client = await connectToDB();
@@ -80,10 +80,59 @@ const register = async (req, res) => {
     res.status(201).send({ success: `[${newUser.email}] was registered successfully.` });
   } catch(err){
     console.error(err);
-    res.status(500).send({ error: err, message: `Something went wrong with server, try to log in later.` });
+    res.status(500).send({ error: err, message: `Something went wrong with server.` });
   } finally{
     await client.close();
   };
 };
 
-export { login, autoLogin, refreshLogin, register };
+const editUser = async (req, res) => {
+  const { id } = req.params;
+  const client = await connectToDB();
+
+  if(!uuidValidate(id)){
+    console.error({ error: `[${id}] is not a valid id. The id must be a valid uuid.` });
+    return res.status(400).send({ error: `[${id}] is not a valid id. The id must be a valid uuid.` });
+  };
+
+  try{
+    let filter = { _id: id };
+    // disallow editing of id and role
+    if('_id' in req.body || 'role' in req.body){
+      return res.status(400).send({ error: 'Editing [id] or [role] is forbidden.' });
+    };
+
+    // define editable fields, check for invalid fields in request body and disallow editing other than the fields listed in editableFields array
+    const editableFields = ['email', 'username', 'password', 'gender'];
+
+    const invalidFields = Object.keys(req.body).filter(field => !editableFields.includes(field));
+    if(invalidFields.length){
+      return res.status(400).send({ error: `Trying to edit invalid fields: [${invalidFields.join(', ')}]. Fields allowed to edit: [${editableFields.join(', ')}].` });
+    };
+
+    const updateFields = Object.keys(req.body)
+      .filter(field => editableFields.includes(field))
+      .reduce((user, field) => {
+        user[field] = req.body[field];
+        return user;
+      }, {});
+
+    if(updateFields.password){
+      updateFields.password = await bcrypt.hash(updateFields.password, 12);
+    };
+
+    let update = { $set: updateFields };
+    const DB_Response = await client.db('Final_Project').collection('users').updateOne(filter, update);
+    if(DB_Response.matchedCount === 0){
+      return res.status(404).send({ error: `User with ID: ${id} was not found.`});
+    };
+    res.send({ success: `User with ID: ${id} was updated successfully.` });
+  } catch(err){
+    console.error(err);
+    res.status(500).send({ error: err, message: `Something went wrong with server.` });
+  } finally{
+    await client.close();
+  };
+};
+
+export { login, autoLogin, refreshLogin, register, editUser };

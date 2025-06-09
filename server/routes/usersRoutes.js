@@ -1,5 +1,5 @@
 import { Router } from "express";
-import { autoLogin, login, refreshLogin, register } from "../controllers/usersController.js";
+import { autoLogin, editUser, login, refreshLogin, register } from "../controllers/usersController.js";
 import { verifyAdmin, verifyJWT } from "../middleware/auth.js";
 
 const router = Router();
@@ -15,5 +15,7 @@ router.get('/verifyAdmin', verifyJWT, verifyAdmin, (req, res) => {
 });
 
 router.post('/register', register);
+
+router.patch('/edit/:id', editUser);
 
 export default router;
