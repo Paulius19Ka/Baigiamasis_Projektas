@@ -11,6 +11,10 @@ const createAccessJWT = (payload) => {
   return jwt.sign(payload, process.env.JWT_ACCESS_SECRET, { expiresIn: '1h' });
 };
 
+const createRefreshJWT = (payload) => {
+  return jwt.sign(payload, process.env.JWT_REFRESH_SECRET, { expiresIn: '1d' });
+};
+
 const validateJWT = (providedJWT) => {
   try{
     return jwt.verify(providedJWT, process.env.JWT_ACCESS_SECRET);
@@ -26,4 +30,4 @@ const validateJWT = (providedJWT) => {
   };
 };
 
-export { connectToDB, createAccessJWT, validateJWT };
+export { connectToDB, createAccessJWT, createRefreshJWT, validateJWT };

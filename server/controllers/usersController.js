@@ -27,7 +27,8 @@ const login = async (req, res) => {
 const autoLogin = async (req, res) => {
   // extract authetication header from request, contains the JWT token in format { Authorization: Bearer <token> }
   const authHeader = req.headers.authorization;
-  if(!authHeader){ // if thea authentication header is empty, send a message that user needs to re-authenticate
+  // if thea authentication header is empty, send a message that user needs to re-authenticate
+  if(!authHeader){
     return res.status(401).send({ error: 'Token does not exist. Please log in again.' });
   };
   // extract the access token from the header and validate
@@ -38,5 +39,18 @@ const autoLogin = async (req, res) => {
   };
 };
 
+const refreshToken = async (req, res) => {
+  const { token } = req.body;
+  if(!token){
+    return res.status(401).send({ error: 'Token does not exist.' });
+  };
+  try{
+    const user = jwt.verify(token, process.env.JWT_REFRESH_SECRET);
+    const newAccessToken = createAccessJWT({ id: user.id, email: user.email });
+    res.send({ accessToken: newAccessToken });
+  } catch(err){
+    res.status(403).send({ error: 'Invalid or expired refresh token.' });
+  };
+};
 
-export { login, autoLogin };
+export { login, autoLogin, refreshToken };
