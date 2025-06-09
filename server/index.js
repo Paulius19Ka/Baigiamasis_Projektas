@@ -2,7 +2,8 @@ import express from 'express';
 import cors from 'cors';
 import 'dotenv/config';
 
-import usersRoutes from './routes/usersRoutes.js'
+// import usersRoutes from './routes/usersRoutes.js';
+import postsRoutes from './routes/postsRoutes.js';
 
 const PORT = process.env.PORT || 5501;
 const corsOptions = {
@@ -18,8 +19,8 @@ app.listen(PORT, () => {
   console.log(`Server is running on PORT: ${PORT}`);
 });
 
-app.use('/users', usersRoutes);
-// app.use('/posts', /* route */);
+// app.use('/users', usersRoutes);
+app.use('/posts', postsRoutes);
 // app.use('/comments', /* route */);
 
 app.use((req, res) => {

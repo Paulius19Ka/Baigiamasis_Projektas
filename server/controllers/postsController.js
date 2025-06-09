@@ -2,13 +2,13 @@ import { validate as uuidValidate } from 'uuid';
 
 import { connectToDB } from "./helper.js";
 
-const getAllUsers = async (req, res) => {
+const getAllPosts = async (req, res) => {
   const client = await connectToDB();
   try{
-    const DB_RESPONSE = await client.db('Final_Project').collection('users').find().sort().skip(0).limit(25).toArray();
+    const DB_RESPONSE = await client.db('Final_Project').collection('posts').find().sort().skip(0).limit(25).toArray();
     if(!DB_RESPONSE.length){
-      console.error({ error: `No users were found.` });
-      return res.status(404).send({ error: `No users were found.` });
+      console.error({ error: `No posts were found.` });
+      return res.status(404).send({ error: `No posts were found.` });
     };
     res.send(DB_RESPONSE);
   } catch(err){
@@ -19,7 +19,7 @@ const getAllUsers = async (req, res) => {
   };
 };
 
-const getUserById = async (req, res) => {
+const getPostById = async (req, res) => {
   const { id } = req.params;
   const client = await connectToDB();
 
@@ -30,10 +30,10 @@ const getUserById = async (req, res) => {
 
   let filter = { _id: id };
   try{
-    const DB_RESPONSE = await client.db('Final_Project').collection('users').findOne(filter);
+    const DB_RESPONSE = await client.db('Final_Project').collection('posts').findOne(filter);
     if(!DB_RESPONSE){
-      console.error({ error: `User [id: ${id}] was not found.`});
-      return res.status(404).send({ error: `User [id: ${id}] was not found.`});
+      console.error({ error: `Post [id: ${id}] was not found.`});
+      return res.status(404).send({ error: `Post [id: ${id}] was not found.`});
     };
     res.send(DB_RESPONSE);
   } catch(err){
@@ -44,4 +44,4 @@ const getUserById = async (req, res) => {
   };
 };
 
-export { getAllUsers, getUserById };
+export { getAllPosts, getPostById };
