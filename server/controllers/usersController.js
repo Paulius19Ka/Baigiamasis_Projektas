@@ -1,4 +1,6 @@
+import { v4 as genID } from 'uuid';
 import bcrypt from 'bcrypt';
+
 import { connectToDB, createAccessJWT, validateJWT } from "./helper.js";
 
 const login = async (req, res) => {
@@ -15,7 +17,7 @@ const login = async (req, res) => {
     };
     const { password, _id, ...user } = DB_RESPONSE;
     const JWT_accessToken = createAccessJWT(user);
-    console.log(JWT_accessToken);
+    // console.log(JWT_accessToken);
     res.header('Authorization', JWT_accessToken).send({ success: `[${user.email}] was logged in successfully`, userData: user });
   } catch(err){
     console.error(err);
@@ -41,7 +43,7 @@ const autoLogin = async (req, res) => {
   res.send({ success: 'User was authenticated.', userData: req.user });
 };
 
-const refreshToken = async (req, res) => {
+const refreshLogin = async (req, res) => {
   const { token } = req.body;
   if(!token){
     return res.status(401).send({ error: 'Token does not exist.' });
@@ -55,4 +57,33 @@ const refreshToken = async (req, res) => {
   };
 };
 
-export { login, autoLogin, refreshToken };
+const register = async (req, res) => {
+  const { email, username, password, gender } = req.body;
+  if(!email || !username || !password || !gender){
+    return res.status(400).send({ error: 'Missing required fields, please enter - email, username, password, and gender.' });
+  };
+  const newUser = {
+    _id: genID(),
+    email: email,
+    username: username,
+    password: await bcrypt.hash(password, 12),
+    gender: gender,
+    role: 'user'
+  };
+  const client = await connectToDB();
+  try{
+    const user = await client.db('Final_Project').collection('users').findOne({ email });
+    if(user){
+      return res.status(409).send({ error: `User with email: [${user.email}] already exists.` });
+    };
+    await client.db('Final_Project').collection('users').insertOne(newUser);
+    res.status(201).send({ success: `[${newUser.email}] was registered successfully.` });
+  } catch(err){
+    console.error(err);
+    res.status(500).send({ error: err, message: `Something went wrong with server, try to log in later.` });
+  } finally{
+    await client.close();
+  };
+};
+
+export { login, autoLogin, refreshLogin, register };
