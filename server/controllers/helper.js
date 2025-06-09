@@ -8,19 +8,22 @@ const connectToDB = async () => {
 };
 
 const createAccessJWT = (payload) => {
-  return jwt.sign(payload, process.env.JWT_ACCESS_SECRET);
+  return jwt.sign(payload, process.env.JWT_ACCESS_SECRET, { expiresIn: '1h' });
 };
 
 const validateJWT = (providedJWT) => {
-  let response;
-  jwt.verify(providedJWT, process.env.JWT_ACCESS_SECRET, (err, decoded) => {
-    if(err){
-      response = { error: 'Your session has expired. Please log in again' };
-    } else {
-      response = decoded;
+  try{
+    return jwt.verify(providedJWT, process.env.JWT_ACCESS_SECRET);
+  } catch(err){
+    console.error(`JWT validation error: ${err.message}.`);
+    if(err.name === 'TokenExpiredError'){
+      return { status: 401, error: 'Your session has expired. Please log in again.' };
+    } else if(err.name === 'JsonWebTokenError'){
+      return { status: 403, error: 'Invalid token.' };
+    } else{
+      return { status: 500, error: 'Something went wrong with token validation.' };
     };
-  });
-  return response;
+  };
 };
 
 export { connectToDB, createAccessJWT, validateJWT };
