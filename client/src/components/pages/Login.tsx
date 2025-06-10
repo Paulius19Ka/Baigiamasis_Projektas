@@ -12,6 +12,7 @@ const Login = () => {
   const navigate = useNavigate();
   const { loginUser } = useContext(UsersContext) as UsersContextTypes;
   const [loginMessage, setLoginMessage] = useState('');
+  const [stayLoggedIn, setStayLoggedIn] = useState(false);
 
   const initValues: Pick<User, 'email' | 'password'> = {
     email: '',
@@ -33,7 +34,7 @@ const Login = () => {
         .trim()
     }),
     onSubmit: async (values) => {
-      const Response = await loginUser(values);
+      const Response = await loginUser(values, stayLoggedIn);
       if('error' in Response){
         // !!!! add error message on site as well
         setLoginMessage(Response.error ?? 'Unsuccessful login.');
@@ -70,6 +71,16 @@ const Login = () => {
           errors={formik.errors.password}
           touched={formik.touched.password}
         />
+        <div>
+          <div>
+            <input
+              type='checkbox'
+              name='stayLoggedIn' id='stayLoggedIn'
+              onChange={() => {setStayLoggedIn(!stayLoggedIn)}}
+            />
+            <label htmlFor='stayLoggedIn'>Stay Logged In</label>
+          </div>
+        </div>
         {/* checkbox to stay logged in here */}
         <input type="submit" value='Login' />
       </form>

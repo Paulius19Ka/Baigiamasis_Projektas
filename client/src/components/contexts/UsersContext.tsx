@@ -27,7 +27,7 @@ const UsersProvider = ({ children }: ChildProp) => {
   //   console.log("UsersContext updated:", loggedInUser);
   // }, [loggedInUser]);
 
-  const loginUser = async (userData: Pick<User, 'email' | 'password'>) => {
+  const loginUser = async (userData: Pick<User, 'email' | 'password'>, stayLoggedIn: boolean) => {
     const res = await fetch(`http://localhost:5500/users/login`, {
       method: "POST",
       headers: {
@@ -45,7 +45,11 @@ const UsersProvider = ({ children }: ChildProp) => {
 
     const authorizationHeader = res.headers.get('Authorization');
     if(authorizationHeader){
-      localStorage.setItem('accessToken', authorizationHeader);
+      if(stayLoggedIn){
+        localStorage.setItem('accessToken', authorizationHeader);
+      } else {
+        sessionStorage.setItem('accessToken', authorizationHeader);
+      };
     };
 
     const Back_Response: LoginResponse = await res.json();
@@ -70,7 +74,7 @@ const UsersProvider = ({ children }: ChildProp) => {
   }
 
   useEffect(() => {
-    const accessToken = localStorage.getItem('accessToken');
+    const accessToken = localStorage.getItem('accessToken') || sessionStorage.getItem('accessToken');
     if(accessToken){
       fetch(`http://localhost:5500/users/autoLogin`, {
         headers: {
