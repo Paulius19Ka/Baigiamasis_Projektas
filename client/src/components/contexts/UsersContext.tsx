@@ -2,13 +2,13 @@ import { createContext, useEffect, useReducer } from 'react';
 import { ChildProp, User, UsersContextTypes } from '../../types';
 
 type ActionTypes = 
-{ type: 'setUser', data: Omit<User, 'password'> } |
+{ type: 'setUser', userData: Omit<User, 'password'> } |
 { type: 'logoutUser' };
 
 const reducer = (state: Omit<User, 'password'> | null, action: ActionTypes) => {
   switch(action.type){
     case 'setUser':
-      return action.data;
+      return action.userData;
     case 'logoutUser':
       return null;
     default:
@@ -60,7 +60,7 @@ const UsersProvider = ({ children }: ChildProp) => {
 
     dispatch({
       type: 'setUser',
-      data: Back_Response.userData
+      userData: Back_Response.userData
     });
 
     return { success: Back_Response.success };
@@ -90,7 +90,7 @@ const UsersProvider = ({ children }: ChildProp) => {
             console.log('Session resumed');
             dispatch({
               type: 'setUser',
-              data
+              userData: data.userData
             });
           };
         });

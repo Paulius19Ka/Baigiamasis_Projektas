@@ -62,7 +62,7 @@ const Header = () => {
           {
             loggedInUser ?
             <>
-              <li><NavLink to='/user'>User</NavLink></li>
+              <li><NavLink to='/user'>{loggedInUser.username}</NavLink></li>
               <li><button onClick={() => {logoutUser()}}>Logout</button></li>
             </> :
             <>

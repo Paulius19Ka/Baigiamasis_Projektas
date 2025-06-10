@@ -6,7 +6,7 @@ export type ChildProp = {
 
 export type UsersContextTypes = {
   loggedInUser: Omit<User, "password"> | null,
-  loginUser: (loginData: Pick<User, "email" | "password">, stayLoggedIn: boolean) => Promise<{
+  loginUser: (userData: Pick<User, "email" | "password">, stayLoggedIn: boolean) => Promise<{
     error: string;
     success?: undefined;
   } | {
