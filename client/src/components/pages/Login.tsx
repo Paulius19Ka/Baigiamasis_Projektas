@@ -1,6 +1,6 @@
 import { useFormik } from 'formik';
 import * as Yup from 'yup';
-import { useContext } from 'react';
+import { useContext, useState } from 'react';
 import { useNavigate } from 'react-router';
 
 import { User, UsersContextTypes } from '../../types';
@@ -11,6 +11,7 @@ const Login = () => {
 
   const navigate = useNavigate();
   const { loginUser } = useContext(UsersContext) as UsersContextTypes;
+  const [loginMessage, setLoginMessage] = useState('');
 
   const initValues: Pick<User, 'email' | 'password'> = {
     email: '',
@@ -35,11 +36,13 @@ const Login = () => {
       const Response = await loginUser(values);
       if('error' in Response){
         // !!!! add error message on site as well
+        setLoginMessage(Response.error ?? 'Unsuccessful login.');
         throw new Error('Unsuccessful login.');
       };
       // success message and navigate
-      // setTimeout(() => navigate('/'), 1000);
-      navigate('/');
+      setLoginMessage(Response.success);
+      setTimeout(() => navigate('/'), 2000);
+      // navigate('/');
     }
   });
 
@@ -70,6 +73,9 @@ const Login = () => {
         {/* checkbox to stay logged in here */}
         <input type="submit" value='Login' />
       </form>
+      {
+        loginMessage && <p>{loginMessage}</p>
+      }
     </section>
   );
 }

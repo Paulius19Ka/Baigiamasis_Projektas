@@ -40,7 +40,7 @@ const UsersProvider = ({ children }: ChildProp) => {
     if(!res.ok){
       const errorResponse = await res.json();
       console.error(`Login failed: ${errorResponse.error}`);
-      return { error: `Error: ${res.status}` };
+      return { error: errorResponse.error };
     };
 
     const authorizationHeader = res.headers.get('Authorization');
