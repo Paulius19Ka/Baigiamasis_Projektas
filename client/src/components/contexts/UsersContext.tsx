@@ -4,7 +4,7 @@ import { ChildProp, User, UsersContextTypes } from '../../types';
 type ActionTypes = 
 { type: 'setUser', data: Omit<User, 'password'> }
 
-const reducer = (state: Omit<User, 'password'>, action: ActionTypes) => {
+const reducer = (state: Omit<User, 'password'> | null, action: ActionTypes) => {
   switch(action.type){
     case 'setUser':
       return action.data;
@@ -21,17 +21,27 @@ const UsersProvider = ({ children }: ChildProp) => {
   type LoginResponse = { error: string } | { success: string, loginData: Omit<User, 'password'> };
 
   const loginUser = async (loginData: Pick<User, 'email' | 'password'>) => {
-    const Back_Response: LoginResponse = await fetch(`http://localhost:5500/users/login`, {
+    const res = await fetch(`http://localhost:5500/users/login`, {
       method: "POST",
       headers: {
         "Content-Type":"application/json"
       },
       body: JSON.stringify(loginData)
-    })
-      .then(res => {
-        console.log(res.headers.get('Authorization'));
-        return res.json();
-      });
+    });
+
+    // error handling in browser console
+    if(!res.ok){
+      const errorResponse = await res.json();
+      console.error(`Login failed: ${errorResponse.error}`);
+      return { error: `Error: ${res.status}` };
+    };
+
+    const authorizationHeader = res.headers.get('Authorization');
+    if(authorizationHeader){
+      localStorage.setItem('accessToken', authorizationHeader);
+    };
+
+    const Back_Response: LoginResponse = await res.json();
 
     if('error' in Back_Response){
       return { error: Back_Response.error };
@@ -46,7 +56,27 @@ const UsersProvider = ({ children }: ChildProp) => {
   };
 
   useEffect(() => {
-    // fetchUser();
+    const accessToken = localStorage.getItem('accessToken');
+    if(accessToken){
+      fetch(`http://localhost:5500/users/autoLogin`, {
+        headers: {
+          Authorization: `Bearer ${accessToken}`
+        }
+      })
+        .then(res => res.json())
+        .then(data => {
+          if('error' in data){
+            console.error('Error: ', data.error);
+            localStorage.removeItem('accessToken');
+          } else {
+            console.log('Session resumed');
+            dispatch({
+              type: 'setUser',
+              data
+            });
+          };
+        });
+    };
   }, []);
 
   return (
