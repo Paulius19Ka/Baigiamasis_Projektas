@@ -12,7 +12,8 @@ export type UsersContextTypes = {
   } | {
     success: string;
     error?: undefined;
-  }>
+  }>,
+  logoutUser: () => void
 };
 
 export type User = {

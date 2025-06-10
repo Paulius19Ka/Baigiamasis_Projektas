@@ -32,11 +32,13 @@ const Login = () => {
         .trim()
     }),
     onSubmit: async (values) => {
-      console.log(values);
       const Response = await loginUser(values);
       if('error' in Response){
+        // !!!! add error message on site as well
         throw new Error('Unsuccessful login.');
       };
+      // success message and navigate
+      // setTimeout(() => navigate('/'), 1000);
       navigate('/');
     }
   });

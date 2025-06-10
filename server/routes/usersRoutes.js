@@ -10,7 +10,7 @@ router.post('/refreshLogin', refreshLogin);
 
 router.get('/autoLogin', verifyJWT, autoLogin);
 
-router.get('/verifyAdmin', verifyJWT, verifyAdmin, (req, res) => {
+router.get('/admin', verifyJWT, verifyAdmin, (req, res) => {
   res.status(200).send({ success: 'Admin verified.' });
 });
 
