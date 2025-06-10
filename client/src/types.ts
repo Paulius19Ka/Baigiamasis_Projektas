@@ -17,3 +17,16 @@ export type User = {
   role: string,
   avatar?: string
 };
+
+export type InputFieldPropTypes = {
+  inputType: 'text' | 'email' | 'password' | 'checkbox' | 'radio' | 'url' | 'submit',
+  inputName: string,
+  inputId: string,
+  inputValue: string,
+  inputOnChange: React.ChangeEventHandler<HTMLInputElement>,
+  inputOnBlur: React.FocusEventHandler<HTMLInputElement>,
+  labelHtmlFor: string,
+  labelText: string,
+  errors: string | undefined,
+  touched: boolean | undefined
+};
