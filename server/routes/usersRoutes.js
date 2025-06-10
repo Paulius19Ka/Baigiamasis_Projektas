@@ -16,6 +16,6 @@ router.get('/admin', verifyJWT, verifyAdmin, (req, res) => {
 
 router.post('/register', register);
 
-router.patch('/edit/:id', editUser);
+router.patch('/:id', editUser);
 
 export default router;
