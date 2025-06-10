@@ -1,10 +1,16 @@
 import { useFormik } from 'formik';
 import * as Yup from 'yup';
 import { useContext } from 'react';
-import { User } from '../../types';
+import { useNavigate } from 'react-router';
+
+import { User, UsersContextTypes } from '../../types';
 import InputField from '../UI/molecules/InputField';
+import UsersContext from '../contexts/UsersContext';
 
 const Login = () => {
+
+  const navigate = useNavigate();
+  const { loginUser } = useContext(UsersContext) as UsersContextTypes;
 
   const initValues: Pick<User, 'email' | 'password'> = {
     email: '',
@@ -25,8 +31,13 @@ const Login = () => {
         .required('Enter a password.')
         .trim()
     }),
-    onSubmit: (values) => {
+    onSubmit: async (values) => {
       console.log(values);
+      const Response = await loginUser(values);
+      if('error' in Response){
+        throw new Error('Unsuccessful login.');
+      };
+      navigate('/');
     }
   });
 
@@ -54,6 +65,7 @@ const Login = () => {
           errors={formik.errors.password}
           touched={formik.touched.password}
         />
+        {/* checkbox to stay logged in here */}
         <input type="submit" value='Login' />
       </form>
     </section>

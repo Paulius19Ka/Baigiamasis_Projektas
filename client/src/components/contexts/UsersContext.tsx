@@ -18,8 +18,10 @@ const UsersProvider = ({ children }: ChildProp) => {
 
   const [loggedInUser, dispatch] = useReducer(reducer, null);
 
+  type LoginResponse = { error: string } | { success: string, loginData: Omit<User, 'password'> };
+
   const loginUser = async (loginData: Pick<User, 'email' | 'password'>) => {
-    const Back_Response = await fetch(`http://localhost:5500/users/login`, {
+    const Back_Response: LoginResponse = await fetch(`http://localhost:5500/users/login`, {
       method: "POST",
       headers: {
         "Content-Type":"application/json"
@@ -30,6 +32,17 @@ const UsersProvider = ({ children }: ChildProp) => {
         console.log(res.headers.get('Authorization'));
         return res.json();
       });
+
+    if('error' in Back_Response){
+      return { error: Back_Response.error };
+    };
+
+    dispatch({
+      type: 'setUser',
+      data: Back_Response.loginData
+    });
+
+    return { success: Back_Response.success };
   };
 
   useEffect(() => {
@@ -39,7 +52,8 @@ const UsersProvider = ({ children }: ChildProp) => {
   return (
     <UsersContext.Provider
       value={{
-        loggedInUser
+        loggedInUser,
+        loginUser
       }}
     >
       { children }
