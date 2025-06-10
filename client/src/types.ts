@@ -19,7 +19,7 @@ export type User = {
 };
 
 export type InputFieldPropTypes = {
-  inputType: 'text' | 'email' | 'password' | 'checkbox' | 'radio' | 'url' | 'submit',
+  inputType: 'text' | 'email' | 'password' | 'checkbox' | 'radio' | 'url',
   inputName: string,
   inputId: string,
   inputValue: string,
