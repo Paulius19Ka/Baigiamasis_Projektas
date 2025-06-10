@@ -1,17 +1,64 @@
 import { Link, NavLink } from "react-router";
+import styled from "styled-components";
+
+const StyledHeader = styled.header`
+  background-color: var(--background-dark);
+  height: 40px;
+  padding: 0px 10px;
+
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  div, ul{
+    display: flex;
+    gap: 10px;
+
+    margin: 0;
+    padding: 0;
+
+    > li{
+      list-style-type: none;
+
+    }
+  }
+
+  a{
+    text-decoration: none;
+    color: var(--font-main);
+
+    &:hover{
+      color: var(--accent-hover);
+    }
+    
+    &.active{
+      color: var(--accent-main);
+    }
+
+    &:active{
+      color: var(--accent-active);
+    }
+  }
+`;
 
 const Header = () => {
   return (
-    <header>
+    <StyledHeader>
+      <div>
+        <span>LOGO</span> {/* add logo here */}
+        <NavLink to=''>Home</NavLink>
+      </div>
+      <div className="searchBar">
+        <input type="text" placeholder="Search..." />
+      </div>
       <nav>
         <ul>
-          <li><NavLink to=''>Home</NavLink></li>
           <li><NavLink to='/user'>User</NavLink></li>
           <li><Link to='/register'>Register</Link></li>
-          <li><Link to='/login'>Register</Link></li>
+          <li><Link to='/login'>Login</Link></li>
         </ul>
       </nav>
-    </header>
+    </StyledHeader>
   );
 }
  
