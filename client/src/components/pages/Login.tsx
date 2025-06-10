@@ -81,7 +81,6 @@ const Login = () => {
             <label htmlFor='stayLoggedIn'>Stay Logged In</label>
           </div>
         </div>
-        {/* checkbox to stay logged in here */}
         <input type="submit" value='Login' />
       </form>
       {

@@ -22,8 +22,8 @@ export type User = {
   username: string,
   password: string,
   gender: 'male'| 'female' | 'other',
-  role: string,
-  avatar?: string
+  role: 'admin' | 'user',
+  avatar: string
 };
 
 export type InputFieldPropTypes = {
