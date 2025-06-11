@@ -71,7 +71,9 @@ const register = async (req, res) => {
       };
     };
     await client.db('Final_Project').collection('users').insertOne(newUser);
-    res.status(201).send({ success: `[${newUser.email}] was registered successfully.` });
+    const { password, _id, ...userData } = newUser;
+    const JWT_accessToken = createAccessJWT(userData);
+    res.status(201).header('Authorization', JWT_accessToken).send({ success: `[${newUser.email}] was registered successfully.`, userData });
   } catch(err){
     console.error(err);
     res.status(500).send({ error: err, message: `Something went wrong with server.` });
