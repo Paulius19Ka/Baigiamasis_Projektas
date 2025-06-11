@@ -46,7 +46,7 @@ const refreshLogin = async (req, res) => {
 
 const register = async (req, res) => {
   const { email, username, password, gender, avatar } = req.body;
-  if(!email || !username || !password || !gender || !avatar){
+  if(!email || !username || !password || !gender || avatar === undefined){
     return res.status(400).send({ error: 'Missing required fields, please enter - email, username, password, avatar, gender.' });
   };
   const newUser = {
@@ -55,7 +55,7 @@ const register = async (req, res) => {
     username: username,
     password: await bcrypt.hash(password, 12),
     gender: gender,
-    avatar: avatar,
+    avatar: avatar || "",
     role: 'user'
   };
   const client = await connectToDB();
