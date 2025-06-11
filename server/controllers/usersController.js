@@ -82,6 +82,23 @@ const register = async (req, res) => {
   };
 };
 
+const getId = async (req, res) => {
+  const client = await connectToDB();
+  try{
+    const DB_RESPONSE = await client.db('Final_Project').collection('users').findOne({ email: req.user.email });
+    if(!DB_RESPONSE){
+      console.error({ error: `User not found.` });
+      return res.status(404).send({ error: `User not found.` });
+    };
+    res.send({ id: DB_RESPONSE._id });
+  } catch(err){
+    console.error(err);
+    res.status(500).send({ error: err, message: `Something went wrong with server.` });
+  } finally{
+    await client.close();
+  };
+};
+
 const editUser = async (req, res) => {
   const { id } = req.params;
   const client = await connectToDB();
@@ -147,4 +164,4 @@ const editUser = async (req, res) => {
   };
 };
 
-export { login, autoLogin, refreshLogin, register, editUser };
+export { login, autoLogin, refreshLogin, register, editUser, getId };

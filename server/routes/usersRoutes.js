@@ -1,5 +1,5 @@
 import { Router } from "express";
-import { autoLogin, editUser, login, refreshLogin, register } from "../controllers/usersController.js";
+import { autoLogin, editUser, getId, login, refreshLogin, register } from "../controllers/usersController.js";
 import { verifyAdmin, verifyJWT } from "../middleware/auth.js";
 
 const router = Router();
@@ -15,6 +15,8 @@ router.get('/admin', verifyJWT, verifyAdmin, (req, res) => {
 });
 
 router.post('/register', register);
+
+router.get('/getId', verifyJWT, getId);
 
 router.patch('/:id', editUser);
 

@@ -123,6 +123,38 @@ const UsersProvider = ({ children }: ChildProp) => {
     return { success: Back_Response.success };
   };
 
+  // const editUser = (userData: Omit<User, '_id' | 'role'>, id: string) => {
+  //   const res = await fetch(`http://localhost:5500/users/${id}`, {
+  //     method: "PATCH",
+  //     headers: {
+  //       "Content-Type":"application/json"
+  //     },
+  //     body: JSON.stringify(userData)
+  //   });
+  // };
+
+  const getUserId = async () => {
+    const accessToken = localStorage.getItem('accessToken') || sessionStorage.getItem('accessToken');
+    if(!accessToken){
+      throw new Error('No token exists.');
+    };
+    const res = await fetch(`http://localhost:5500/users/getId`, {
+      method: "GET",
+      headers: {
+        Authorization: `Bearer ${accessToken}`
+      }
+    });
+
+    if(!res.ok){
+      const errorResponse = await res.json();
+      console.error(`Failed to get ID. Error: ${errorResponse.error}`);
+      return { error: errorResponse.error };
+    };
+
+    const Back_Response = await res.json();
+    return { id: Back_Response.id };
+  };
+
   const logoutUser = () => {
     dispatch({
       type: 'logoutUser'
@@ -161,7 +193,8 @@ const UsersProvider = ({ children }: ChildProp) => {
         loginUser,
         logoutUser,
         registerUser,
-        decodeUserFromToken
+        decodeUserFromToken,
+        getUserId
       }}
     >
       { children }

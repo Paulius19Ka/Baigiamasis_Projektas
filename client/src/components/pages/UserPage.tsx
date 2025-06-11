@@ -1,4 +1,4 @@
-import { useContext } from "react";
+import { useContext, useEffect, useState } from "react";
 import styled from "styled-components";
 import { useFormik } from 'formik';
 import * as Yup from 'yup';
@@ -20,9 +20,21 @@ const StyledSection = styled.section`
 
 const UserPage = () => {
 
-  const { decodeUserFromToken } = useContext(UsersContext) as UsersContextTypes;
+  const { decodeUserFromToken, getUserId } = useContext(UsersContext) as UsersContextTypes;
   const decodedUser = decodeUserFromToken();
   // console.log(decodedUser);
+  const [userId, setUserId] = useState<string | null>(null);
+
+  useEffect(() => {
+    const fetchId = async () => {
+      const res = await getUserId();
+      if(res?.id){
+        setUserId(res.id);
+      };
+    };
+    fetchId();
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   const initValues: Omit<User, '_id' | 'role'> & { oldPassword: string, passwordConfirm: string }= {
     email: decodedUser?.email || '',
@@ -81,6 +93,7 @@ const UserPage = () => {
           <span>Username: {decodedUser?.username}</span>
           <span>Gender: {decodedUser?.gender}</span>
           <span>Password: ****</span>
+          <span>ID: {userId || '...'}</span>
           {
             decodedUser?.avatar ?
             <img src={decodedUser?.avatar} alt={decodedUser?.username} /> :
