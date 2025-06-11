@@ -27,13 +27,15 @@ const UserPage = () => {
   const decodeUserFromToken = (): Omit<User, "_id" | "password" | "role"> | null => {
     const accessToken = localStorage.getItem('accessToken') || sessionStorage.getItem('accessToken');
     if(!accessToken){
-      throw new Error('No access token found.');
+      // return null to not throw an error in the console, when logging out
+      // throw new Error('No access token found.');
+      return null;
     };
     try{
       return jwtDecode(accessToken);
     } catch(err){
       throw new Error(`Invalid access token. Error: ${err}. `);
-    }
+    };
   };
 
   const decodedUser = decodeUserFromToken();
@@ -87,85 +89,93 @@ const UserPage = () => {
 
   return (
     <StyledSection>
-      <h2>User Info</h2>
-      <span>Email: {loggedInUser?.email}</span>
-      <span>Username: {loggedInUser?.username}</span>
-      <span>Gender: {loggedInUser?.gender}</span>
-      <span>Password: ****</span>
-      <img src={loggedInUser?.avatar} alt={loggedInUser?.username} />
-      <form onSubmit={formik.handleSubmit}>
-        <InputField
-          labelText='Email:'
-          inputType='email'
-          inputName='email' inputId='email'
-          inputValue={formik.values.email}
-          inputOnChange={formik.handleChange}
-          inputOnBlur={formik.handleBlur}
-          errors={formik.errors.email}
-          touched={formik.touched.email}
-        />
-        <InputField
-          labelText='Username:'
-          inputType='text'
-          inputName='username' inputId='username'
-          inputValue={formik.values.username}
-          inputOnChange={formik.handleChange}
-          inputOnBlur={formik.handleBlur}
-          errors={formik.errors.username}
-          touched={formik.touched.username}
-        />
-        <InputField
-          labelText='Old Password:'
-          inputType='password'
-          inputName='oldPassword' inputId='oldPassword'
-          inputValue={formik.values.oldPassword}
-          inputOnChange={formik.handleChange}
-          inputOnBlur={formik.handleBlur}
-          errors={formik.errors.oldPassword}
-          touched={formik.touched.oldPassword}
-        />
-        <InputField
-          labelText='Password:'
-          inputType='password'
-          inputName='password' inputId='password'
-          inputValue={formik.values.password}
-          inputOnChange={formik.handleChange}
-          inputOnBlur={formik.handleBlur}
-          errors={formik.errors.password}
-          touched={formik.touched.password}
-        />
-        <InputField
-          labelText='Confirm Password:'
-          inputType='password'
-          inputName='passwordConfirm' inputId='passwordConfirm'
-          inputValue={formik.values.passwordConfirm}
-          inputOnChange={formik.handleChange}
-          inputOnBlur={formik.handleBlur}
-          errors={formik.errors.passwordConfirm}
-          touched={formik.touched.passwordConfirm}
-        />
-        <InputField // !!! needs to be radio or select
-          labelText='Gender:'
-          inputType='text'
-          inputName='gender' inputId='gender'
-          inputValue={formik.values.gender}
-          inputOnChange={formik.handleChange}
-          inputOnBlur={formik.handleBlur}
-          errors={formik.errors.gender}
-          touched={formik.touched.gender}
-        />
-        <InputField
-          labelText='Avatar:'
-          inputType='url'
-          inputName='avatar' inputId='avatar'
-          inputValue={formik.values.avatar}
-          inputOnChange={formik.handleChange}
-          inputOnBlur={formik.handleBlur}
-          errors={formik.errors.avatar}
-          touched={formik.touched.avatar}
-        />
-        <input type="submit" value="Update"/>
-      </form>
+      {
+        decodedUser ?
+        <>
+          <h2>User Info</h2>
+          <span>Email: {loggedInUser?.email}</span>
+          <span>Username: {loggedInUser?.username}</span>
+          <span>Gender: {loggedInUser?.gender}</span>
+          <span>Password: ****</span>
+          <img src={loggedInUser?.avatar} alt={loggedInUser?.username} />
+          <form onSubmit={formik.handleSubmit}>
+            <InputField
+              labelText='Email:'
+              inputType='email'
+              inputName='email' inputId='email'
+              inputValue={formik.values.email}
+              inputOnChange={formik.handleChange}
+              inputOnBlur={formik.handleBlur}
+              errors={formik.errors.email}
+              touched={formik.touched.email}
+            />
+            <InputField
+              labelText='Username:'
+              inputType='text'
+              inputName='username' inputId='username'
+              inputValue={formik.values.username}
+              inputOnChange={formik.handleChange}
+              inputOnBlur={formik.handleBlur}
+              errors={formik.errors.username}
+              touched={formik.touched.username}
+            />
+            <InputField
+              labelText='Old Password:'
+              inputType='password'
+              inputName='oldPassword' inputId='oldPassword'
+              inputValue={formik.values.oldPassword}
+              inputOnChange={formik.handleChange}
+              inputOnBlur={formik.handleBlur}
+              errors={formik.errors.oldPassword}
+              touched={formik.touched.oldPassword}
+            />
+            <InputField
+              labelText='Password:'
+              inputType='password'
+              inputName='password' inputId='password'
+              inputValue={formik.values.password}
+              inputOnChange={formik.handleChange}
+              inputOnBlur={formik.handleBlur}
+              errors={formik.errors.password}
+              touched={formik.touched.password}
+            />
+            <InputField
+              labelText='Confirm Password:'
+              inputType='password'
+              inputName='passwordConfirm' inputId='passwordConfirm'
+              inputValue={formik.values.passwordConfirm}
+              inputOnChange={formik.handleChange}
+              inputOnBlur={formik.handleBlur}
+              errors={formik.errors.passwordConfirm}
+              touched={formik.touched.passwordConfirm}
+            />
+            <InputField // !!! needs to be radio or select
+              labelText='Gender:'
+              inputType='text'
+              inputName='gender' inputId='gender'
+              inputValue={formik.values.gender}
+              inputOnChange={formik.handleChange}
+              inputOnBlur={formik.handleBlur}
+              errors={formik.errors.gender}
+              touched={formik.touched.gender}
+            />
+            <InputField
+              labelText='Avatar:'
+              inputType='url'
+              inputName='avatar' inputId='avatar'
+              inputValue={formik.values.avatar}
+              inputOnChange={formik.handleChange}
+              inputOnBlur={formik.handleBlur}
+              errors={formik.errors.avatar}
+              touched={formik.touched.avatar}
+            />
+            <input type="submit" value="Update"/>
+          </form>
+        </> :
+        <>
+          <p>No user info...</p>
+        </>
+      }
     </StyledSection>
   );
 }
