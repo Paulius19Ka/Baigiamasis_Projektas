@@ -3,7 +3,7 @@ import MainOutlet from "./components/outlets/MainOutlet"
 import Home from "./components/pages/Home"
 import Register from "./components/pages/Register"
 import Login from "./components/pages/Login"
-import User from "./components/pages/User"
+import User from "./components/pages/UserPage"
 
 const App = () => {
 
