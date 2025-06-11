@@ -70,6 +70,7 @@ const UserPage = () => {
         .required('Enter a password.')
         .trim(),
       password: Yup.string()
+        .notOneOf([Yup.ref('oldPassword')], 'New password must be different than the old password.')
         .matches(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,20}$/, 'Password must have: lower case character, upper case character, number, special symbol, 8-20 symbols long.')
         .required('Enter a password.')
         .trim(),
@@ -97,7 +98,11 @@ const UserPage = () => {
           <span>Username: {loggedInUser?.username}</span>
           <span>Gender: {loggedInUser?.gender}</span>
           <span>Password: ****</span>
-          <img src={loggedInUser?.avatar} alt={loggedInUser?.username} />
+          {
+            loggedInUser?.avatar ?
+            <img src={loggedInUser?.avatar} alt={loggedInUser?.username} /> :
+            <img src="https://t3.ftcdn.net/jpg/04/34/72/82/360_F_434728286_OWQQvAFoXZLdGHlObozsolNeuSxhpr84.jpg" alt="placeholder image, when no avatar available" />
+          }
           <form onSubmit={formik.handleSubmit}>
             <InputField
               labelText='Email:'
