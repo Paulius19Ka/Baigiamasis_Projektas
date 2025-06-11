@@ -45,9 +45,9 @@ const refreshLogin = async (req, res) => {
 };
 
 const register = async (req, res) => {
-  const { email, username, password, gender } = req.body;
-  if(!email || !username || !password || !gender){
-    return res.status(400).send({ error: 'Missing required fields, please enter - email, username, password, and gender.' });
+  const { email, username, password, gender, avatar } = req.body;
+  if(!email || !username || !password || !gender || !avatar){
+    return res.status(400).send({ error: 'Missing required fields, please enter - email, username, password, avatar, gender.' });
   };
   const newUser = {
     _id: genID(),
@@ -55,13 +55,20 @@ const register = async (req, res) => {
     username: username,
     password: await bcrypt.hash(password, 12),
     gender: gender,
+    avatar: avatar,
     role: 'user'
   };
   const client = await connectToDB();
   try{
-    const user = await client.db('Final_Project').collection('users').findOne({ email });
+    const user = await client.db('Final_Project').collection('users').findOne({ $or: [{ email }, { username }] });
     if(user){
-      return res.status(409).send({ error: `User with email: [${user.email}] already exists.` });
+      if(user.email === email && user.username === username){
+        return res.status(409).send({ error: `User with email: [${user.email}] and username: [${user.username}] already exists.` });
+      } else if(user.email === email){
+        return res.status(409).send({ error: `User with email: [${user.email}] already exists.` });
+      } else if(user.username === username){
+        return res.status(409).send({ error: `User with username: [${user.username}] already exists.` });
+      };
     };
     await client.db('Final_Project').collection('users').insertOne(newUser);
     res.status(201).send({ success: `[${newUser.email}] was registered successfully.` });
