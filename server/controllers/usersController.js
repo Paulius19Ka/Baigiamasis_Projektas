@@ -116,7 +116,7 @@ const editUser = async (req, res) => {
     };
 
     // define editable fields, check for invalid fields in request body and disallow editing other than the fields listed in editableFields array
-    const editableFields = ['email', 'username', 'oldPassword', 'password', 'gender'];
+    const editableFields = ['email', 'username', 'oldPassword', 'password', 'gender', 'avatar'];
 
     const invalidFields = Object.keys(req.body).filter(field => !editableFields.includes(field));
     if(invalidFields.length){

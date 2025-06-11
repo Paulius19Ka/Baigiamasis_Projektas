@@ -6,6 +6,7 @@ import * as Yup from 'yup';
 import UsersContext from "../contexts/UsersContext";
 import { User, UsersContextTypes } from "../../types";
 import InputField from "../UI/molecules/InputField";
+import { useNavigate } from "react-router";
 
 const StyledSection = styled.section`
   display: flex;
@@ -20,10 +21,12 @@ const StyledSection = styled.section`
 
 const UserPage = () => {
 
-  const { decodeUserFromToken, getUserId } = useContext(UsersContext) as UsersContextTypes;
+  const { decodeUserFromToken, getUserId, editUser } = useContext(UsersContext) as UsersContextTypes;
   const decodedUser = decodeUserFromToken();
   // console.log(decodedUser);
   const [userId, setUserId] = useState<string | null>(null);
+  const [editMessage, setEditMessage] = useState('');
+  const navigate = useNavigate();
 
   useEffect(() => {
     const fetchId = async () => {
@@ -36,7 +39,7 @@ const UserPage = () => {
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  const initValues: Omit<User, '_id' | 'role'> & { oldPassword: string, passwordConfirm: string }= {
+  const initValues: Omit<User, '_id' | 'role' | 'password'> & { oldPassword?: string, password?: string, passwordConfirm?: string }= {
     email: decodedUser?.email || '',
     username: decodedUser?.username || '',
     oldPassword: '',
@@ -60,26 +63,45 @@ const UserPage = () => {
         .max(20, 'Username must be shorter than 20 symbols.')
         .required('Enter a username.')
         .trim(),
-      oldPassword: Yup.string()
-        .matches(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,20}$/, 'Password must have: lower case character, upper case character, number, special symbol, 8-20 symbols long.')
-        .required('Enter a password.')
-        .trim(),
-      password: Yup.string()
-        .notOneOf([Yup.ref('oldPassword')], 'New password must be different than the old password.')
-        .matches(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,20}$/, 'Password must have: lower case character, upper case character, number, special symbol, 8-20 symbols long.')
-        .required('Enter a password.')
-        .trim(),
-      passwordConfirm: Yup.string()
-        .oneOf([Yup.ref('password')], 'Passwords must match.')
-        .required('Confirm password.')
-        .trim(),
+      // oldPassword: Yup.string()
+      //   .matches(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,20}$/, 'Password must have: lower case character, upper case character, number, special symbol, 8-20 symbols long.')
+      //   .required('Enter a password.')
+      //   .trim(),
+      // password: Yup.string()
+      //   .notOneOf([Yup.ref('oldPassword')], 'New password must be different than the old password.')
+      //   .matches(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,20}$/, 'Password must have: lower case character, upper case character, number, special symbol, 8-20 symbols long.')
+      //   .required('Enter a password.')
+      //   .trim(),
+      // passwordConfirm: Yup.string()
+      //   .oneOf([Yup.ref('password')], 'Passwords must match.')
+      //   .required('Confirm password.')
+      //   .trim(),
       avatar: Yup.string()
         .url('Enter a valid url.')
         .matches(/\.(jpg|jpeg|png)$/, 'Enter a valid image url. Format: jpg, jpeg, png.')
         .trim()
     }),
     onSubmit: async (values) => {
-      console.log(values);
+      if(!userId){
+        setEditMessage('Failed to retrieve ID.');
+        throw new Error('Failed to retrieve ID.');
+      };
+      const filteredValues = { ...values };
+      if(!filteredValues.oldPassword) delete filteredValues.oldPassword;
+      if(!filteredValues.password) delete filteredValues.password;
+      if(!filteredValues.passwordConfirm) delete filteredValues.passwordConfirm;
+
+
+      const Response = await editUser(filteredValues, userId);
+      if('error' in Response){
+        // !!!! add error message on site as well
+        setEditMessage(Response.error ?? 'Unsuccessful edit.');
+        throw new Error('Unsuccessful edit.');
+      };
+      // success message and navigate
+      setEditMessage(Response.success);
+      setTimeout(() => navigate('/'), 2000);
+      // navigate('/');
     }
   });
 
@@ -172,6 +194,9 @@ const UserPage = () => {
             />
             <input type="submit" value="Update"/>
           </form>
+          {
+            editMessage && <p>{editMessage}</p>
+          }
         </> :
         <>
           <p>No user info...</p>
