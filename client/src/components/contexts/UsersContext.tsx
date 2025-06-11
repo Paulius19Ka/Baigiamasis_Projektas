@@ -3,7 +3,8 @@ import { ChildProp, User, UsersContextTypes } from '../../types';
 
 type ActionTypes = 
 { type: 'setUser', userData: Omit<User, 'password'> } |
-{ type: 'logoutUser' };
+{ type: 'logoutUser' } |
+{ type: 'registerUser', userData: Omit<User, 'password'> };
 
 const reducer = (state: Omit<User, 'password'> | null, action: ActionTypes) => {
   switch(action.type){
@@ -11,6 +12,8 @@ const reducer = (state: Omit<User, 'password'> | null, action: ActionTypes) => {
       return action.userData;
     case 'logoutUser':
       return null;
+    case 'registerUser':
+      return action.userData;
     default:
       return state;
   };
@@ -66,6 +69,47 @@ const UsersProvider = ({ children }: ChildProp) => {
     return { success: Back_Response.success };
   };
 
+  type RegistrationResponse = { error: string } | { success: string, userData: User };
+
+  const registerUser = async (userData: Omit<User, '_id'>, stayLoggedIn: boolean) => {
+    const res = await fetch(`http://localhost:5500/users/register`, {
+      method: "POST",
+      headers: {
+        "Content-Type":"application/json"
+      },
+      body: JSON.stringify(userData)
+    });
+
+    // error handling in browser console
+    if(!res.ok){
+      const errorResponse = await res.json();
+      console.error(`Registration failed: ${errorResponse.error}`);
+      return { error: errorResponse.error };
+    };
+
+    const authorizationHeader = res.headers.get('Authorization');
+    if(authorizationHeader){
+      if(stayLoggedIn){
+        localStorage.setItem('accessToken', authorizationHeader);
+      } else {
+        sessionStorage.setItem('accessToken', authorizationHeader);
+      };
+    };
+
+    const Back_Response: RegistrationResponse = await res.json();
+
+    if('error' in Back_Response){
+      return { error: Back_Response.error };
+    };
+
+    dispatch({
+      type: 'registerUser',
+      userData: Back_Response.userData
+    });
+
+    return { success: Back_Response.success };
+  };
+
   const logoutUser = () => {
     dispatch({
       type: 'logoutUser'
@@ -102,7 +146,8 @@ const UsersProvider = ({ children }: ChildProp) => {
       value={{
         loggedInUser,
         loginUser,
-        logoutUser
+        logoutUser,
+        registerUser
       }}
     >
       { children }

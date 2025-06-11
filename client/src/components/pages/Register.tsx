@@ -11,7 +11,7 @@ import UsersContext from '../contexts/UsersContext';
 const Register = () => {
 
   const navigate = useNavigate();
-  // const {  } = useContext(UsersContext) as UsersContextTypes;
+  const { registerUser } = useContext(UsersContext) as UsersContextTypes;
   const [registerMessage, setRegisterMessage] = useState('');
   const [stayLoggedIn, setStayLoggedIn] = useState(false);
 
@@ -53,7 +53,16 @@ const Register = () => {
         .trim()
     }),
     onSubmit: async (values) => {
-      console.log(values);
+      const Response = await registerUser(values, stayLoggedIn);
+      if('error' in Response){
+        // !!!! add error message on site as well
+        setRegisterMessage(Response.error ?? 'Unsuccessful register.');
+        throw new Error('Unsuccessful register.');
+      };
+      // success message and navigate
+      setRegisterMessage(Response.success);
+      setTimeout(() => navigate('/'), 2000);
+      // navigate('/');
     }
   });
 
@@ -133,6 +142,9 @@ const Register = () => {
         </div>
         <input type="submit" value='Register' />
       </form>
+      {
+        registerMessage && <p>{registerMessage}</p>
+      }
     </section>
   );
 }

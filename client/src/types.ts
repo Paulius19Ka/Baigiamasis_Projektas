@@ -13,7 +13,14 @@ export type UsersContextTypes = {
     success: string;
     error?: undefined;
   }>,
-  logoutUser: () => void
+  logoutUser: () => void,
+  registerUser: (userData: Omit<User, "_id">, stayLoggedIn: boolean) => Promise<{
+    error: string;
+    success?: undefined;
+  } | {
+    success: string;
+    error?: undefined;
+  }>
 };
 
 export type User = {
