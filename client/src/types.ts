@@ -20,7 +20,8 @@ export type UsersContextTypes = {
   } | {
     success: string;
     error?: undefined;
-  }>
+  }>,
+  decodeUserFromToken: () => Omit<User, "_id" | "password" | "role"> | null
 };
 
 export type User = {

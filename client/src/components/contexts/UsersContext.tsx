@@ -1,4 +1,6 @@
 import { createContext, useEffect, useReducer } from 'react';
+import { jwtDecode } from "jwt-decode";
+
 import { ChildProp, User, UsersContextTypes } from '../../types';
 
 type ActionTypes = 
@@ -26,9 +28,20 @@ const UsersProvider = ({ children }: ChildProp) => {
 
   type LoginResponse = { error: string } | { success: string, userData: Omit<User, 'password'> };
 
-  // useEffect(() => {
-  //   console.log("UsersContext updated:", loggedInUser);
-  // }, [loggedInUser]);
+  // decode user from jwt token, so that input initial values is displayed after refresh (the context resets on refresh and erases the input values)
+  const decodeUserFromToken = (): Omit<User, "_id" | "password" | "role"> | null => {
+    const accessToken = localStorage.getItem('accessToken') || sessionStorage.getItem('accessToken');
+    if(!accessToken){
+      // return null to not throw an error in the console, when logging out
+      // throw new Error('No access token found.');
+      return null;
+    };
+    try{
+      return jwtDecode(accessToken);
+    } catch(err){
+      throw new Error(`Invalid access token. Error: ${err}. `);
+    };
+  };
 
   const loginUser = async (userData: Pick<User, 'email' | 'password'>, stayLoggedIn: boolean) => {
     const res = await fetch(`http://localhost:5500/users/login`, {
@@ -147,7 +160,8 @@ const UsersProvider = ({ children }: ChildProp) => {
         loggedInUser,
         loginUser,
         logoutUser,
-        registerUser
+        registerUser,
+        decodeUserFromToken
       }}
     >
       { children }

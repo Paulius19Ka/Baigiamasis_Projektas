@@ -2,7 +2,6 @@ import { useContext } from "react";
 import styled from "styled-components";
 import { useFormik } from 'formik';
 import * as Yup from 'yup';
-import { jwtDecode } from "jwt-decode";
 
 import UsersContext from "../contexts/UsersContext";
 import { User, UsersContextTypes } from "../../types";
@@ -21,23 +20,7 @@ const StyledSection = styled.section`
 
 const UserPage = () => {
 
-  const { loggedInUser } = useContext(UsersContext) as UsersContextTypes;
-
-  // decode user from jwt token, so that input initial values is displayed after refresh (the context resets on refresh and erases the input values)
-  const decodeUserFromToken = (): Omit<User, "_id" | "password" | "role"> | null => {
-    const accessToken = localStorage.getItem('accessToken') || sessionStorage.getItem('accessToken');
-    if(!accessToken){
-      // return null to not throw an error in the console, when logging out
-      // throw new Error('No access token found.');
-      return null;
-    };
-    try{
-      return jwtDecode(accessToken);
-    } catch(err){
-      throw new Error(`Invalid access token. Error: ${err}. `);
-    };
-  };
-
+  const { decodeUserFromToken } = useContext(UsersContext) as UsersContextTypes;
   const decodedUser = decodeUserFromToken();
   // console.log(decodedUser);
 
@@ -94,13 +77,13 @@ const UserPage = () => {
         decodedUser ?
         <>
           <h2>User Info</h2>
-          <span>Email: {loggedInUser?.email}</span>
-          <span>Username: {loggedInUser?.username}</span>
-          <span>Gender: {loggedInUser?.gender}</span>
+          <span>Email: {decodedUser?.email}</span>
+          <span>Username: {decodedUser?.username}</span>
+          <span>Gender: {decodedUser?.gender}</span>
           <span>Password: ****</span>
           {
-            loggedInUser?.avatar ?
-            <img src={loggedInUser?.avatar} alt={loggedInUser?.username} /> :
+            decodedUser?.avatar ?
+            <img src={decodedUser?.avatar} alt={decodedUser?.username} /> :
             <img src="https://t3.ftcdn.net/jpg/04/34/72/82/360_F_434728286_OWQQvAFoXZLdGHlObozsolNeuSxhpr84.jpg" alt="placeholder image, when no avatar available" />
           }
           <form onSubmit={formik.handleSubmit}>
