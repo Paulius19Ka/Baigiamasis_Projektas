@@ -28,6 +28,13 @@ export type UsersContextTypes = {
   } | {
     id: string;
     error?: undefined;
+  }>,
+  editUser: (userData: Omit<User, "_id" | "role">, id: string) => Promise<{
+    error: string;
+    success?: undefined;
+  } | {
+    success: string;
+    error?: undefined;
   }>
 };
 

@@ -43,6 +43,7 @@ const UsersProvider = ({ children }: ChildProp) => {
     };
   };
 
+  // LOGIN
   const loginUser = async (userData: Pick<User, 'email' | 'password'>, stayLoggedIn: boolean) => {
     const res = await fetch(`http://localhost:5500/users/login`, {
       method: "POST",
@@ -82,6 +83,7 @@ const UsersProvider = ({ children }: ChildProp) => {
     return { success: Back_Response.success };
   };
 
+  // REGISTRATION
   type RegistrationResponse = { error: string } | { success: string, userData: User };
 
   const registerUser = async (userData: Omit<User, '_id'>, stayLoggedIn: boolean) => {
@@ -123,16 +125,33 @@ const UsersProvider = ({ children }: ChildProp) => {
     return { success: Back_Response.success };
   };
 
-  // const editUser = (userData: Omit<User, '_id' | 'role'>, id: string) => {
-  //   const res = await fetch(`http://localhost:5500/users/${id}`, {
-  //     method: "PATCH",
-  //     headers: {
-  //       "Content-Type":"application/json"
-  //     },
-  //     body: JSON.stringify(userData)
-  //   });
-  // };
+  // EDIT
+  const editUser = async (userData: Omit<User, '_id' | 'role'>, id: string) => {
+    const res = await fetch(`http://localhost:5500/users/${id}`, {
+      method: "PATCH",
+      headers: {
+        "Content-Type":"application/json"
+      },
+      body: JSON.stringify(userData)
+    });
 
+    if(!res.ok){
+      const errorResponse = await res.json();
+      console.error(`Registration failed: ${errorResponse.error}`);
+      return { error: errorResponse.error };
+    };
+
+    const Back_Response = await res.json();
+
+    dispatch({
+      type: 'setUser',
+      userData: Back_Response.userData
+    });
+
+    return { success: Back_Response.success };
+  };
+
+  // RETRIEVE ID
   const getUserId = async () => {
     const accessToken = localStorage.getItem('accessToken') || sessionStorage.getItem('accessToken');
     if(!accessToken){
@@ -155,6 +174,7 @@ const UsersProvider = ({ children }: ChildProp) => {
     return { id: Back_Response.id };
   };
 
+  // LOGOUT
   const logoutUser = () => {
     dispatch({
       type: 'logoutUser'
@@ -162,6 +182,7 @@ const UsersProvider = ({ children }: ChildProp) => {
     localStorage.removeItem('accessToken');
   }
 
+  // AUTO LOGIN
   useEffect(() => {
     const accessToken = localStorage.getItem('accessToken') || sessionStorage.getItem('accessToken');
     if(accessToken){
@@ -194,7 +215,8 @@ const UsersProvider = ({ children }: ChildProp) => {
         logoutUser,
         registerUser,
         decodeUserFromToken,
-        getUserId
+        getUserId,
+        editUser
       }}
     >
       { children }
