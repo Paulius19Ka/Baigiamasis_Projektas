@@ -1,22 +1,45 @@
 import styled from "styled-components";
 import { Post } from "../../../types";
+import { Link } from "react-router";
 
 const StyledDiv = styled.div`
   border: solid 1px var(--font-main);
   padding: 5px;
+
+  display: flex;
+  flex-direction: column;
+
+  > div{
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+    > h3{
+      margin: 0;
+    }
+  }
 `;
 
 type Props = { post: Post };
 const PostCard = ({ post }: Props) => {
+
+  const postTitle = post.title.replace(/\s/g, '-');
+
   return (
     <StyledDiv>
-      <p>{post.score}</p>
-      <p>{post.title}</p>
-      <p>{post.content}</p>
-      <p>Posted: {post.postDate}</p>
-      <p>Last edited: {post.lastEditDate}</p>
-      <p>Topic: {post.topic}</p>
-      <p>By: {post.postedBy.username}</p>
+      {/* <span>Last edited: {post.lastEditDate}</span> */}
+      <div className="heading">
+        <span>{post.score}</span>
+        <h3><Link to={`${post._id}/${postTitle}`}>{post.title}</Link></h3>
+        <span>{post.postDate.slice(0, 10)}, {post.postDate.slice(11, 16)}</span>
+      </div>
+      <div className="content">
+        <span>{post.content}</span>
+      </div>
+      <div className="info">
+        <span>Topic: {post.topic}</span>
+        <span>By: {post.postedBy.username}</span>
+      </div>
     </StyledDiv>
   );
 }
