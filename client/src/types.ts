@@ -4,6 +4,8 @@ export type ChildProp = {
   children: ReactElement
 };
 
+// USER
+
 export type UsersContextActionTypes = 
 { type: 'setUser', userData: Omit<User, 'password'> } |
 { type: 'logoutUser' } |
@@ -54,6 +56,8 @@ export type User = {
   avatar: string
 };
 
+// INPUT FIELD
+
 export type InputFieldPropTypes = {
   inputType: 'text' | 'email' | 'password' | 'checkbox' | 'radio' | 'url',
   inputName: string,
@@ -67,3 +71,29 @@ export type InputFieldPropTypes = {
   touched: boolean | undefined,
   inputPlaceholder: string | ''
 };
+
+// POSTS
+
+export type PostsContextReducerActionTypes =
+{ type: 'setPosts', data: Post[] };
+
+export type PostsContextTypes = {
+  posts: Post[],
+  loading: boolean
+};
+
+type Topics = 'Misc' | 'General' | 'Releases' | 'Cllecting' | 'Concerts' | 'Rock/Blues' | 'Pop/Dance' | 'Metal/Hard Rock' | 'Jazz' | 'Classical' | 'Electronic' | 'Country/Folk' | 'Soul/Rap' | 'Alternative'
+
+export type Post = {
+  _id: string,
+  postedBy: {
+    userId: string,
+    username: string
+  },
+  title: string,
+  content: string,
+  topic: Topics,
+  postDate: string,
+  lastEditDate: string,
+  score: number
+}
