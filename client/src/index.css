@@ -3,9 +3,26 @@
   line-height: 1.5;
   font-weight: 400;
 
+  --font-main: #ffffff;
+  --font-hover: #cacaca;
+  --font-active: #a1a1a1;
+
+  --background-main: #202128;
+  --background-dark: #121317;
+
+  --accent-main: #6ed6ff;
+  --accent-hover: #c2eeff;
+  --accent-active: #8caab8;
+
+  --button-main: #808080;
+  --button-hover: #bdbdbd;
+
+  --message-error: #ff5c5c;
+  --message-success: #65ff7c;
+
   color-scheme: light dark;
-  color: rgba(255, 255, 255, 0.87);
-  background-color: #242424;
+  color: var(--font-main);
+  background-color: var(--background-main);
 }
 
 *{

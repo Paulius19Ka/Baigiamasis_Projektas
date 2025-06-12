@@ -1,5 +1,5 @@
 import { Router } from "express";
-import { autoLogin, editUser, login, refreshLogin, register } from "../controllers/usersController.js";
+import { autoLogin, editUser, getId, login, refreshLogin, register } from "../controllers/usersController.js";
 import { verifyAdmin, verifyJWT } from "../middleware/auth.js";
 
 const router = Router();
@@ -10,12 +10,14 @@ router.post('/refreshLogin', refreshLogin);
 
 router.get('/autoLogin', verifyJWT, autoLogin);
 
-router.get('/verifyAdmin', verifyJWT, verifyAdmin, (req, res) => {
+router.get('/admin', verifyJWT, verifyAdmin, (req, res) => {
   res.status(200).send({ success: 'Admin verified.' });
 });
 
 router.post('/register', register);
 
-router.patch('/edit/:id', editUser);
+router.get('/getId', verifyJWT, getId);
+
+router.patch('/:id', editUser);
 
 export default router;

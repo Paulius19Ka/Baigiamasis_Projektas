@@ -45,9 +45,9 @@ const refreshLogin = async (req, res) => {
 };
 
 const register = async (req, res) => {
-  const { email, username, password, gender } = req.body;
-  if(!email || !username || !password || !gender){
-    return res.status(400).send({ error: 'Missing required fields, please enter - email, username, password, and gender.' });
+  const { email, username, password, gender, avatar } = req.body;
+  if(!email || !username || !password || !gender || avatar === undefined){
+    return res.status(400).send({ error: 'Missing required fields, please enter - email, username, password, avatar, gender.' });
   };
   const newUser = {
     _id: genID(),
@@ -55,16 +55,42 @@ const register = async (req, res) => {
     username: username,
     password: await bcrypt.hash(password, 12),
     gender: gender,
+    avatar: avatar || "",
     role: 'user'
   };
   const client = await connectToDB();
   try{
-    const user = await client.db('Final_Project').collection('users').findOne({ email });
+    const user = await client.db('Final_Project').collection('users').findOne({ $or: [{ email }, { username }] });
     if(user){
-      return res.status(409).send({ error: `User with email: [${user.email}] already exists.` });
+      if(user.email === email && user.username === username){
+        return res.status(409).send({ error: `User with email: [${user.email}] and username: [${user.username}] already exists.` });
+      } else if(user.email === email){
+        return res.status(409).send({ error: `User with email: [${user.email}] already exists.` });
+      } else if(user.username === username){
+        return res.status(409).send({ error: `User with username: [${user.username}] already exists.` });
+      };
     };
     await client.db('Final_Project').collection('users').insertOne(newUser);
-    res.status(201).send({ success: `[${newUser.email}] was registered successfully.` });
+    const { password, _id, ...userData } = newUser;
+    const JWT_accessToken = createAccessJWT(userData);
+    res.status(201).header('Authorization', JWT_accessToken).send({ success: `[${newUser.email}] was registered successfully.`, userData });
+  } catch(err){
+    console.error(err);
+    res.status(500).send({ error: err, message: `Something went wrong with server.` });
+  } finally{
+    await client.close();
+  };
+};
+
+const getId = async (req, res) => {
+  const client = await connectToDB();
+  try{
+    const DB_RESPONSE = await client.db('Final_Project').collection('users').findOne({ email: req.user.email });
+    if(!DB_RESPONSE){
+      console.error({ error: `User not found.` });
+      return res.status(404).send({ error: `User not found.` });
+    };
+    res.send({ id: DB_RESPONSE._id });
   } catch(err){
     console.error(err);
     res.status(500).send({ error: err, message: `Something went wrong with server.` });
@@ -90,7 +116,7 @@ const editUser = async (req, res) => {
     };
 
     // define editable fields, check for invalid fields in request body and disallow editing other than the fields listed in editableFields array
-    const editableFields = ['email', 'username', 'oldPassword', 'password', 'gender'];
+    const editableFields = ['email', 'username', 'oldPassword', 'password', 'gender', 'avatar'];
 
     const invalidFields = Object.keys(req.body).filter(field => !editableFields.includes(field));
     if(invalidFields.length){
@@ -129,7 +155,13 @@ const editUser = async (req, res) => {
     if(DB_Response.matchedCount === 0){
       return res.status(404).send({ error: `User with ID: ${id} was not found.`});
     };
-    res.send({ success: `User with ID: ${id} was updated successfully.` });
+    
+    const editedUser = await client.db('Final_Project').collection('users').findOne(filter);
+    const { password, _id, ...userData } = editedUser;
+    // create and send an updated access token
+    const accessToken = createAccessJWT(userData);
+    res.header('Authorization', accessToken).send({ success: `User with ID: ${id} was updated successfully.`, updatedToken: accessToken });
+    // res.send({ success: `User with ID: ${id} was updated successfully.` });
   } catch(err){
     console.error(err);
     res.status(500).send({ error: err, message: `Something went wrong with server.` });
@@ -138,4 +170,4 @@ const editUser = async (req, res) => {
   };
 };
 
-export { login, autoLogin, refreshLogin, register, editUser };
+export { login, autoLogin, refreshLogin, register, editUser, getId };
