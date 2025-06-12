@@ -155,7 +155,13 @@ const editUser = async (req, res) => {
     if(DB_Response.matchedCount === 0){
       return res.status(404).send({ error: `User with ID: ${id} was not found.`});
     };
-    res.send({ success: `User with ID: ${id} was updated successfully.` });
+    
+    const editedUser = await client.db('Final_Project').collection('users').findOne(filter);
+    const { password, _id, ...userData } = editedUser;
+    // create and send an updated access token
+    const accessToken = createAccessJWT(userData);
+    res.header('Authorization', accessToken).send({ success: `User with ID: ${id} was updated successfully.`, updatedToken: accessToken });
+    // res.send({ success: `User with ID: ${id} was updated successfully.` });
   } catch(err){
     console.error(err);
     res.status(500).send({ error: err, message: `Something went wrong with server.` });

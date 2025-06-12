@@ -21,7 +21,7 @@ const StyledSection = styled.section`
 
 const UserPage = () => {
 
-  const { decodeUserFromToken, getUserId, editUser } = useContext(UsersContext) as UsersContextTypes;
+  const { decodeUserFromToken, getUserId, editUser, dispatch } = useContext(UsersContext) as UsersContextTypes;
   const decodedUser = decodeUserFromToken();
   // console.log(decodedUser);
   const [userId, setUserId] = useState<string | null>(null);
@@ -63,19 +63,31 @@ const UserPage = () => {
         .max(20, 'Username must be shorter than 20 symbols.')
         .required('Enter a username.')
         .trim(),
-      // oldPassword: Yup.string()
-      //   .matches(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,20}$/, 'Password must have: lower case character, upper case character, number, special symbol, 8-20 symbols long.')
-      //   .required('Enter a password.')
-      //   .trim(),
-      // password: Yup.string()
-      //   .notOneOf([Yup.ref('oldPassword')], 'New password must be different than the old password.')
-      //   .matches(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,20}$/, 'Password must have: lower case character, upper case character, number, special symbol, 8-20 symbols long.')
-      //   .required('Enter a password.')
-      //   .trim(),
-      // passwordConfirm: Yup.string()
-      //   .oneOf([Yup.ref('password')], 'Passwords must match.')
-      //   .required('Confirm password.')
-      //   .trim(),
+      oldPassword: Yup.string()
+        .matches(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,20}$/, 'Password must have: lower case character, upper case character, number, special symbol, 8-20 symbols long.')
+        // .required('Enter a password.')
+        // .when('password', {
+        //   is: (val: string) => !!val,
+        //   then: (schema) => schema.required('Enter the old password.')
+        // })
+        .trim(),
+      password: Yup.string()
+        // .notOneOf([Yup.ref('oldPassword')], 'New password must be different than the old password.')
+        .matches(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,20}$/, 'Password must have: lower case character, upper case character, number, special symbol, 8-20 symbols long.')
+        // .required('Enter a password.')
+        .when('oldPassword', {
+          is: (val: string) => !!val,
+          then: (schema) => schema.notOneOf([Yup.ref('oldPassword')], 'New password must be different than the old password.')
+        })
+        .trim(),
+      passwordConfirm: Yup.string()
+        .oneOf([Yup.ref('password')], 'Passwords must match.')
+        // .required('Confirm password.')
+        .when('password', {
+          is: (val: string) => !!val,
+          then: (schema) => schema.required('Confirm password.')
+        })
+        .trim(),
       avatar: Yup.string()
         .url('Enter a valid url.')
         .matches(/\.(jpg|jpeg|png)$/, 'Enter a valid image url. Format: jpg, jpeg, png.')
@@ -86,18 +98,43 @@ const UserPage = () => {
         setEditMessage('Failed to retrieve ID.');
         throw new Error('Failed to retrieve ID.');
       };
-      const filteredValues = { ...values };
-      if(!filteredValues.oldPassword) delete filteredValues.oldPassword;
-      if(!filteredValues.password) delete filteredValues.password;
-      if(!filteredValues.passwordConfirm) delete filteredValues.passwordConfirm;
 
+      type EditableUser = Omit<User, '_id' | 'role'>;
+      const filteredValues: Partial<EditableUser> & {
+        oldPassword?: string,
+        password?: string
+      } = { ...values };
+      
+      if('passwordConfirm' in filteredValues){
+        delete filteredValues.passwordConfirm;
+      };
 
-      const Response = await editUser(filteredValues, userId);
+      if(!filteredValues.oldPassword){
+        delete filteredValues.oldPassword;
+      };
+      if(!filteredValues.password){
+        delete filteredValues.password;
+      };
+      const finalValues = filteredValues as EditableUser;
+
+      const Response = await editUser(finalValues, userId);
       if('error' in Response){
         // !!!! add error message on site as well
         setEditMessage(Response.error ?? 'Unsuccessful edit.');
         throw new Error('Unsuccessful edit.');
       };
+
+      // refresh the user data after submiting form, if updated user is null, return the default object
+      const updatedUser = decodeUserFromToken() ?? ({
+        _id: 'default-id',
+        role: 'user',
+        email: '',
+        username: '',
+        gender: 'other',
+        avatar: ''
+      } as Omit<User, "password">);
+      dispatch({ type: 'setUser', userData: updatedUser as Omit<User, 'password'> });
+
       // success message and navigate
       setEditMessage(Response.success);
       setTimeout(() => navigate('/'), 2000);
@@ -146,7 +183,7 @@ const UserPage = () => {
               labelText='Old Password:'
               inputType='password'
               inputName='oldPassword' inputId='oldPassword'
-              inputValue={formik.values.oldPassword}
+              inputValue={formik.values.oldPassword ?? ''}
               inputOnChange={formik.handleChange}
               inputOnBlur={formik.handleBlur}
               errors={formik.errors.oldPassword}
@@ -156,7 +193,7 @@ const UserPage = () => {
               labelText='Password:'
               inputType='password'
               inputName='password' inputId='password'
-              inputValue={formik.values.password}
+              inputValue={formik.values.password ?? ''}
               inputOnChange={formik.handleChange}
               inputOnBlur={formik.handleBlur}
               errors={formik.errors.password}
@@ -166,7 +203,7 @@ const UserPage = () => {
               labelText='Confirm Password:'
               inputType='password'
               inputName='passwordConfirm' inputId='passwordConfirm'
-              inputValue={formik.values.passwordConfirm}
+              inputValue={formik.values.passwordConfirm ?? ''}
               inputOnChange={formik.handleChange}
               inputOnBlur={formik.handleBlur}
               errors={formik.errors.passwordConfirm}

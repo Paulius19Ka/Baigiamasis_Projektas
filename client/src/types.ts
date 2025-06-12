@@ -4,6 +4,11 @@ export type ChildProp = {
   children: ReactElement
 };
 
+export type UsersContextActionTypes = 
+{ type: 'setUser', userData: Omit<User, 'password'> } |
+{ type: 'logoutUser' } |
+{ type: 'registerUser', userData: Omit<User, 'password'> };
+
 export type UsersContextTypes = {
   loggedInUser: Omit<User, "password"> | null,
   loginUser: (userData: Pick<User, "email" | "password">, stayLoggedIn: boolean) => Promise<{
@@ -35,7 +40,8 @@ export type UsersContextTypes = {
   } | {
     success: string;
     error?: undefined;
-  }>
+  }>,
+  dispatch: React.ActionDispatch<[action: UsersContextActionTypes]>
 };
 
 export type User = {

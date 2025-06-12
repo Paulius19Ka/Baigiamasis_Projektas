@@ -1,14 +1,9 @@
 import { createContext, useEffect, useReducer } from 'react';
 import { jwtDecode } from "jwt-decode";
 
-import { ChildProp, User, UsersContextTypes } from '../../types';
+import { ChildProp, User, UsersContextActionTypes, UsersContextTypes } from '../../types';
 
-type ActionTypes = 
-{ type: 'setUser', userData: Omit<User, 'password'> } |
-{ type: 'logoutUser' } |
-{ type: 'registerUser', userData: Omit<User, 'password'> };
-
-const reducer = (state: Omit<User, 'password'> | null, action: ActionTypes) => {
+const reducer = (state: Omit<User, 'password'> | null, action: UsersContextActionTypes) => {
   switch(action.type){
     case 'setUser':
       return action.userData;
@@ -137,11 +132,15 @@ const UsersProvider = ({ children }: ChildProp) => {
 
     if(!res.ok){
       const errorResponse = await res.json();
-      console.error(`Registration failed: ${errorResponse.error}`);
+      console.error(`Edit failed: ${errorResponse.error}`);
       return { error: errorResponse.error };
     };
 
     const Back_Response = await res.json();
+
+    if(Back_Response.updatedToken){
+      localStorage.setItem('accessToken', Back_Response.updatedToken);
+    };
 
     dispatch({
       type: 'setUser',
@@ -216,7 +215,8 @@ const UsersProvider = ({ children }: ChildProp) => {
         registerUser,
         decodeUserFromToken,
         getUserId,
-        editUser
+        editUser,
+        dispatch
       }}
     >
       { children }
