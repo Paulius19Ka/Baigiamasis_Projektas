@@ -155,7 +155,7 @@ const UsersProvider = ({ children }: ChildProp) => {
     const accessToken = localStorage.getItem('accessToken') || sessionStorage.getItem('accessToken');
     if(!accessToken){
       // throw new Error('No token exists.');
-      return null;
+      return { error: 'No token exists.' };
     };
     const res = await fetch(`http://localhost:5500/users/getId`, {
       method: "GET",
