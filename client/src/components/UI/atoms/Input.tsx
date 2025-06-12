@@ -1,8 +1,8 @@
 import { InputFieldPropTypes } from "../../../types";
 
-type Props = Pick<InputFieldPropTypes, 'inputType' | 'inputName' | 'inputId' | 'inputValue' | 'inputOnChange' | 'inputOnBlur'>;
+type Props = Pick<InputFieldPropTypes, 'inputType' | 'inputName' | 'inputId' | 'inputValue' | 'inputOnChange' | 'inputOnBlur'| 'inputPlaceholder'>;
 
-const Input = ({ inputType, inputName, inputId, inputValue, inputOnChange, inputOnBlur }: Props) => {
+const Input = ({ inputType, inputName, inputId, inputValue, inputOnChange, inputOnBlur, inputPlaceholder }: Props) => {
   return (
     <input
       type={inputType}
@@ -10,6 +10,7 @@ const Input = ({ inputType, inputName, inputId, inputValue, inputOnChange, input
       value={inputValue}
       onChange={inputOnChange}
       onBlur={inputOnBlur}
+      placeholder={inputPlaceholder}
     />
   );
 }

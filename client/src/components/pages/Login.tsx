@@ -60,6 +60,7 @@ const Login = () => {
           inputOnBlur={formik.handleBlur}
           errors={formik.errors.email}
           touched={formik.touched.email}
+          inputPlaceholder={'Enter an email...'}
         />
         <InputField
           labelText='Password:'
@@ -70,6 +71,7 @@ const Login = () => {
           inputOnBlur={formik.handleBlur}
           errors={formik.errors.password}
           touched={formik.touched.password}
+          inputPlaceholder={'Enter a password...'}
         />
         <div>
           <div>

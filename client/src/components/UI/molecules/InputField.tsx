@@ -4,7 +4,7 @@ import Label from "../atoms/Label";
 
 type Props = Omit<InputFieldPropTypes, 'labelHtmlFor'>;
 
-const InputField = ({ labelText, inputType, inputName, inputId, inputValue, inputOnChange, inputOnBlur, errors, touched }: Props) => {
+const InputField = ({ labelText, inputType, inputName, inputId, inputValue, inputOnChange, inputOnBlur, errors, touched, inputPlaceholder }: Props) => {
   return (
     <div>
       <div>
@@ -18,6 +18,7 @@ const InputField = ({ labelText, inputType, inputName, inputId, inputValue, inpu
           inputValue={inputValue}
           inputOnChange={inputOnChange}
           inputOnBlur={inputOnBlur}
+          inputPlaceholder={inputPlaceholder}
         />
       </div>
       {

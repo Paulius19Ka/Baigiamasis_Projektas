@@ -148,11 +148,6 @@ const UserPage = () => {
         decodedUser ?
         <>
           <h2>User Info</h2>
-          <span>Email: {decodedUser?.email}</span>
-          <span>Username: {decodedUser?.username}</span>
-          <span>Gender: {decodedUser?.gender}</span>
-          <span>Password: ****</span>
-          <span>ID: {userId || '...'}</span>
           {
             decodedUser?.avatar ?
             <img src={decodedUser?.avatar} alt={decodedUser?.username} /> :
@@ -168,6 +163,7 @@ const UserPage = () => {
               inputOnBlur={formik.handleBlur}
               errors={formik.errors.email}
               touched={formik.touched.email}
+              inputPlaceholder={'Edit Your email...'}
             />
             <InputField
               labelText='Username:'
@@ -178,6 +174,7 @@ const UserPage = () => {
               inputOnBlur={formik.handleBlur}
               errors={formik.errors.username}
               touched={formik.touched.username}
+              inputPlaceholder={'Edit Your username...'}
             />
             <InputField
               labelText='Old Password:'
@@ -188,6 +185,7 @@ const UserPage = () => {
               inputOnBlur={formik.handleBlur}
               errors={formik.errors.oldPassword}
               touched={formik.touched.oldPassword}
+              inputPlaceholder={'Enter Your old password...'}
             />
             <InputField
               labelText='Password:'
@@ -198,6 +196,7 @@ const UserPage = () => {
               inputOnBlur={formik.handleBlur}
               errors={formik.errors.password}
               touched={formik.touched.password}
+              inputPlaceholder={'Edit Your new password...'}
             />
             <InputField
               labelText='Confirm Password:'
@@ -208,6 +207,7 @@ const UserPage = () => {
               inputOnBlur={formik.handleBlur}
               errors={formik.errors.passwordConfirm}
               touched={formik.touched.passwordConfirm}
+              inputPlaceholder={'Confirm the new password...'}
             />
             <InputField // !!! needs to be radio or select
               labelText='Gender:'
@@ -218,6 +218,7 @@ const UserPage = () => {
               inputOnBlur={formik.handleBlur}
               errors={formik.errors.gender}
               touched={formik.touched.gender}
+              inputPlaceholder={'Edit Your gender...'}
             />
             <InputField
               labelText='Avatar:'
@@ -228,8 +229,9 @@ const UserPage = () => {
               inputOnBlur={formik.handleBlur}
               errors={formik.errors.avatar}
               touched={formik.touched.avatar}
+              inputPlaceholder={'Enter a new avatar url...'}
             />
-            <input type="submit" value="Update"/>
+            <input type="submit" value="Edit"/>
           </form>
           {
             editMessage && <p>{editMessage}</p>

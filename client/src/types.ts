@@ -64,5 +64,6 @@ export type InputFieldPropTypes = {
   labelHtmlFor: string,
   labelText: string,
   errors: string | undefined,
-  touched: boolean | undefined
+  touched: boolean | undefined,
+  inputPlaceholder: string | ''
 };

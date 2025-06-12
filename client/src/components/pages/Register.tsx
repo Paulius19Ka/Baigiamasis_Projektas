@@ -79,6 +79,7 @@ const Register = () => {
           inputOnBlur={formik.handleBlur}
           errors={formik.errors.email}
           touched={formik.touched.email}
+          inputPlaceholder={'yourEmail@mail.com'}
         />
         <InputField
           labelText='Username:'
@@ -89,6 +90,7 @@ const Register = () => {
           inputOnBlur={formik.handleBlur}
           errors={formik.errors.username}
           touched={formik.touched.username}
+          inputPlaceholder={'Enter a username...'}
         />
         <InputField
           labelText='Password:'
@@ -99,6 +101,7 @@ const Register = () => {
           inputOnBlur={formik.handleBlur}
           errors={formik.errors.password}
           touched={formik.touched.password}
+          inputPlaceholder={'Enter a password...'}
         />
         <InputField
           labelText='Confirm Password:'
@@ -109,6 +112,7 @@ const Register = () => {
           inputOnBlur={formik.handleBlur}
           errors={formik.errors.passwordConfirm}
           touched={formik.touched.passwordConfirm}
+          inputPlaceholder={'Confirm the password...'}
         />
         <InputField // !!! needs to be radio or select
           labelText='Gender:'
@@ -119,6 +123,7 @@ const Register = () => {
           inputOnBlur={formik.handleBlur}
           errors={formik.errors.gender}
           touched={formik.touched.gender}
+          inputPlaceholder={'Enter Your gender...'}
         />
         <InputField
           labelText='Avatar:'
@@ -129,6 +134,7 @@ const Register = () => {
           inputOnBlur={formik.handleBlur}
           errors={formik.errors.avatar}
           touched={formik.touched.avatar}
+          inputPlaceholder={'Enter an avatar url...'}
         />
         <div>
           <div>
