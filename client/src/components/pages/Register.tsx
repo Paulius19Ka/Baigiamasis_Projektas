@@ -1,7 +1,7 @@
 import { useFormik } from 'formik';
 import * as Yup from 'yup';
 import { useContext, useState } from 'react';
-import { useNavigate } from 'react-router';
+import { Link, useNavigate } from 'react-router';
 
 import { User, UsersContextTypes } from '../../types';
 import InputField from '../UI/molecules/InputField';
@@ -143,7 +143,7 @@ const Register = () => {
               name='stayLoggedIn' id='stayLoggedIn'
               onChange={() => {setStayLoggedIn(!stayLoggedIn)}}
             />
-            <label htmlFor='stayLoggedIn'>Stay Logged In</label>
+            <label htmlFor='stayLoggedIn'>Stay logged in after registration</label>
           </div>
         </div>
         <input type="submit" value='Register' />
@@ -151,6 +151,7 @@ const Register = () => {
       {
         registerMessage && <p>{registerMessage}</p>
       }
+      <p>Already have an account? Click <Link to='/login'>here to login</Link>.</p>
     </section>
   );
 }

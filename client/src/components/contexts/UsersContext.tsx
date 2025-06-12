@@ -154,7 +154,8 @@ const UsersProvider = ({ children }: ChildProp) => {
   const getUserId = async () => {
     const accessToken = localStorage.getItem('accessToken') || sessionStorage.getItem('accessToken');
     if(!accessToken){
-      throw new Error('No token exists.');
+      // throw new Error('No token exists.');
+      return null;
     };
     const res = await fetch(`http://localhost:5500/users/getId`, {
       method: "GET",

@@ -6,7 +6,7 @@ import * as Yup from 'yup';
 import UsersContext from "../contexts/UsersContext";
 import { User, UsersContextTypes } from "../../types";
 import InputField from "../UI/molecules/InputField";
-import { useNavigate } from "react-router";
+import { Link, useNavigate } from "react-router";
 
 const StyledSection = styled.section`
   display: flex;
@@ -238,7 +238,7 @@ const UserPage = () => {
           }
         </> :
         <>
-          <p>No user info...</p>
+          <p>Please <Link to='/login'>login</Link> or <Link to='/register'>register</Link> to access this page.</p>
         </>
       }
     </StyledSection>
