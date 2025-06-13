@@ -81,8 +81,8 @@ const createPost = async (req, res) => {
       topic: topic,
       score: 0
     };
-    const DB_RESPONSE = await client.db('Final_Project').collection('posts').insertOne(newPost);
-    res.send(DB_RESPONSE);
+    await client.db('Final_Project').collection('posts').insertOne(newPost);
+    res.send({ success: `Post created successfully.` });
   } catch(err){
     console.error(err);
     res.status(500).send({ error: err, message: `Something went wrong with the server.` });
