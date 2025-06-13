@@ -34,7 +34,7 @@ const PostCard = ({ post }: Props) => {
         <span>{post.postDate ? post.postDate.slice(0, 10): ''}, {post.postDate ? post.postDate.slice(11, 16): ''}</span>
       </div>
       <div className="content">
-        <span>{post.content}</span>
+        <span>{post.content.length > 150 ? `${post.content.slice(0, 150)}...` : post.content.slice(0, 150)}</span>
       </div>
       <div className="info">
         <span>Topic: {post.topic}</span>
