@@ -6,6 +6,7 @@ import * as Yup from 'yup';
 import UsersContext from "../contexts/UsersContext";
 import { UsersContextTypes } from "../../types";
 import InputField from "../UI/molecules/InputField";
+import { topics } from "../../dynamicVariables";
 
 const CreatePost = () => {
 
@@ -21,7 +22,17 @@ const CreatePost = () => {
   const formik = useFormik({
     initialValues: initValues,
     validationSchema: Yup.object({
-
+      title: Yup.string()
+        .min(5, 'Title must be longer than 5 symbols.')
+        .max(100, 'Title must be shorter than 100 symbols.')
+        .required('Enter the title.'),
+      content: Yup.string()
+        .min(20, 'The post description must be longer than 20 symbols.')
+        .max(2000, 'The post description must be shorter than 2000 symbols.')
+        .required('Enter the post description'),
+      topic: Yup.string()
+        .oneOf(topics, 'Invalid topic selected.')
+        .required('A topic must be selected.')
     }),
     onSubmit: async (values) => {
       console.log(values);

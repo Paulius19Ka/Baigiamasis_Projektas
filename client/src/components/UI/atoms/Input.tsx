@@ -1,4 +1,5 @@
-import { InputFieldPropTypes, Topics } from "../../../types";
+import { topics } from "../../../dynamicVariables";
+import { InputFieldPropTypes } from "../../../types";
 
 type Props = Pick<InputFieldPropTypes, 'inputType' | 'inputName' | 'inputId' | 'inputValue' | 'inputOnChange' | 'inputOnBlur'| 'inputPlaceholder'> & {
   inputOnChange: (event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => void;
@@ -6,10 +7,6 @@ type Props = Pick<InputFieldPropTypes, 'inputType' | 'inputName' | 'inputId' | '
 };
 
 const Input = ({ inputType, inputName, inputId, inputValue, inputOnChange, inputOnBlur, inputPlaceholder }: Props) => {
-
-  const topics: Topics[] = [
-    'General', 'Releases', 'Collecting', 'Concerts', 'Rock/Blues', 'Pop/Dance', 'Metal/Hard Rock', 'Jazz', 'Classical', 'Electronic', 'Country/Folk', 'Soul/Rap', 'Alternative', 'Misc'
-  ];
 
   return (
     inputType === 'textarea' ?
