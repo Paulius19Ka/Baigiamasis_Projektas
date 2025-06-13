@@ -76,13 +76,21 @@ export type InputFieldPropTypes = {
 
 export type PostsContextReducerActionTypes =
 { type: 'setPosts', data: Post[] };
+// { type: 'addPost', newPost: Pick<Post, "title" | "content" | "topic"> };
 
 export type PostsContextTypes = {
   posts: Post[],
-  loading: boolean
+  loading: boolean,
+  createPost: (newPost: Pick<Post, "title" | "content" | "topic">, userId: string) => Promise<{
+    error: string;
+    success?: undefined;
+  } | {
+    success: string;
+    error?: undefined;
+  }>
 };
 
-export type Topics = 'Misc' | 'General' | 'Releases' | 'Collecting' | 'Concerts' | 'Rock/Blues' | 'Pop/Dance' | 'Metal/Hard Rock' | 'Jazz' | 'Classical' | 'Electronic' | 'Country/Folk' | 'Soul/Rap' | 'Alternative'
+export type Topics = 'Misc' | 'General' | 'Releases' | 'Collecting' | 'Concerts' | 'Rock/Blues' | 'Pop/Dance' | 'Metal/Hard Rock' | 'Jazz' | 'Classical' | 'Electronic' | 'Country/Folk' | 'Soul/Rap' | 'Alternative' | '';
 
 export type Post = {
   _id: string,

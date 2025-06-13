@@ -31,14 +31,14 @@ const PostCard = ({ post }: Props) => {
       <div className="heading">
         <span>{post.score}</span>
         <h3><Link to={`${post._id}/${postTitle}`}>{post.title}</Link></h3>
-        <span>{post.postDate.slice(0, 10)}, {post.postDate.slice(11, 16)}</span>
+        <span>{post.postDate ? post.postDate.slice(0, 10): ''}, {post.postDate ? post.postDate.slice(11, 16): ''}</span>
       </div>
       <div className="content">
         <span>{post.content}</span>
       </div>
       <div className="info">
         <span>Topic: {post.topic}</span>
-        <span>By: {post.postedBy.username}</span>
+        <span>By: {post.postedBy?.username ?? ''}</span>
       </div>
     </StyledDiv>
   );

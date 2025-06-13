@@ -1,19 +1,35 @@
-import { useContext } from "react";
-import { Link } from "react-router";
+import { useContext, useEffect, useState } from "react";
+import { Link, useNavigate } from "react-router";
 import { useFormik } from "formik";
 import * as Yup from 'yup';
 
 import UsersContext from "../contexts/UsersContext";
-import { UsersContextTypes } from "../../types";
+import { Post, PostsContextTypes, UsersContextTypes } from "../../types";
 import InputField from "../UI/molecules/InputField";
 import { topics } from "../../dynamicVariables";
+import PostsContext from "../contexts/PostsContext";
 
 const CreatePost = () => {
 
-  const { decodeUserFromToken } = useContext(UsersContext) as UsersContextTypes;
+  const { decodeUserFromToken, getUserId } = useContext(UsersContext) as UsersContextTypes;
+  const { createPost } = useContext(PostsContext) as PostsContextTypes;
   const decodedUser = decodeUserFromToken();
+  const [userId, setUserId] = useState<string | null>(null);
+  const [postMessage, setPostMessage] = useState('');
+  const navigate = useNavigate();
 
-  const initValues = {
+  useEffect(() => {
+    const fetchId = async () => {
+      const res = await getUserId();
+      if(res?.id){
+        setUserId(res.id);
+      };
+    };
+    fetchId();
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  const initValues: Pick<Post, "title" | "content" | "topic"> = {
     title: '',
     content: '',
     topic: ''
@@ -35,7 +51,18 @@ const CreatePost = () => {
         .required('A topic must be selected.')
     }),
     onSubmit: async (values) => {
-      console.log(values);
+      if(!userId){
+        setPostMessage('Failed to retrieve ID.');
+        throw new Error('Failed to retrieve ID.');
+      };
+
+      const Response = await createPost(values, userId);
+      if('error' in Response){
+        setPostMessage('Failed to create new thread.');
+        throw new Error('Failed to create new thread.');
+      };
+      setPostMessage('Successfully created a new thread.');
+      setTimeout(() => navigate('/'), 2000);
     }
   })
 
@@ -81,6 +108,9 @@ const CreatePost = () => {
             />
             <input type="submit" value='Submit Post' />
           </form>
+          {
+            postMessage && <p>{postMessage}</p>
+          }
         </> :
         <>
           <p>Please <Link to='/login'>login</Link> or <Link to='/register'>register</Link> to create a new thread.</p>

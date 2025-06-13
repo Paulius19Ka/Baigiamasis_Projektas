@@ -28,8 +28,10 @@ const Home = () => {
         {
           loading ? <p>Loading posts...</p> :
           posts.length ?
-          posts.map(post =>
-            <PostCard key={post._id} post={post} />
+          posts?.map((post, i) =>
+            post._id ?
+            <PostCard key={post._id} post={post} /> :
+            <p key={i}>Post not found.</p>
           ) : <p>No posts were found...</p>
         }
       </div>
