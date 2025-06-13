@@ -4,6 +4,7 @@ import Home from "./components/pages/Home"
 import Register from "./components/pages/Register"
 import Login from "./components/pages/Login"
 import User from "./components/pages/UserPage"
+import CreatePost from "./components/pages/CreatePost"
 
 const App = () => {
 
@@ -14,6 +15,7 @@ const App = () => {
         <Route path='' element={<MainOutlet />} >
           <Route index element={<Home />} />
           <Route path='user' element={<User />} />
+          <Route path='newPost' element={<CreatePost />} />
         </Route>
         <Route path='register' element={<Register />} />
         <Route path='login' element={<Login />} />

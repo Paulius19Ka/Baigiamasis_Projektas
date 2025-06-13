@@ -3,10 +3,11 @@ import PostsContext from "../contexts/PostsContext";
 import { PostsContextTypes } from "../../types";
 import PostCard from "../UI/molecules/PostCard";
 import styled from "styled-components";
+import { Link } from "react-router";
 
 const StyledSection = styled.section`
   
-  > div{
+  > div.posts{
     display: flex;
     flex-direction: column;
     gap: 5px;
@@ -20,7 +21,10 @@ const Home = () => {
   return (
     <StyledSection>
       <h2>Home</h2>
-      <div>
+      <div className="tools">
+        <Link to='newPost'>New Thread</Link>
+      </div>
+      <div className="posts">
         {
           loading ? <p>Loading posts...</p> :
           posts.length ?
