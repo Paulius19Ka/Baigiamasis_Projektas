@@ -3,8 +3,8 @@ import Input from "../atoms/Input";
 import Label from "../atoms/Label";
 
 type Props = Omit<InputFieldPropTypes, 'labelHtmlFor'> & {
-  inputOnChange: (event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => void;
-  inputOnBlur: (event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => void;
+  inputOnChange: (event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => void;
+  inputOnBlur: (event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => void;
 };
 
 const InputField = ({ labelText, inputType, inputName, inputId, inputValue, inputOnChange, inputOnBlur, errors, touched, inputPlaceholder }: Props) => {

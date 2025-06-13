@@ -59,7 +59,7 @@ export type User = {
 // INPUT FIELD
 
 export type InputFieldPropTypes = {
-  inputType: 'text' | 'email' | 'password' | 'checkbox' | 'radio' | 'url' | 'textarea',
+  inputType: 'text' | 'email' | 'password' | 'checkbox' | 'radio' | 'url' | 'textarea' | 'select',
   inputName: string,
   inputId: string,
   inputValue: string,
@@ -82,7 +82,7 @@ export type PostsContextTypes = {
   loading: boolean
 };
 
-type Topics = 'Misc' | 'General' | 'Releases' | 'Cllecting' | 'Concerts' | 'Rock/Blues' | 'Pop/Dance' | 'Metal/Hard Rock' | 'Jazz' | 'Classical' | 'Electronic' | 'Country/Folk' | 'Soul/Rap' | 'Alternative'
+export type Topics = 'Misc' | 'General' | 'Releases' | 'Collecting' | 'Concerts' | 'Rock/Blues' | 'Pop/Dance' | 'Metal/Hard Rock' | 'Jazz' | 'Classical' | 'Electronic' | 'Country/Folk' | 'Soul/Rap' | 'Alternative'
 
 export type Post = {
   _id: string,
