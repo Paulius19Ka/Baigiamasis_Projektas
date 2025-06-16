@@ -46,12 +46,14 @@ export type UsersContextTypes = {
   dispatch: React.ActionDispatch<[action: UsersContextActionTypes]>
 };
 
+export type Gender = 'male'| 'female' | 'other';
+
 export type User = {
   _id: string,
   email: string,
   username: string,
   password: string,
-  gender: 'male'| 'female' | 'other',
+  gender: Gender,
   role: 'admin' | 'user',
   avatar: string
 };

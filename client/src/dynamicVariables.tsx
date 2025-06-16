@@ -1,4 +1,4 @@
-import { Topics } from "./types";
+import { Gender, Topics } from "./types";
 
 const topics: Topics[] = [
   'General',
@@ -17,4 +17,6 @@ const topics: Topics[] = [
   'Misc'
 ];
 
-export { topics };
+const genders: Gender[] = ['male', 'female', 'other'];
+
+export { topics, genders };
