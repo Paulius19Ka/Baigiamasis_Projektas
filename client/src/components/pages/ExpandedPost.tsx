@@ -27,6 +27,10 @@ const ExpandedPost = () => {
           <p>Topic: {post.topic}</p>
           <p>Edited: {post.lastEditDate ? post.lastEditDate.slice(0, 10): ''}, {post.lastEditDate ? post.lastEditDate.slice(11, 16): ''}</p>
           <p>By: {post.postedBy.username}</p>
+          <button>Save</button>
+          <button>Reply</button>
+          <button>Edit</button>
+          <button>Delete</button>
         </div> :
         <p>Loading...</p>
       }
