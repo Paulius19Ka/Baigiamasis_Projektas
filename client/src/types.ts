@@ -71,7 +71,9 @@ export type InputFieldPropTypes = {
   labelText: string,
   errors: string | undefined,
   touched: boolean | undefined,
-  inputPlaceholder: string | ''
+  inputPlaceholder: string | '',
+  radioOps?: string[],
+  selectOps?: string[]
 };
 
 // POSTS

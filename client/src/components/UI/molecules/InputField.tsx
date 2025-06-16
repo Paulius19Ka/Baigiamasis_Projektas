@@ -7,7 +7,7 @@ type Props = Omit<InputFieldPropTypes, 'labelHtmlFor'> & {
   inputOnBlur: (event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => void;
 };
 
-const InputField = ({ labelText, inputType, inputName, inputId, inputValue, inputOnChange, inputOnBlur, errors, touched, inputPlaceholder }: Props) => {
+const InputField = ({ labelText, inputType, inputName, inputId, inputValue, inputOnChange, inputOnBlur, errors, touched, inputPlaceholder, radioOps, selectOps }: Props) => {
   return (
     <div>
       <div>
@@ -22,6 +22,8 @@ const InputField = ({ labelText, inputType, inputName, inputId, inputValue, inpu
           inputOnChange={inputOnChange}
           inputOnBlur={inputOnBlur}
           inputPlaceholder={inputPlaceholder}
+          radioOps={radioOps}
+          selectOps={selectOps}
         />
       </div>
       {

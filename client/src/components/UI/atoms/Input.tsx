@@ -1,12 +1,11 @@
-import { topics } from "../../../dynamicVariables";
 import { InputFieldPropTypes } from "../../../types";
 
-type Props = Pick<InputFieldPropTypes, 'inputType' | 'inputName' | 'inputId' | 'inputValue' | 'inputOnChange' | 'inputOnBlur'| 'inputPlaceholder'> & {
+type Props = Pick<InputFieldPropTypes, 'inputType' | 'inputName' | 'inputId' | 'inputValue' | 'inputOnChange' | 'inputOnBlur'| 'inputPlaceholder' | 'radioOps' | 'selectOps'> & {
   inputOnChange: (event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => void;
   inputOnBlur: (event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => void;
 };
 
-const Input = ({ inputType, inputName, inputId, inputValue, inputOnChange, inputOnBlur, inputPlaceholder }: Props) => {
+const Input = ({ inputType, inputName, inputId, inputValue, inputOnChange, inputOnBlur, inputPlaceholder, radioOps, selectOps }: Props) => {
 
   return (
     inputType === 'textarea' ?
@@ -18,6 +17,22 @@ const Input = ({ inputType, inputName, inputId, inputValue, inputOnChange, input
       onBlur={inputOnBlur}
       placeholder={inputPlaceholder}
     /> :
+    inputType === 'radio' ? 
+    (
+      radioOps?.map((op, i) => 
+        <label key={i}>
+          <input
+            key={i}
+            type={inputType}
+            name={inputName} id={op}
+            value={op}
+            onChange={inputOnChange}
+            onBlur={inputOnBlur}
+          />
+          {op}
+        </label>
+      )
+    ) :
     inputType === 'select' ?
     <select
       name={inputName} id={inputId}
@@ -27,8 +42,8 @@ const Input = ({ inputType, inputName, inputId, inputValue, inputOnChange, input
     >
       <option value='' disabled>-Select a topic-</option>
       {
-        topics.map((topic, i) =>
-          <option value={topic} key={i}>{topic}</option>
+        selectOps?.map((op, i) =>
+          <option value={op} key={i}>{op}</option>
         )
       }
     </select> :
