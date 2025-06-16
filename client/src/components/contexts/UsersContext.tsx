@@ -180,7 +180,8 @@ const UsersProvider = ({ children }: ChildProp) => {
       type: 'logoutUser'
     });
     localStorage.removeItem('accessToken');
-  }
+    sessionStorage.removeItem('accessToken');
+  };
 
   // AUTO LOGIN
   useEffect(() => {
