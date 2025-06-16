@@ -104,7 +104,6 @@ const CreatePost = () => {
               inputOnBlur={formik.handleBlur}
               errors={formik.errors.topic}
               touched={formik.touched.topic}
-              inputPlaceholder={'Enter a topic...'}
               selectOps={topics}
             />
             <input type="submit" value='Submit Post' />

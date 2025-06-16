@@ -71,7 +71,7 @@ export type InputFieldPropTypes = {
   labelText: string,
   errors: string | undefined,
   touched: boolean | undefined,
-  inputPlaceholder: string | '',
+  inputPlaceholder?: string | '',
   radioOps?: string[],
   selectOps?: string[]
 };
@@ -92,7 +92,13 @@ export type PostsContextTypes = {
     success: string;
     error?: undefined;
   }>,
-  handleSort: (e: React.MouseEvent<HTMLButtonElement>) => void
+  handleSort: (e: React.MouseEvent<HTMLButtonElement>) => void,
+  handleFilter: (values: FilterStringTypes) => void,
+  resetFilterAndSort: () => void
+};
+
+export type FilterStringTypes = {
+  topic: string
 };
 
 export type Topics = 'Misc' | 'General' | 'Releases' | 'Collecting' | 'Concerts' | 'Rock/Blues' | 'Pop/Dance' | 'Metal/Hard Rock' | 'Jazz' | 'Classical' | 'Electronic' | 'Country/Folk' | 'Soul/Rap' | 'Alternative' | '';

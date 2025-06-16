@@ -1,6 +1,6 @@
 import { createContext, useEffect, useReducer, useRef, useState } from "react";
 
-import { ChildProp, Post, PostsContextReducerActionTypes, PostsContextTypes } from "../../types";
+import { ChildProp, FilterStringTypes, Post, PostsContextReducerActionTypes, PostsContextTypes } from "../../types";
 
 const reducer = (state: Post[], action: PostsContextReducerActionTypes) => {
   switch(action.type){
@@ -19,6 +19,22 @@ const PostsProvider = ({ children }: ChildProp) => {
   const [posts, dispatch] = useReducer(reducer, []);
   const [loading, setLoading] = useState(true);
   const sortString = useRef('');
+  const filterString = useRef('');
+
+  const resetFilterAndSort = () => {
+    filterString.current = '';
+    sortString.current = '';
+    fetchPosts();
+  };
+
+  const handleFilter = (values: FilterStringTypes) => {
+    const filterParams = [];
+    if(values.topic){
+      filterParams.push(`filter_topic=${values.topic}`);
+    };
+    filterString.current = filterParams.join('&');
+    fetchPosts();
+  };
 
   const handleSort = (e: React.MouseEvent<HTMLButtonElement>) => {
     sortString.current = `${(e.target as HTMLButtonElement).value}`;
@@ -62,7 +78,7 @@ const PostsProvider = ({ children }: ChildProp) => {
 
   const fetchPosts = () => {
     setLoading(true);
-    fetch(`http://localhost:5500/posts?${sortString.current}`)
+    fetch(`http://localhost:5500/posts?${filterString.current}&${sortString.current}`)
       .then(res => res.json())
       .then((data: Post[]) => {
         dispatch({
@@ -85,7 +101,9 @@ const PostsProvider = ({ children }: ChildProp) => {
         posts,
         loading,
         createPost,
-        handleSort
+        handleSort,
+        handleFilter,
+        resetFilterAndSort
       }}
     >
       { children }
