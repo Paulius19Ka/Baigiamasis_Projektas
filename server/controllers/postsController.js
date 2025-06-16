@@ -1,11 +1,13 @@
 import { validate as uuidValidate, v4 as genID } from 'uuid';
 
 import { connectToDB } from "./helper.js";
+import { postsQuery } from './postsQuery.js';
 
 const getAllPosts = async (req, res) => {
   const client = await connectToDB();
   try{
-    const DB_RESPONSE = await client.db('Final_Project').collection('posts').find().sort().skip(0).limit(25).toArray();
+    const settings = postsQuery(req.query);
+    const DB_RESPONSE = await client.db('Final_Project').collection('posts').find(settings.filter).sort(settings.sort).skip(settings.skip).limit(settings.limit).toArray();
     if(!DB_RESPONSE.length){
       console.error({ error: `No posts were found.` });
       return res.status(404).send({ error: `No posts were found.` });

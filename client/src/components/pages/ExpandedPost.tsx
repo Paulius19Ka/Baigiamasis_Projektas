@@ -33,7 +33,7 @@ const ExpandedPost = () => {
           <button>Save</button>
           <button>Reply</button>
           <button>Edit</button>
-          {/* <Link to=''>Edit</Link> */}
+          <Link to=''>Edit</Link>
           <button>Delete</button>
         </div> :
         <p>Loading...</p>
