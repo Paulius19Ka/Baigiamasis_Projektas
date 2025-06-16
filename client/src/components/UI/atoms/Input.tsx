@@ -28,6 +28,7 @@ const Input = ({ inputType, inputName, inputId, inputValue, inputOnChange, input
             value={op}
             onChange={inputOnChange}
             onBlur={inputOnBlur}
+            checked={inputValue === op}
           />
           {op}
         </label>
