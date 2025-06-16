@@ -23,14 +23,17 @@ const StyledDiv = styled.div`
 type Props = { post: Post };
 const PostCard = ({ post }: Props) => {
 
-  const postTitle = post.title.replace(/\s/g, '-');
+  // title to lower case, replace spaces with dashes, remove special characters, remove hyphens that follow each other
+  const postTitle = post.title.trim().toLowerCase().replace(/\s+/g, '-').replace(/[^a-z0-9-]/g, '').replace(/-+/g, '-');
+  const postTopic = post.topic.toLowerCase();
 
   return (
     <StyledDiv>
       {/* <span>Last edited: {post.lastEditDate}</span> */}
       <div className="heading">
         <span>{post.score}</span>
-        <h3><Link to={`${post._id}/${postTitle}`}>{post.title}</Link></h3>
+        {/* <h3><Link to={`post/${post._id}/${postTitle}`}>{post.title}</Link></h3> */}
+        <h3><Link to={`post/${postTopic}/${postTitle}/${post._id}`}>{post.title}</Link></h3>
         <span>{post.postDate ? post.postDate.slice(0, 10): ''}, {post.postDate ? post.postDate.slice(11, 16): ''}</span>
       </div>
       <div className="content">
