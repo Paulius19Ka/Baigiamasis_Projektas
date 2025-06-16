@@ -16,13 +16,17 @@ const StyledSection = styled.section`
 
 const Home = () => {
 
-  const { posts, loading } = useContext(PostsContext) as PostsContextTypes;
+  const { posts, loading, handleSort } = useContext(PostsContext) as PostsContextTypes;
 
   return (
     <StyledSection>
       <h2>Home</h2>
       <div className="tools">
         <Link to='newPost'>New Thread</Link>
+        {/* sort: date, reply count */}
+        <button type="button" onClick={handleSort} value={`sort_postDate=1`}>Date ASC</button>
+        <button type="button" onClick={handleSort} value={`sort_postDate=-1`}>Date DESC</button>
+        {/* filter: solved/not solved, title, topic */}
       </div>
       <div className="posts">
         {

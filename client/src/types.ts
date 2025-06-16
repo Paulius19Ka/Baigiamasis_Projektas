@@ -91,7 +91,8 @@ export type PostsContextTypes = {
   } | {
     success: string;
     error?: undefined;
-  }>
+  }>,
+  handleSort: (e: React.MouseEvent<HTMLButtonElement>) => void
 };
 
 export type Topics = 'Misc' | 'General' | 'Releases' | 'Collecting' | 'Concerts' | 'Rock/Blues' | 'Pop/Dance' | 'Metal/Hard Rock' | 'Jazz' | 'Classical' | 'Electronic' | 'Country/Folk' | 'Soul/Rap' | 'Alternative' | '';

@@ -1,4 +1,4 @@
-import { createContext, useEffect, useReducer, useState } from "react";
+import { createContext, useEffect, useReducer, useRef, useState } from "react";
 
 import { ChildProp, Post, PostsContextReducerActionTypes, PostsContextTypes } from "../../types";
 
@@ -18,6 +18,12 @@ const PostsProvider = ({ children }: ChildProp) => {
 
   const [posts, dispatch] = useReducer(reducer, []);
   const [loading, setLoading] = useState(true);
+  const sortString = useRef('');
+
+  const handleSort = (e: React.MouseEvent<HTMLButtonElement>) => {
+    sortString.current = `${(e.target as HTMLButtonElement).value}`;
+    fetchPosts();
+  };
 
   const createPost = async (newPost: Pick<Post, "title" | "content" | "topic">, userId: string) => {
     // const accessToken = localStorage.getItem('accessToken') || sessionStorage.getItem('accessToken');
@@ -56,7 +62,7 @@ const PostsProvider = ({ children }: ChildProp) => {
 
   const fetchPosts = () => {
     setLoading(true);
-    fetch(`http://localhost:5500/posts`)
+    fetch(`http://localhost:5500/posts?${sortString.current}`)
       .then(res => res.json())
       .then((data: Post[]) => {
         dispatch({
@@ -78,7 +84,8 @@ const PostsProvider = ({ children }: ChildProp) => {
       value={{
         posts,
         loading,
-        createPost
+        createPost,
+        handleSort
       }}
     >
       { children }
