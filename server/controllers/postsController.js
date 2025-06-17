@@ -174,7 +174,7 @@ const editPost = async (req, res) => {
       return res.status(404).send({ error: `Post with ID: ${id} was not found.`});
     };
 
-    res.send({ success: `Post with ID: ${id} was updated successfully` });
+    res.send({ success: `Post with ID: ${id} was updated successfully.` });
   } catch(err){
     console.error(err);
     res.status(500).send({ error: err, message: `Something went wrong with server.` });
@@ -183,4 +183,26 @@ const editPost = async (req, res) => {
   };
 };
 
-export { getAllPosts, getPostById, createPost, editPost };
+const deletePost = async (req, res) => {
+  const { id } = req.params;
+  const client = await connectToDB();
+
+  validateUUID(id, res);
+
+  try{ 
+    let filter = { _id: id };
+    const DB_Response = await client.db('Final_Project').collection('posts').deleteOne(filter);
+
+    if(!DB_Response.deletedCount){
+      return res.status(404).send({ error: `Post with ID: ${id} was not found.`});
+    };
+    res.send({ success: `Post with ID: ${id} was deleted successfully.` });
+  } catch(err){
+    console.error(err);
+    res.status(500).send({ error: err, message: `Something went wrong with server.` });
+  } finally{
+    await client.close();
+  }
+};
+
+export { getAllPosts, getPostById, createPost, editPost, deletePost };
