@@ -42,13 +42,13 @@ const PostsProvider = ({ children }: ChildProp) => {
   };
 
   const createPost = async (newPost: Pick<Post, "title" | "content" | "topic">, userId: string) => {
-    // const accessToken = localStorage.getItem('accessToken') || sessionStorage.getItem('accessToken');
+    const accessToken = localStorage.getItem('accessToken') || sessionStorage.getItem('accessToken');
     const readyToSendPost = { ...newPost, userId };
     const res = await fetch(`http://localhost:5500/posts`, {
       method: "POST",
       headers: {
         "Content-Type":"application/json",
-        // Authorization: `Bearer ${accessToken}`
+        Authorization: `Bearer ${accessToken}`
       },
       body: JSON.stringify(readyToSendPost)
     });
