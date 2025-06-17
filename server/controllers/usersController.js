@@ -103,7 +103,7 @@ const editUser = async (req, res) => {
   const { id } = req.params;
   const client = await connectToDB();
 
-  validateUUID(id);
+  validateUUID(id, res);
 
   try{
     let filter = { _id: id };
