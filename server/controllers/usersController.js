@@ -3,6 +3,7 @@ import bcrypt from 'bcrypt';
 
 import { connectToDB, createAccessJWT, validateUUID } from "./helper.js";
 
+// LOGIN
 const login = async (req, res) => {
   const client = await connectToDB();
   try{
@@ -26,10 +27,12 @@ const login = async (req, res) => {
   };
 };
 
+// AUTO LOGIN
 const autoLogin = async (req, res) => {
   res.send({ success: 'User was authenticated.', userData: req.user });
 };
 
+// REFRESH LOGIN
 const refreshLogin = async (req, res) => {
   const { token } = req.body;
   if(!token){
@@ -44,6 +47,7 @@ const refreshLogin = async (req, res) => {
   };
 };
 
+// REGISTER
 const register = async (req, res) => {
   const { email, username, password, gender, avatar } = req.body;
   if(!email || !username || !password || !gender || avatar === undefined){
@@ -82,6 +86,7 @@ const register = async (req, res) => {
   };
 };
 
+// GET USER ID
 const getId = async (req, res) => {
   const client = await connectToDB();
   try{
@@ -99,6 +104,7 @@ const getId = async (req, res) => {
   };
 };
 
+// EDIT USER
 const editUser = async (req, res) => {
   const { id } = req.params;
   const client = await connectToDB();

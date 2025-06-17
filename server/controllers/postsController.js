@@ -3,6 +3,7 @@ import { validate as uuidValidate, v4 as genID } from 'uuid';
 import { connectToDB, validateUUID } from "./helper.js";
 import { postsQuery } from './postsQuery.js';
 
+// GET POSTS
 const getAllPosts = async (req, res) => {
   const client = await connectToDB();
   try{
@@ -21,6 +22,7 @@ const getAllPosts = async (req, res) => {
   };
 };
 
+// GET POST BY ID
 const getPostById = async (req, res) => {
   const { id } = req.params;
   const client = await connectToDB();
@@ -48,6 +50,7 @@ const getPostById = async (req, res) => {
 
 const topics = [ 'Misc', 'General', 'Releases', 'Collecting', 'Concerts', 'Rock-Blues', 'Pop-Dance', 'Metal-Hard Rock', 'Jazz', 'Classical', 'Electronic', 'Country-Folk', 'Soul-Rap', 'Alternative'];
 
+// POST POST
 const createPost = async (req, res) => {
   const { title, content, topic, userId } = req.body;
 
@@ -106,6 +109,7 @@ const createPost = async (req, res) => {
   };
 };
 
+// PATCH POST
 const editPost = async (req, res) => {
   const { id } = req.params;
   const { title, content, topic } = req.body;
@@ -183,6 +187,7 @@ const editPost = async (req, res) => {
   };
 };
 
+// DELETE POST
 const deletePost = async (req, res) => {
   const { id } = req.params;
   const client = await connectToDB();
