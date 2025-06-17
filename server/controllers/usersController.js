@@ -15,7 +15,7 @@ const login = async (req, res) => {
       console.error({ error: `User credentials are incorrect.` });
       return res.status(401).send({ error: `User credentials are incorrect.` });
     };
-    const { password, _id, ...user } = DB_RESPONSE;
+    const { password, ...user } = DB_RESPONSE;
     const JWT_accessToken = createAccessJWT(user);
     res.header('Authorization', JWT_accessToken).send({ success: `[${user.email}] was logged in successfully`, userData: user });
   } catch(err){
@@ -71,7 +71,7 @@ const register = async (req, res) => {
       };
     };
     await client.db('Final_Project').collection('users').insertOne(newUser);
-    const { password, _id, ...userData } = newUser;
+    const { password, ...userData } = newUser;
     const JWT_accessToken = createAccessJWT(userData);
     res.status(201).header('Authorization', JWT_accessToken).send({ success: `[${newUser.email}] was registered successfully.`, userData });
   } catch(err){

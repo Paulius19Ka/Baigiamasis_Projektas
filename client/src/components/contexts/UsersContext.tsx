@@ -24,7 +24,7 @@ const UsersProvider = ({ children }: ChildProp) => {
   type LoginResponse = { error: string } | { success: string, userData: Omit<User, 'password'> };
 
   // decode user from jwt token, so that input initial values is displayed after refresh (the context resets on refresh and erases the input values)
-  const decodeUserFromToken = (): Omit<User, "_id" | "password" | "role"> | null => {
+  const decodeUserFromToken = (): Omit<User, "password" | "role"> | null => {
     const accessToken = localStorage.getItem('accessToken') || sessionStorage.getItem('accessToken');
     if(!accessToken){
       // return null to not throw an error in the console, when logging out

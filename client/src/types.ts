@@ -28,7 +28,7 @@ export type UsersContextTypes = {
     success: string;
     error?: undefined;
   }>,
-  decodeUserFromToken: () => Omit<User, "_id" | "password" | "role"> | null,
+  decodeUserFromToken: () => Omit<User, "password" | "role"> | null,
   getUserId: () => Promise<{
     error: string;
     id?: undefined;
