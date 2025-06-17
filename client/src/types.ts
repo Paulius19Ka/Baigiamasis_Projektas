@@ -80,6 +80,7 @@ export type InputFieldPropTypes = {
 
 export type PostsContextReducerActionTypes =
 { type: 'setPosts', data: Post[] };
+// { type: 'editPost', updatedPost: Post };
 // { type: 'addPost', newPost: Pick<Post, "title" | "content" | "topic"> };
 
 export type PostsContextTypes = {
@@ -108,7 +109,7 @@ export type FilterStringTypes = {
   topic: string
 };
 
-export type Topics = 'Misc' | 'General' | 'Releases' | 'Collecting' | 'Concerts' | 'Rock/Blues' | 'Pop/Dance' | 'Metal/Hard Rock' | 'Jazz' | 'Classical' | 'Electronic' | 'Country/Folk' | 'Soul/Rap' | 'Alternative' | '';
+export type Topics = 'Misc' | 'General' | 'Releases' | 'Collecting' | 'Concerts' | 'Rock-Blues' | 'Pop-Dance' | 'Metal-Hard Rock' | 'Jazz' | 'Classical' | 'Electronic' | 'Country-Folk' | 'Soul-Rap' | 'Alternative' | '';
 
 export type Post = {
   _id: string,

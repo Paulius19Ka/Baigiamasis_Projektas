@@ -25,7 +25,7 @@ const PostCard = ({ post }: Props) => {
 
   // title to lower case, replace spaces with dashes, remove special characters, remove hyphens that follow each other
   const postTitle = post.title.trim().toLowerCase().replace(/\s+/g, '-').replace(/[^a-z0-9-]/g, '').replace(/-+/g, '-');
-  const postTopic = post.topic.toLowerCase();
+  const postTopic = post.topic.trim().toLowerCase();
 
   return (
     <StyledDiv>

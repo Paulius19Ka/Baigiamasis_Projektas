@@ -46,7 +46,7 @@ const getPostById = async (req, res) => {
   };
 };
 
-const topics = [ 'Misc', 'General', 'Releases', 'Collecting', 'Concerts', 'Rock/Blues', 'Pop/Dance', 'Metal/Hard Rock', 'Jazz', 'Classical', 'Electronic', 'Country/Folk', 'Soul/Rap', 'Alternative'];
+const topics = [ 'Misc', 'General', 'Releases', 'Collecting', 'Concerts', 'Rock-Blues', 'Pop-Dance', 'Metal-Hard Rock', 'Jazz', 'Classical', 'Electronic', 'Country-Folk', 'Soul-Rap', 'Alternative'];
 
 const createPost = async (req, res) => {
   const { title, content, topic, userId } = req.body;

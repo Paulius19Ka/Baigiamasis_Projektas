@@ -6,8 +6,12 @@ const reducer = (state: Post[], action: PostsContextReducerActionTypes) => {
   switch(action.type){
     case 'setPosts':
       return action.data;
-    // case 'addPost':
-    //   return [...state, action.newPost];
+    // case 'editPost':
+    //   return state.map(post =>
+    //     post._id === action.updatedPost._id ?
+    //     { ...post, ...action.updatedPost } :
+    //     post
+    //   );
     default:
       return state;
   };
@@ -97,6 +101,13 @@ const PostsProvider = ({ children }: ChildProp) => {
     };
 
     const Back_Response = await res.json();
+
+    // dispatch({
+    //   type: 'editPost',
+    //   updatedPost: { ...Back_Response, _id: id }
+    // });
+
+    fetchPosts();
 
     return { success: Back_Response };
   };

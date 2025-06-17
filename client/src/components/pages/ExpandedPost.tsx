@@ -1,20 +1,25 @@
-import { useEffect, useState } from "react";
-import { Link, useParams } from "react-router";
+import { useContext, useEffect, useState } from "react";
+import { useParams } from "react-router";
 import { useFormik } from "formik";
 import * as Yup from 'yup';
 
-import { Post } from "../../types";
+import { Post, PostsContextTypes, UsersContextTypes } from "../../types";
 import InputField from "../UI/molecules/InputField";
 import { topics } from "../../dynamicVariables";
+import PostsContext from "../contexts/PostsContext";
+import UsersContext from "../contexts/UsersContext";
 
 const ExpandedPost = () => {
 
   const { id } = useParams();
+  const { editPost } = useContext(PostsContext) as PostsContextTypes;
+  const { decodeUserFromToken } = useContext(UsersContext) as UsersContextTypes;
   const [post, setPost] = useState<Post | null>(null);
   const [editingTitle, setEditingTitle] = useState<boolean>(false);
   const [editingContent, setEditingContent] = useState<boolean>(false);
   const [editingTopic, setEditingTopic] = useState<boolean>(false);
   const [editMessage, setEditMessage] = useState('');
+  const decodedUser = decodeUserFromToken();
 
   const initValues: Pick<Post, "title" | "content" | "topic"> = {
     title: post?.title ?? '',
@@ -38,21 +43,24 @@ const ExpandedPost = () => {
         .required('A topic must be selected.')
     }),
     onSubmit: async (values) => {
-      console.log(values);
-      // if(!userId){
-      //   setPostMessage('Failed to retrieve ID.');
-      //   throw new Error('Failed to retrieve ID.');
-      // };
+      if(!post?._id){
+        setEditMessage(`Failed to retrieve Post ID.`);
+        throw new Error(`Failed to retrieve Post ID.`);
+      };
+      const Response = await editPost(values, post?._id);
+      if('error' in Response){
+        setEditMessage('Editing failed.');
+        throw new Error('Editing failed.');
+      };
+      // updated post state with modified fields
+      setPost(prevPost => prevPost ? { ...prevPost, ...values } : prevPost);
 
-      // const Response = await createPost(values, userId);
-      // if('error' in Response){
-      //   setPostMessage('Failed to create new thread.');
-      //   throw new Error('Failed to create new thread.');
-      // };
       setEditMessage('Edit successful.');
+
       setEditingTitle(false);
       setEditingContent(false);
       setEditingTopic(false);
+
       setTimeout(() => {
         setEditMessage('');
       }, 2000);
@@ -107,7 +115,9 @@ const ExpandedPost = () => {
               /> :
               <div>
                 <h2>{post.title}</h2>
-                <button onClick={() => setEditingTitle(true)}>Edit</button>
+                {
+                  decodedUser && <button onClick={() => setEditingTitle(true)}>Edit</button>
+                }
               </div>
             }
             {
@@ -125,7 +135,9 @@ const ExpandedPost = () => {
               /> :
               <div>
                 <p>{post.content}</p>
-                <button onClick={() => setEditingContent(true)}>Edit</button>
+                {
+                  decodedUser && <button onClick={() => setEditingContent(true)}>Edit</button>
+                }
               </div>
             }
             {
@@ -143,19 +155,24 @@ const ExpandedPost = () => {
               /> :
               <div>
                 <p>Topic: {post.topic}</p>
-                <button onClick={() => setEditingTopic(true)}>Edit</button>
+                {
+                  decodedUser && <button onClick={() => setEditingTopic(true)}>Edit</button>
+                }
               </div>
             }
-            <input type="submit" value='Submit Edit' />
+            {
+              decodedUser &&
+              <div>
+                <input type="submit" value='Complete Edit' />
+                <button>Save</button>
+                <button>Reply</button>
+                <button>Delete</button>
+              </div>
+            }
           </form>
           {
             editMessage && <p>{editMessage}</p>
           }
-          <button>Save</button>
-          <button>Reply</button>
-          <button>Edit</button>
-          <Link to=''>Edit</Link>
-          <button>Delete</button>
         </div> :
         <p>Loading...</p>
       }
