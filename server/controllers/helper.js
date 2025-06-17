@@ -1,5 +1,6 @@
 import { MongoClient } from "mongodb";
 import jwt from 'jsonwebtoken';
+import { validate as uuidValidate } from 'uuid';
 
 const DB_CONNECTION_STRING = `mongodb+srv://${process.env.DB_USER}:${process.env.DB_USER_PASS}@${process.env.DB_CLUSTER}.${process.env.DB_CLUSTER_ID}.mongodb.net/`;
 
@@ -30,4 +31,11 @@ const validateJWT = (providedJWT) => {
   };
 };
 
-export { connectToDB, createAccessJWT, createRefreshJWT, validateJWT };
+const validateUUID = (providedId) => {
+  if(!uuidValidate(providedId)){
+    console.error({ error: `[${providedId}] is not a valid id. The id must be a valid uuid.` });
+    return res.status(400).send({ error: `[${providedId}] is not a valid id. The id must be a valid uuid.` });
+  };
+};
+
+export { connectToDB, createAccessJWT, createRefreshJWT, validateJWT, validateUUID };

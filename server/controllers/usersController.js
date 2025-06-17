@@ -1,7 +1,7 @@
-import { v4 as genID, validate as uuidValidate } from 'uuid';
+import { v4 as genID } from 'uuid';
 import bcrypt from 'bcrypt';
 
-import { connectToDB, createAccessJWT } from "./helper.js";
+import { connectToDB, createAccessJWT, validateUUID } from "./helper.js";
 
 const login = async (req, res) => {
   const client = await connectToDB();
@@ -103,10 +103,7 @@ const editUser = async (req, res) => {
   const { id } = req.params;
   const client = await connectToDB();
 
-  if(!uuidValidate(id)){
-    console.error({ error: `[${id}] is not a valid id. The id must be a valid uuid.` });
-    return res.status(400).send({ error: `[${id}] is not a valid id. The id must be a valid uuid.` });
-  };
+  validateUUID(id);
 
   try{
     let filter = { _id: id };
