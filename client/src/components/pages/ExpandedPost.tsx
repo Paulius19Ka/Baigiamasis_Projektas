@@ -116,7 +116,8 @@ const ExpandedPost = () => {
               <div>
                 <h2>{post.title}</h2>
                 {
-                  decodedUser && <button onClick={() => setEditingTitle(true)}>Edit</button>
+                  decodedUser && post.postedBy.userId === decodedUser._id &&
+                  <button onClick={() => setEditingTitle(true)}>Edit</button>
                 }
               </div>
             }
@@ -136,7 +137,8 @@ const ExpandedPost = () => {
               <div>
                 <p>{post.content}</p>
                 {
-                  decodedUser && <button onClick={() => setEditingContent(true)}>Edit</button>
+                  decodedUser && post.postedBy.userId === decodedUser._id &&
+                  <button onClick={() => setEditingContent(true)}>Edit</button>
                 }
               </div>
             }
@@ -156,17 +158,23 @@ const ExpandedPost = () => {
               <div>
                 <p>Topic: {post.topic}</p>
                 {
-                  decodedUser && <button onClick={() => setEditingTopic(true)}>Edit</button>
+                  decodedUser && post.postedBy.userId === decodedUser._id &&
+                  <button onClick={() => setEditingTopic(true)}>Edit</button>
                 }
               </div>
             }
             {
               decodedUser &&
               <div>
-                <input type="submit" value='Complete Edit' />
-                <button>Save</button>
                 <button>Reply</button>
-                <button>Delete</button>
+                <button>Save</button>
+                {
+                  post.postedBy.userId === decodedUser._id &&
+                  <>
+                    <input type="submit" value='Complete Edit' />
+                    <button>Delete</button>
+                  </>
+                }
               </div>
             }
           </form>
