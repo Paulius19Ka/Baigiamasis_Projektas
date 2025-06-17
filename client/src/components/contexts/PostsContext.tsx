@@ -21,6 +21,7 @@ const PostsProvider = ({ children }: ChildProp) => {
   const sortString = useRef('');
   const filterString = useRef('');
 
+  // FILTER/SORT
   const resetFilterAndSort = () => {
     filterString.current = '';
     sortString.current = '';
@@ -41,6 +42,7 @@ const PostsProvider = ({ children }: ChildProp) => {
     fetchPosts();
   };
 
+  // NEW POST
   const createPost = async (newPost: Pick<Post, "title" | "content" | "topic">, userId: string) => {
     const accessToken = localStorage.getItem('accessToken') || sessionStorage.getItem('accessToken');
     const readyToSendPost = { ...newPost, userId };
@@ -76,6 +78,33 @@ const PostsProvider = ({ children }: ChildProp) => {
 
   };
 
+  // EDIT POSTS
+  const editPost = async (editedPost: Pick<Post, 'title' | 'content' | 'topic'>, id: string) => {
+    const accessToken = localStorage.getItem('accessToken') || sessionStorage.getItem('accessToken');
+    const res = await fetch(`http://localhost:5500/posts/${id}`, {
+      method: "PATCH",
+      headers: {
+        "Content-Type":"application/json",
+        Authorization: `Bearer ${accessToken}`
+      },
+      body: JSON.stringify(editedPost)
+    });
+
+    if(!res.ok){
+      const errorResponse = await res.json();
+      console.error(`Editing failed: ${errorResponse.error}`);
+      return { error: errorResponse.error };
+    };
+
+    const Back_Response = await res.json();
+
+    return { success: Back_Response };
+  };
+
+  // DELETE POSTS
+
+
+  // GET POSTS
   const fetchPosts = () => {
     setLoading(true);
     fetch(`http://localhost:5500/posts?${filterString.current}&${sortString.current}`)
@@ -103,7 +132,8 @@ const PostsProvider = ({ children }: ChildProp) => {
         createPost,
         handleSort,
         handleFilter,
-        resetFilterAndSort
+        resetFilterAndSort,
+        editPost
       }}
     >
       { children }

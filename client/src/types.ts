@@ -94,7 +94,14 @@ export type PostsContextTypes = {
   }>,
   handleSort: (e: React.MouseEvent<HTMLButtonElement>) => void,
   handleFilter: (values: FilterStringTypes) => void,
-  resetFilterAndSort: () => void
+  resetFilterAndSort: () => void,
+  editPost: (editedPost: Pick<Post, "title" | "content" | "topic">, id: string) => Promise<{
+    error: string;
+    success?: undefined;
+  } | {
+    success: string;
+    error?: undefined;
+  }>
 };
 
 export type FilterStringTypes = {
