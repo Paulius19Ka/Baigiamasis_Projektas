@@ -109,7 +109,17 @@ const ExpandedPost = () => {
         <h2>{deleteMessage}</h2> :
         post ?
         <div>
-          <p>Score: {post.score}</p>
+          <div className="score">
+            {
+              decodedUser && 
+              <button>🔼</button>
+            }
+            <p>Score: {post.score}</p>
+            {
+              decodedUser && 
+              <button>🔽</button>
+            }
+          </div>
           <p>Posted: {post.postDate ? post.postDate.slice(0, 10): ''}, {post.postDate ? post.postDate.slice(11, 16): ''}</p>
           {
             post.lastEditDate ?
