@@ -1,5 +1,5 @@
 import { useContext, useEffect, useState } from "react";
-import { useParams } from "react-router";
+import { useNavigate, useParams } from "react-router";
 import { useFormik } from "formik";
 import * as Yup from 'yup';
 
@@ -12,14 +12,16 @@ import UsersContext from "../contexts/UsersContext";
 const ExpandedPost = () => {
 
   const { id } = useParams();
-  const { editPost } = useContext(PostsContext) as PostsContextTypes;
+  const { editPost, deletePost } = useContext(PostsContext) as PostsContextTypes;
   const { decodeUserFromToken } = useContext(UsersContext) as UsersContextTypes;
   const [post, setPost] = useState<Post | null>(null);
   const [editingTitle, setEditingTitle] = useState<boolean>(false);
   const [editingContent, setEditingContent] = useState<boolean>(false);
   const [editingTopic, setEditingTopic] = useState<boolean>(false);
   const [editMessage, setEditMessage] = useState('');
+  const [deleteMessage, setDeleteMessage] = useState('');
   const decodedUser = decodeUserFromToken();
+  const navigate = useNavigate();
 
   const initValues: Pick<Post, "title" | "content" | "topic"> = {
     title: post?.title ?? '',
@@ -67,6 +69,19 @@ const ExpandedPost = () => {
     }
   });
 
+  const deleteHandler = () => {
+    if(!post?._id){
+      setDeleteMessage(`Failed to retrieve Post ID.`);
+      throw new Error(`Failed to retrieve Post ID.`);
+    };
+    deletePost(post?._id);
+    setDeleteMessage('Post was successfully deleted.');
+    setTimeout(() => {
+      setDeleteMessage('');
+      navigate('/');
+    }, 2000);
+  };
+
   // update formik values when post loads
   useEffect(() => {
     if(post){
@@ -90,6 +105,8 @@ const ExpandedPost = () => {
   return (
     <section>
       {
+        deleteMessage ?
+        <h2>{deleteMessage}</h2> :
         post ?
         <div>
           <p>Score: {post.score}</p>
@@ -172,7 +189,7 @@ const ExpandedPost = () => {
                   post.postedBy.userId === decodedUser._id &&
                   <>
                     <input type="submit" value='Complete Edit' />
-                    <button>Delete</button>
+                    <button onClick={deleteHandler}>Delete</button>
                   </>
                 }
               </div>

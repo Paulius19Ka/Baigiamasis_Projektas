@@ -102,6 +102,13 @@ export type PostsContextTypes = {
   } | {
     success: string;
     error?: undefined;
+  }>,
+  deletePost: (id: string) => Promise<{
+    error: string;
+    success?: undefined;
+  } | {
+    success: string;
+    error?: undefined;
   }>
 };
 

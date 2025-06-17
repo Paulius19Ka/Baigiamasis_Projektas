@@ -82,7 +82,7 @@ const PostsProvider = ({ children }: ChildProp) => {
 
   };
 
-  // EDIT POSTS
+  // EDIT POST
   const editPost = async (editedPost: Pick<Post, 'title' | 'content' | 'topic'>, id: string) => {
     const accessToken = localStorage.getItem('accessToken') || sessionStorage.getItem('accessToken');
     const res = await fetch(`http://localhost:5500/posts/${id}`, {
@@ -112,8 +112,29 @@ const PostsProvider = ({ children }: ChildProp) => {
     return { success: Back_Response };
   };
 
-  // DELETE POSTS
+  // DELETE POST
+  const deletePost = async (id: string) => {
+    const accessToken = localStorage.getItem('accessToken') || sessionStorage.getItem('accessToken');
+    const res = await fetch(`http://localhost:5500/posts/${id}`, {
+      method: "DELETE",
+      headers: {
+        "Content-Type":"application/json",
+        Authorization: `Bearer ${accessToken}`
+      }
+    });
 
+    if(!res.ok){
+      const errorResponse = await res.json();
+      console.error(`Deletion failed: ${errorResponse.error}`);
+      return { error: errorResponse.error };
+    };
+
+    const Back_Response = await res.json();
+
+    fetchPosts();
+
+    return { success: Back_Response };
+  };
 
   // GET POSTS
   const fetchPosts = () => {
@@ -144,7 +165,8 @@ const PostsProvider = ({ children }: ChildProp) => {
         handleSort,
         handleFilter,
         resetFilterAndSort,
-        editPost
+        editPost,
+        deletePost
       }}
     >
       { children }
