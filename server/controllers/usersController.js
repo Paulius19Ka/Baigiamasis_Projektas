@@ -60,7 +60,8 @@ const register = async (req, res) => {
     password: await bcrypt.hash(password, 12),
     gender: gender,
     avatar: avatar || "",
-    role: 'user'
+    role: 'user',
+    savedPosts: []
   };
   const client = await connectToDB();
   try{

@@ -55,7 +55,8 @@ export type User = {
   password: string,
   gender: Gender,
   role: 'admin' | 'user',
-  avatar: string
+  avatar: string,
+  savedPosts: string[]
 };
 
 // INPUT FIELD
