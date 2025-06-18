@@ -37,6 +37,9 @@ const PostsProvider = ({ children }: ChildProp) => {
     if(values.topic){
       filterParams.push(`filter_topic=${values.topic}`);
     };
+    if(values.title){
+      filterParams.push(`filter_title=${values.title}`);
+    };
     filterString.current = filterParams.join('&');
     fetchPosts();
   };

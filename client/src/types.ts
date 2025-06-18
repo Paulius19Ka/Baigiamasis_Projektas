@@ -114,6 +114,7 @@ export type PostsContextTypes = {
 };
 
 export type FilterStringTypes = {
+  title: string,
   topic: string
 };
 

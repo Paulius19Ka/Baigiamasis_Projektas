@@ -23,10 +23,11 @@ const Home = () => {
 
   const formik = useFormik({
     initialValues: {
+      title: '',
       topic: ''
     },
     onSubmit: async (values) => {
-      if(values.topic){
+      if(values.topic || values.title){
         handleFilter(values);
       };
     }
@@ -43,6 +44,17 @@ const Home = () => {
         {/* filter: solved/not solved, title, topic */}
         <form onSubmit={formik.handleSubmit}>
           <InputField
+            labelText='Search:'
+            inputType='text'
+            inputName='title' inputId='title'
+            inputValue={formik.values.title}
+            inputOnChange={formik.handleChange}
+            inputOnBlur={formik.handleBlur}
+            errors={formik.errors.title}
+            touched={formik.touched.title}
+            inputPlaceholder="Search..."
+          />
+          <InputField
             labelText='Topic:'
             inputType='select'
             inputName='topic' inputId='topic'
@@ -54,7 +66,11 @@ const Home = () => {
             selectOps={topics}
           />
           <input type="submit" value='Filter' />
-          <button type="button" onClick={resetFilterAndSort}>Reset</button>
+          <button type="button" onClick={() => {
+            formik.values.topic = '';
+            formik.values.title = '';
+            resetFilterAndSort();
+          }}>Reset</button>
         </form>
       </div>
       <div className="posts">
