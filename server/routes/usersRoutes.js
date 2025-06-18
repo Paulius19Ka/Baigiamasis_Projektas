@@ -1,7 +1,7 @@
 import { Router } from "express";
 import { autoLogin, editUser, getId, login, refreshLogin, register } from "../controllers/usersController.js";
 import { verifyAdmin, verifyJWT } from "../middleware/auth.js";
-import { savePost } from "../controllers/savePostsController.js";
+import { savePost, getSavedPosts, removeSavedPost } from "../controllers/savePostsController.js";
 
 const router = Router();
 
@@ -21,6 +21,11 @@ router.get('/getId', verifyJWT, getId);
 
 router.patch('/:id', editUser);
 
-router.post('/:id/savePost/:id', savePost);
+// SAVING OF POSTS ROUTES
+router.post('/:userId/savePost/:postId', savePost);
+
+router.get('/:userId/getSavedPosts', getSavedPosts);
+
+router.delete('/:userId/deleteSavedPost/:postId', removeSavedPost);
 
 export default router;
