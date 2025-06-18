@@ -22,6 +22,7 @@ const UsersProvider = ({ children }: ChildProp) => {
   const [loggedInUser, dispatch] = useReducer(reducer, null);
 
   type LoginResponse = { error: string } | { success: string, userData: Omit<User, 'password'> };
+  type RegistrationResponse = { error: string } | { success: string, userData: User };
 
   // decode user from jwt token, so that input initial values is displayed after refresh (the context resets on refresh and erases the input values)
   const decodeUserFromToken = (): Omit<User, "password" | "role"> | null => {
@@ -36,6 +37,35 @@ const UsersProvider = ({ children }: ChildProp) => {
     } catch(err){
       throw new Error(`Invalid access token. Error: ${err}. `);
     };
+  };
+
+  // SAVE/REMOVE SAVED POSTS
+  const savePost = async (postId: string) => {
+    if(!loggedInUser?._id){
+      console.error(`User not logged in.`);
+      return { error: `User not logged in.` };
+    };
+    
+    const res = await fetch(`http://localhost:5500/users/${loggedInUser._id}/savePost/${postId}`, {
+      method: "POST",
+      headers: {
+        "Content-Type":"application/json"
+      }
+    });
+
+    // error handling in browser console
+    if(!res.ok){
+      const errorResponse = await res.json();
+      console.error(`Failed to save post: ${errorResponse.error}`);
+      return { error: errorResponse.error };
+    };
+
+    const Back_Response = await res.json();
+    if('error' in Back_Response){
+      return { error: Back_Response.error };
+    };
+
+    return { success: Back_Response.success };
   };
 
   // LOGIN
@@ -79,8 +109,6 @@ const UsersProvider = ({ children }: ChildProp) => {
   };
 
   // REGISTRATION
-  type RegistrationResponse = { error: string } | { success: string, userData: User };
-
   const registerUser = async (userData: Omit<User, '_id'>, stayLoggedIn: boolean) => {
     const res = await fetch(`http://localhost:5500/users/register`, {
       method: "POST",
@@ -218,7 +246,8 @@ const UsersProvider = ({ children }: ChildProp) => {
         decodeUserFromToken,
         getUserId,
         editUser,
-        dispatch
+        dispatch,
+        savePost
       }}
     >
       { children }

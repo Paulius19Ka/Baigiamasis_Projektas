@@ -43,7 +43,14 @@ export type UsersContextTypes = {
     success: string;
     error?: undefined;
   }>,
-  dispatch: React.ActionDispatch<[action: UsersContextActionTypes]>
+  dispatch: React.ActionDispatch<[action: UsersContextActionTypes]>,
+  savePost: (postId: string) => Promise<{
+    error: string;
+    success?: undefined;
+  } | {
+    success: string;
+    error?: undefined;
+  }>
 };
 
 export type Gender = 'male'| 'female' | 'other';
