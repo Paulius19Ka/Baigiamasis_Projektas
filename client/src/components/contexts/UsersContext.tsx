@@ -61,8 +61,13 @@ const UsersProvider = ({ children }: ChildProp) => {
     };
 
     const Back_Response = await res.json();
-    if('error' in Back_Response){
-      return { error: Back_Response.error };
+    
+    if(Back_Response.updatedToken){
+      if(localStorage.getItem('accessToken')){
+        localStorage.setItem('accessToken', Back_Response.updatedToken);
+      } else if(sessionStorage.getItem('accessToken')){
+        sessionStorage.setItem('accessToken', Back_Response.updatedToken);
+      };
     };
 
     return { success: Back_Response.success };
@@ -167,7 +172,11 @@ const UsersProvider = ({ children }: ChildProp) => {
     const Back_Response = await res.json();
 
     if(Back_Response.updatedToken){
-      localStorage.setItem('accessToken', Back_Response.updatedToken);
+      if(localStorage.getItem('accessToken')){
+        localStorage.setItem('accessToken', Back_Response.updatedToken);
+      } else if(sessionStorage.getItem('accessToken')){
+        sessionStorage.setItem('accessToken', Back_Response.updatedToken);
+      };
     };
 
     dispatch({

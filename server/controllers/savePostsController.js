@@ -1,4 +1,4 @@
-import { connectToDB, validateUUID } from "./helper.js";
+import { connectToDB, createAccessJWT, validateUUID } from "./helper.js";
 
 // SAVE POST
 const savePost = async (req, res) => {
@@ -17,7 +17,10 @@ const savePost = async (req, res) => {
       return res.status(404).send({ error: `User with ID: ${userId} was not found.`});
     };
 
-    res.send({ success: `Post saved successfully.` });
+    const editedUser = await client.db('Final_Project').collection('users').findOne(filter);
+    const { password, ...userData } = editedUser;
+    const accessToken = createAccessJWT(userData);
+    res.header('Authorization', accessToken).send({ success: `Post saved successfully.`, updatedToken: accessToken });
   } catch(err){
     console.error(err);
     res.status(500).send({ error: err, message: `Something went wrong with server.` });

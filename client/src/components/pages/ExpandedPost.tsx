@@ -13,13 +13,14 @@ const ExpandedPost = () => {
 
   const { id } = useParams();
   const { editPost, deletePost } = useContext(PostsContext) as PostsContextTypes;
-  const { decodeUserFromToken } = useContext(UsersContext) as UsersContextTypes;
+  const { decodeUserFromToken, savePost } = useContext(UsersContext) as UsersContextTypes;
   const [post, setPost] = useState<Post | null>(null);
   const [editingTitle, setEditingTitle] = useState<boolean>(false);
   const [editingContent, setEditingContent] = useState<boolean>(false);
   const [editingTopic, setEditingTopic] = useState<boolean>(false);
   const [editMessage, setEditMessage] = useState('');
   const [deleteMessage, setDeleteMessage] = useState('');
+  const [saveBtnText, setSaveBtnText] = useState('Save')
   const decodedUser = decodeUserFromToken();
   const navigate = useNavigate();
 
@@ -81,6 +82,31 @@ const ExpandedPost = () => {
       navigate('/');
     }, 2000);
   };
+
+  const savePostHandler = async () => {
+    if(!post?._id){
+      setDeleteMessage(`Failed to retrieve Post ID.`);
+      throw new Error(`Failed to retrieve Post ID.`);
+    };
+    if(!decodedUser?.savedPosts.includes(post._id)){
+      setSaveBtnText('Save');
+      const response = await savePost(post._id);
+  
+      if('error' in response){
+        setSaveBtnText('Failed');
+        throw new Error('Editing failed.');
+      };
+      setSaveBtnText('Unsave');
+    };
+  };
+
+  // update the save button text whether the post is already saved or not
+  useEffect(() => {
+    if(post && decodedUser){
+      setSaveBtnText(decodedUser.savedPosts.includes(post._id) ? "Unsave" : "Save");
+    };
+  }, [post, decodedUser]);
+
 
   // update formik values when post loads
   useEffect(() => {
@@ -194,7 +220,7 @@ const ExpandedPost = () => {
               decodedUser &&
               <div>
                 <button>Reply</button>
-                <button>Save</button>
+                <button type="button" onClick={savePostHandler}>{saveBtnText}</button>
                 {
                   post.postedBy.userId === decodedUser._id &&
                   <>
