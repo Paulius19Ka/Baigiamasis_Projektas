@@ -161,7 +161,7 @@ const editUser = async (req, res) => {
     };
     
     const editedUser = await client.db('Final_Project').collection('users').findOne(filter);
-    const { password, _id, ...userData } = editedUser;
+    const { password, ...userData } = editedUser;
     // create and send an updated access token
     const accessToken = createAccessJWT(userData);
     res.header('Authorization', accessToken).send({ success: `User with ID: ${id} was updated successfully.`, updatedToken: accessToken });
