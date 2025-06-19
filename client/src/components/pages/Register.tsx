@@ -6,6 +6,7 @@ import { Link, useNavigate } from 'react-router';
 import { User, UsersContextTypes } from '../../types';
 import InputField from '../UI/molecules/InputField';
 import UsersContext from '../contexts/UsersContext';
+import { genders } from '../../dynamicVariables';
 
 
 const Register = () => {
@@ -116,7 +117,7 @@ const Register = () => {
         />
         <InputField // !!! needs to be radio or select
           labelText='Gender:'
-          inputType='text'
+          inputType='radio'
           inputName='gender' inputId='gender'
           inputValue={formik.values.gender}
           inputOnChange={formik.handleChange}
@@ -124,6 +125,7 @@ const Register = () => {
           errors={formik.errors.gender}
           touched={formik.touched.gender}
           inputPlaceholder={'Enter Your gender...'}
+          radioOps={genders}
         />
         <InputField
           labelText='Avatar:'

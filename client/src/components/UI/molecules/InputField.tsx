@@ -2,9 +2,12 @@ import { InputFieldPropTypes } from "../../../types";
 import Input from "../atoms/Input";
 import Label from "../atoms/Label";
 
-type Props = Omit<InputFieldPropTypes, 'labelHtmlFor'>;
+type Props = Omit<InputFieldPropTypes, 'labelHtmlFor'> & {
+  inputOnChange: (event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => void;
+  inputOnBlur: (event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => void;
+};
 
-const InputField = ({ labelText, inputType, inputName, inputId, inputValue, inputOnChange, inputOnBlur, errors, touched, inputPlaceholder }: Props) => {
+const InputField = ({ labelText, inputType, inputName, inputId, inputValue, inputOnChange, inputOnBlur, errors, touched, inputPlaceholder, radioOps, selectOps }: Props) => {
   return (
     <div>
       <div>
@@ -19,6 +22,8 @@ const InputField = ({ labelText, inputType, inputName, inputId, inputValue, inpu
           inputOnChange={inputOnChange}
           inputOnBlur={inputOnBlur}
           inputPlaceholder={inputPlaceholder}
+          radioOps={radioOps}
+          selectOps={selectOps}
         />
       </div>
       {

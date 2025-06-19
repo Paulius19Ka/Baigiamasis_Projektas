@@ -1,8 +1,9 @@
-import { v4 as genID, validate as uuidValidate } from 'uuid';
+import { v4 as genID } from 'uuid';
 import bcrypt from 'bcrypt';
 
-import { connectToDB, createAccessJWT } from "./helper.js";
+import { connectToDB, createAccessJWT, validateUUID } from "./helper.js";
 
+// LOGIN
 const login = async (req, res) => {
   const client = await connectToDB();
   try{
@@ -15,7 +16,7 @@ const login = async (req, res) => {
       console.error({ error: `User credentials are incorrect.` });
       return res.status(401).send({ error: `User credentials are incorrect.` });
     };
-    const { password, _id, ...user } = DB_RESPONSE;
+    const { password, ...user } = DB_RESPONSE;
     const JWT_accessToken = createAccessJWT(user);
     res.header('Authorization', JWT_accessToken).send({ success: `[${user.email}] was logged in successfully`, userData: user });
   } catch(err){
@@ -26,10 +27,12 @@ const login = async (req, res) => {
   };
 };
 
+// AUTO LOGIN
 const autoLogin = async (req, res) => {
   res.send({ success: 'User was authenticated.', userData: req.user });
 };
 
+// REFRESH LOGIN
 const refreshLogin = async (req, res) => {
   const { token } = req.body;
   if(!token){
@@ -44,6 +47,7 @@ const refreshLogin = async (req, res) => {
   };
 };
 
+// REGISTER
 const register = async (req, res) => {
   const { email, username, password, gender, avatar } = req.body;
   if(!email || !username || !password || !gender || avatar === undefined){
@@ -56,7 +60,8 @@ const register = async (req, res) => {
     password: await bcrypt.hash(password, 12),
     gender: gender,
     avatar: avatar || "",
-    role: 'user'
+    role: 'user',
+    savedPosts: []
   };
   const client = await connectToDB();
   try{
@@ -71,7 +76,7 @@ const register = async (req, res) => {
       };
     };
     await client.db('Final_Project').collection('users').insertOne(newUser);
-    const { password, _id, ...userData } = newUser;
+    const { password, ...userData } = newUser;
     const JWT_accessToken = createAccessJWT(userData);
     res.status(201).header('Authorization', JWT_accessToken).send({ success: `[${newUser.email}] was registered successfully.`, userData });
   } catch(err){
@@ -82,6 +87,7 @@ const register = async (req, res) => {
   };
 };
 
+// GET USER ID
 const getId = async (req, res) => {
   const client = await connectToDB();
   try{
@@ -99,14 +105,12 @@ const getId = async (req, res) => {
   };
 };
 
+// EDIT USER
 const editUser = async (req, res) => {
   const { id } = req.params;
   const client = await connectToDB();
 
-  if(!uuidValidate(id)){
-    console.error({ error: `[${id}] is not a valid id. The id must be a valid uuid.` });
-    return res.status(400).send({ error: `[${id}] is not a valid id. The id must be a valid uuid.` });
-  };
+  validateUUID(id, res);
 
   try{
     let filter = { _id: id };
@@ -157,7 +161,7 @@ const editUser = async (req, res) => {
     };
     
     const editedUser = await client.db('Final_Project').collection('users').findOne(filter);
-    const { password, _id, ...userData } = editedUser;
+    const { password, ...userData } = editedUser;
     // create and send an updated access token
     const accessToken = createAccessJWT(userData);
     res.header('Authorization', accessToken).send({ success: `User with ID: ${id} was updated successfully.`, updatedToken: accessToken });
