@@ -44,7 +44,7 @@ export type UsersContextTypes = {
     error?: undefined;
   }>,
   dispatch: React.ActionDispatch<[action: UsersContextActionTypes]>,
-  savePost: (postId: string) => Promise<{
+  savePost: (postId: string, savePost: boolean) => Promise<{
     error: string;
     success?: undefined;
   } | {

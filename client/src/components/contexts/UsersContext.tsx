@@ -40,14 +40,19 @@ const UsersProvider = ({ children }: ChildProp) => {
   };
 
   // SAVE/REMOVE SAVED POSTS
-  const savePost = async (postId: string) => {
+  const savePost = async (postId: string, savePost: boolean) => {
     if(!loggedInUser?._id){
       console.error(`User not logged in.`);
       return { error: `User not logged in.` };
     };
+
+    const method = savePost ? "POST" : "DELETE";
+    const endpoint = savePost ?
+    `http://localhost:5500/users/${loggedInUser._id}/savePost/${postId}` :
+    `http://localhost:5500/users/${loggedInUser._id}/deleteSavedPost/${postId}`
     
-    const res = await fetch(`http://localhost:5500/users/${loggedInUser._id}/savePost/${postId}`, {
-      method: "POST",
+    const res = await fetch(endpoint, {
+      method,
       headers: {
         "Content-Type":"application/json"
       }

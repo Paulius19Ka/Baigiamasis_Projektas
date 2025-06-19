@@ -20,7 +20,7 @@ const ExpandedPost = () => {
   const [editingTopic, setEditingTopic] = useState<boolean>(false);
   const [editMessage, setEditMessage] = useState('');
   const [deleteMessage, setDeleteMessage] = useState('');
-  const [saveBtnText, setSaveBtnText] = useState('Save')
+  const [saveBtnText, setSaveBtnText] = useState('Save');
   const decodedUser = decodeUserFromToken();
   const navigate = useNavigate();
 
@@ -88,16 +88,19 @@ const ExpandedPost = () => {
       setDeleteMessage(`Failed to retrieve Post ID.`);
       throw new Error(`Failed to retrieve Post ID.`);
     };
-    if(!decodedUser?.savedPosts.includes(post._id)){
-      setSaveBtnText('Save');
-      const response = await savePost(post._id);
-  
-      if('error' in response){
-        setSaveBtnText('Failed');
-        throw new Error('Editing failed.');
-      };
-      setSaveBtnText('Unsave');
+
+    const isPostSaved = decodedUser?.savedPosts.includes(post._id);
+    const response = await savePost(post._id, !isPostSaved);
+
+    if('error' in response){
+      setSaveBtnText('Failed');
+      throw new Error(`${isPostSaved ? 'Unsave' : 'Save'} failed.`);
     };
+
+    const updatedUser = decodeUserFromToken();
+    const isNowSaved = updatedUser?.savedPosts.includes(post._id);
+    setSaveBtnText(isNowSaved ? 'Unsave' : 'Save');
+
   };
 
   // update the save button text whether the post is already saved or not
