@@ -196,7 +196,13 @@ const deletePost = async (req, res) => {
       return res.status(404).send({ error: `Post with ID: ${id} was not found.`});
     };
 
+    // delete associated replies
     await client.db('Final_Project').collection('replies').deleteMany({ postId: id });
+    // delete saved post id from users
+    await client.db('Final_Project').collection('users').updateMany(
+      { savedPosts: id },
+      { $pull: { savedPosts: id } }
+    );
 
     res.send({ success: `Post with ID: ${id} was deleted successfully.` });
   } catch(err){
