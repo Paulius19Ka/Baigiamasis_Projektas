@@ -1,6 +1,6 @@
 import { Router } from "express";
 
-import { getAllPosts, getPostById, createPost, editPost, deletePost } from "../controllers/postsController.js";
+import { getAllPosts, getPostById, createPost, editPost, deletePost, getPostCount } from "../controllers/postsController.js";
 import { getAllRepliesByPostId, postReplyByPostId } from "../controllers/repliesController.js";
 import { verifyJWT } from "../middleware/auth.js";
 import { scorePost } from "../controllers/scoreController.js";
@@ -17,6 +17,8 @@ router.post('', verifyJWT, createPost);
 router.patch('/:id', verifyJWT, editPost);
 
 router.delete('/:id', verifyJWT, deletePost);
+
+router.get('/get/count', getPostCount);
 
 // REPLIES
 router.get('/:id/replies', getAllRepliesByPostId);
