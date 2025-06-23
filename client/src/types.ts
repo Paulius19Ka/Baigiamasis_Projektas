@@ -161,5 +161,12 @@ export type RepliesContextReducerActionTypes =
 export type RepliesContextTypes = {
   replies: Reply[],
   loading: boolean,
-  fetchReplies: (id: string) => void
+  fetchReplies: (id: string) => void,
+  postReply: (newReply: Pick<Reply, "reply">, userId: string, postId: string) => Promise<{
+    error: string;
+    success?: undefined;
+  } | {
+    success: string;
+    error?: undefined;
+  }>
 };
