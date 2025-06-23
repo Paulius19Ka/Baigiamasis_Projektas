@@ -31,6 +31,8 @@ const PostsProvider = ({ children }: ChildProp) => {
   const sortString = useRef('');
   const filterString = useRef('');
   const [filteredDataCount, setFilteredDataCount] = useState(0);
+  const currentPage = useRef(1);
+  const pageSize = useRef(8);
 
   // FILTER/SORT
   const resetFilterAndSort = () => {
@@ -52,6 +54,7 @@ const PostsProvider = ({ children }: ChildProp) => {
       filterParams.push(`filter_replyCount_gte=1`);
     };
     filterString.current = filterParams.join('&');
+    currentPage.current = 1;
     fetchPosts();
     getFilteredDataCount();
   };
@@ -60,6 +63,12 @@ const PostsProvider = ({ children }: ChildProp) => {
     sortString.current = `${(e.target as HTMLButtonElement).value}`;
     fetchPosts();
   };
+
+  // PAGINATION
+  const changePage = (newPage: number) => {
+    currentPage.current = newPage;
+    fetchPosts();
+  }
 
   const getFilteredDataCount = () => {
     fetch(`http://localhost:5500/posts/get/count?${filterString.current}`)
@@ -98,6 +107,7 @@ const PostsProvider = ({ children }: ChildProp) => {
     // });
 
     fetchPosts();
+    getFilteredDataCount();
 
     return { success: Back_Response.success };
 
@@ -191,7 +201,7 @@ const PostsProvider = ({ children }: ChildProp) => {
   // GET POSTS
   const fetchPosts = () => {
     setLoading(true);
-    fetch(`http://localhost:5500/posts?${filterString.current}&${sortString.current}`)
+    fetch(`http://localhost:5500/posts?skip=${(currentPage.current - 1) * pageSize.current}&limit=${pageSize.current}&${filterString.current}&${sortString.current}`)
       .then(res => res.json())
       .then((data: Post[]) => {
         dispatch({
@@ -222,7 +232,10 @@ const PostsProvider = ({ children }: ChildProp) => {
         deletePost,
         updateUsernameInPosts,
         scorePost,
-        filteredDataCount
+        filteredDataCount,
+        currentPage,
+        pageSize,
+        changePage
       }}
     >
       { children }
