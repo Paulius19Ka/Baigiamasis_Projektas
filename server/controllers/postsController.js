@@ -13,9 +13,6 @@ const getAllPosts = async (req, res) => {
     // get posts with number of replies
     const DB_RESPONSE = await client.db('Final_Project').collection('posts').aggregate([
       { $match: settings.filter },
-      { $sort: settings.sort },
-      { $skip: settings.skip },
-      { $limit: settings.limit },
       {
         '$lookup': {
           'from': 'replies', 
@@ -23,13 +20,20 @@ const getAllPosts = async (req, res) => {
           'foreignField': 'postId', 
           'as': 'replies'
         }
-      }, {
+      },
+      {
         '$addFields': {
           'replyCount': {
             '$size': '$replies'
           }
         }
-      }, {
+      },
+      settings.sortStage ?
+      { $sort: settings.sortStage } :
+      { $sort: settings.sort },
+      { $skip: settings.skip },
+      { $limit: settings.limit },
+      {
         '$project': {
           'postedBy': 1, 
           'score': 1, 

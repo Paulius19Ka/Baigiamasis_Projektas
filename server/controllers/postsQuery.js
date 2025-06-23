@@ -3,15 +3,21 @@ const postsQuery = (reqQuery) => {
     filter: {},
     sort: { postDate: -1 },
     skip: 0,
-    limit: 25
+    limit: 25,
+    sortStage: null
   };
 
   if(Object.keys(reqQuery).length){
     Object.keys(reqQuery).forEach(key => {
       const [action, param, operator] = key.split('_');
-
       if(action === 'sort'){
-        settings.sort[param] = Number(reqQuery[key]);
+        const sortValue = Number(reqQuery[key]);
+        // created after replyCount is created through aggregation
+        if(param === 'replyCount'){
+          settings.sortStage = { replyCount: sortValue };
+        } else{
+          settings.sort[param] = sortValue;
+        }
       } else if(action === 'skip'){
         settings.skip = Number(reqQuery[key]);
       } else if(action === 'limit'){
