@@ -175,5 +175,12 @@ export type RepliesContextTypes = {
   } | {
     success: string;
     error?: undefined;
+  }>,
+  deleteReply: (replyId: string, postId: string) => Promise<{
+    error: string;
+    success?: undefined;
+  } | {
+    success: string;
+    error?: undefined;
   }>
 };

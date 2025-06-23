@@ -72,6 +72,30 @@ const RepliesProvider = ({ children }: ChildProp) => {
     return { success: Back_Response.success };
   };
 
+  // DELETE REPLY
+  const deleteReply = async (replyId: string, postId: string) => {
+    const accessToken = localStorage.getItem('accessToken') || sessionStorage.getItem('accessToken');
+    const res = await fetch(`http://localhost:5500/replies/${replyId}`, {
+      method: "DELETE",
+      headers: {
+        "Content-Type":"application/json",
+        Authorization: `Bearer ${accessToken}`
+      }
+    });
+
+    if(!res.ok){
+      const errorResponse = await res.json();
+      console.error(`Deletion failed: ${errorResponse.error}`);
+      return { error: errorResponse.error };
+    };
+
+    const Back_Response = await res.json();
+
+    fetchReplies(postId);
+
+    return { success: Back_Response.success };
+  };
+
   // GET REPLIES
   const fetchReplies = (id: string) => {
     // clear replies, to avoid showing replies on unrelated posts
@@ -100,7 +124,8 @@ const RepliesProvider = ({ children }: ChildProp) => {
         loading,
         fetchReplies,
         postReply,
-        editReply
+        editReply,
+        deleteReply
       }}
     >
       { children }
