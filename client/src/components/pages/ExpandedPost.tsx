@@ -9,6 +9,7 @@ import { topics } from "../../dynamicVariables";
 import PostsContext from "../contexts/PostsContext";
 import UsersContext from "../contexts/UsersContext";
 import RepliesContext from "../contexts/RepliesContext";
+import ReplyCard from "../UI/molecules/ReplyCard";
 
 const ExpandedPost = () => {
 
@@ -251,12 +252,7 @@ const ExpandedPost = () => {
           {
             replies.map(reply => 
               <div key={reply.replyId}>
-                <p>{reply.reply}</p>
-                <p>User: {reply.username}</p>
-                <p>Replied: {reply.replyDate.slice(0, 10)}, {reply.replyDate.slice(11, 16)}</p>
-                {
-                  reply.lastEditDate && <p>Edited: {reply.lastEditDate.slice(0, 10)}, {reply.lastEditDate.slice(11, 16)}</p>
-                }
+                <ReplyCard reply={reply} />
                 {
                   decodedUser && decodedUser._id === reply.userId &&
                   <div>
