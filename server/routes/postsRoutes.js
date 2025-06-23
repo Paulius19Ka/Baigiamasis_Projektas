@@ -20,6 +20,6 @@ router.delete('/:id', verifyJWT, deletePost);
 // REPLIES
 router.get('/:id/replies', getAllRepliesByPostId);
 
-router.post('/:id/replies', postReplyByPostId);
+router.post('/:id/replies', verifyJWT, postReplyByPostId);
 
 export default router;

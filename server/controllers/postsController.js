@@ -27,10 +27,7 @@ const getPostById = async (req, res) => {
   const { id } = req.params;
   const client = await connectToDB();
 
-  if(!uuidValidate(id)){
-    console.error({ error: `[${id}] is not a valid id. The id must be a valid uuid.` });
-    return res.status(400).send({ error: `[${id}] is not a valid id. The id must be a valid uuid.` });
-  };
+  validateUUID(id, res);
 
   let filter = { _id: id };
   try{
@@ -54,10 +51,7 @@ const topics = [ 'Misc', 'General', 'Releases', 'Collecting', 'Concerts', 'Rock-
 const createPost = async (req, res) => {
   const { title, content, topic, userId } = req.body;
 
-  if(!uuidValidate(userId)){
-    console.error({ error: `[${userId}] is not a valid id. The id must be a valid uuid.` });
-    return res.status(400).send({ error: `[${userId}] is not a valid id. The id must be a valid uuid.` });
-  };
+  validateUUID(userId, res);
 
   if(!title || !content || !topic || !userId){
     return res.status(400).send({ error: 'Missing required fields, please enter - title, content, topic, userId.'});
