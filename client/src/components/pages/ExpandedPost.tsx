@@ -14,7 +14,7 @@ import ReplyCard from "../UI/molecules/ReplyCard";
 const ExpandedPost = () => {
 
   const { id } = useParams();
-  const { editPost, deletePost } = useContext(PostsContext) as PostsContextTypes;
+  const { editPost, deletePost, scorePost } = useContext(PostsContext) as PostsContextTypes;
   const { decodeUserFromToken, savePost } = useContext(UsersContext) as UsersContextTypes;
   const { replies, fetchReplies, postReply, loading, clearReplies } = useContext(RepliesContext) as RepliesContextTypes;
   const [post, setPost] = useState<Post | null>(null);
@@ -189,12 +189,12 @@ const ExpandedPost = () => {
           <div className="score">
             {
               decodedUser && 
-              <button>🔼</button>
+              <button onClick={() => scorePost(post._id, '+1')}>🔼</button>
             }
             <p>Score: {post.score}</p>
             {
               decodedUser && 
-              <button>🔽</button>
+              <button onClick={() => scorePost(post._id, '-1')}>🔽</button>
             }
           </div>
           <p>Posted: {post.postDate ? post.postDate.slice(0, 10): ''}, {post.postDate ? post.postDate.slice(11, 16): ''}</p>

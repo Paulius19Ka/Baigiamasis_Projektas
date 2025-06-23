@@ -119,7 +119,14 @@ export type PostsContextTypes = {
     success: string;
     error?: undefined;
   }>,
-  updateUsernameInPosts: (userId: string, updatedUsername: string) => void
+  updateUsernameInPosts: (userId: string, updatedUsername: string) => void,
+  scorePost: (postId: string, plusOrMinus: string) => Promise<{
+    error: string;
+    success?: undefined;
+  } | {
+    success: string;
+    error?: undefined;
+  }>
 };
 
 export type FilterStringTypes = {

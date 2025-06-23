@@ -124,6 +124,28 @@ const PostsProvider = ({ children }: ChildProp) => {
     return { success: Back_Response };
   };
 
+  const scorePost = async (postId: string, plusOrMinus: string) => {
+    const accessToken = localStorage.getItem('accessToken') || sessionStorage.getItem('accessToken');
+    const res = await fetch(`http://localhost:5500/posts/${postId}/score`, {
+      method: "PATCH",
+      headers: {
+        "Content-Type":"application/json",
+        Authorization: `Bearer ${accessToken}`
+      },
+      body: JSON.stringify({ plusOrMinus })
+    });
+
+    if(!res.ok){
+      const errorResponse = await res.json();
+      console.error(`Scoring failed: ${errorResponse.error}`);
+      return { error: errorResponse.error };
+    };
+
+    const Back_Response = await res.json();
+
+    return { success: Back_Response };
+  };
+
   // DELETE POST
   const deletePost = async (id: string) => {
     const accessToken = localStorage.getItem('accessToken') || sessionStorage.getItem('accessToken');
@@ -188,7 +210,8 @@ const PostsProvider = ({ children }: ChildProp) => {
         resetFilterAndSort,
         editPost,
         deletePost,
-        updateUsernameInPosts
+        updateUsernameInPosts,
+        scorePost
       }}
     >
       { children }
