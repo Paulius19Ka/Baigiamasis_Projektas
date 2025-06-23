@@ -317,15 +317,12 @@ const ExpandedPost = () => {
           <div className="repliesWrapper">
             {
               replies.map(reply => 
-                <div key={reply.replyId}>
-                  <ReplyCard reply={reply} />
-                  {
-                    decodedUser && decodedUser._id === reply.userId &&
-                    <div>
-                      <button>Delete</button>
-                    </div>
-                  }
-                </div>
+                <ReplyCard
+                  key={reply.replyId}
+                  reply={reply}
+                  decodedUser={decodedUser}
+                  postId={post._id}
+                />
               )
             }
           </div> :

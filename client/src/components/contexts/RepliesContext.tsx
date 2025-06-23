@@ -47,6 +47,31 @@ const RepliesProvider = ({ children }: ChildProp) => {
     return { success: Back_Response.success };
   };
 
+  // EDIT REPLY
+  const editReply = async (editedReply: Pick<Reply, 'reply'>, replyId: string, postId: string) => {
+    const accessToken = localStorage.getItem('accessToken') || sessionStorage.getItem('accessToken');
+    const res = await fetch(`http://localhost:5500/replies/${replyId}`, {
+      method: "PATCH",
+      headers: {
+        "Content-Type":"application/json",
+        Authorization: `Bearer ${accessToken}`
+      },
+      body: JSON.stringify(editedReply)
+    });
+
+    if(!res.ok){
+      const errorResponse = await res.json();
+      console.error(`Editing failed: ${errorResponse.error}`);
+      return { error: errorResponse.error };
+    };
+
+    const Back_Response = await res.json();
+
+    fetchReplies(postId);
+
+    return { success: Back_Response.success };
+  };
+
   // GET REPLIES
   const fetchReplies = (id: string) => {
     // clear replies, to avoid showing replies on unrelated posts
@@ -74,7 +99,8 @@ const RepliesProvider = ({ children }: ChildProp) => {
         replies,
         loading,
         fetchReplies,
-        postReply
+        postReply,
+        editReply
       }}
     >
       { children }

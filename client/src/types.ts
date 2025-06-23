@@ -168,5 +168,12 @@ export type RepliesContextTypes = {
   } | {
     success: string;
     error?: undefined;
+  }>,
+  editReply: (editedReply: Pick<Reply, "reply">, replyId: string, postId: string) => Promise<{
+    error: string;
+    success?: undefined;
+  } | {
+    success: string;
+    error?: undefined;
   }>
 };
