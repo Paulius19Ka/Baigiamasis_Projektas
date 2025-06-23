@@ -141,4 +141,25 @@ export type Post = {
   postDate: string,
   lastEditDate: string,
   score: number
-}
+};
+
+// REPLIES
+
+export type Reply = {
+  userId: string,
+  reply: string,
+  replyDate: string,
+  lastEditDate? : string
+  replyId: string,
+  username: string,
+  avatar: string
+};
+
+export type RepliesContextReducerActionTypes = 
+{ type: 'setReplies', data: Reply[] };
+
+export type RepliesContextTypes = {
+  replies: Reply[],
+  loading: boolean,
+  fetchReplies: (id: string) => void
+};

@@ -3,17 +3,19 @@ import { useNavigate, useParams } from "react-router";
 import { useFormik } from "formik";
 import * as Yup from 'yup';
 
-import { Post, PostsContextTypes, UsersContextTypes } from "../../types";
+import { Post, PostsContextTypes, RepliesContextTypes, UsersContextTypes } from "../../types";
 import InputField from "../UI/molecules/InputField";
 import { topics } from "../../dynamicVariables";
 import PostsContext from "../contexts/PostsContext";
 import UsersContext from "../contexts/UsersContext";
+import RepliesContext from "../contexts/RepliesContext";
 
 const ExpandedPost = () => {
 
   const { id } = useParams();
   const { editPost, deletePost } = useContext(PostsContext) as PostsContextTypes;
   const { decodeUserFromToken, savePost } = useContext(UsersContext) as UsersContextTypes;
+  const { replies, fetchReplies } = useContext(RepliesContext) as RepliesContextTypes;
   const [post, setPost] = useState<Post | null>(null);
   const [editingTitle, setEditingTitle] = useState<boolean>(false);
   const [editingContent, setEditingContent] = useState<boolean>(false);
@@ -127,7 +129,10 @@ const ExpandedPost = () => {
   useEffect(() => {
     fetch(`http://localhost:5500/posts/${id}`)
       .then(res => res.json())
-      .then(data => setPost(data));
+      .then(data => {
+        setPost(data);
+        fetchReplies(data._id);
+      });
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
@@ -137,7 +142,7 @@ const ExpandedPost = () => {
         deleteMessage ?
         <h2>{deleteMessage}</h2> :
         post ?
-        <div>
+        <div className="postWrapper">
           <div className="score">
             {
               decodedUser && 
@@ -236,6 +241,30 @@ const ExpandedPost = () => {
           </form>
           {
             editMessage && <p>{editMessage}</p>
+          }
+        </div> :
+        <p>Loading...</p>
+      }
+      {
+        replies.length ?
+        <div className="repliesWrapper">
+          {
+            replies.map(reply => 
+              <div key={reply.replyId}>
+                <p>{reply.reply}</p>
+                <p>{reply.username}</p>
+                <p>{reply.replyDate}</p>
+                {
+                  reply.lastEditDate && <p>{reply.lastEditDate}</p>
+                }
+                {
+                  decodedUser && decodedUser._id === reply.userId &&
+                  <div>
+                    <button>Delete</button>
+                  </div>
+                }
+              </div>
+            )
           }
         </div> :
         <p>Loading...</p>
