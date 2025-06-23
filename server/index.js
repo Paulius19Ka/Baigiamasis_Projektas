@@ -4,6 +4,7 @@ import 'dotenv/config';
 
 import usersRoutes from './routes/usersRoutes.js';
 import postsRoutes from './routes/postsRoutes.js';
+import repliesRoutes from './routes/repliesRoutes.js'
 
 const PORT = process.env.PORT || 5501;
 const corsOptions = {
@@ -22,7 +23,7 @@ app.listen(PORT, () => {
 
 app.use('/users', usersRoutes);
 app.use('/posts', postsRoutes);
-// app.use('/comments', /* route */);
+app.use('/replies', repliesRoutes);
 
 app.use((req, res) => {
   res.status(404).send({ error: `Your requested route does not exist.` });
