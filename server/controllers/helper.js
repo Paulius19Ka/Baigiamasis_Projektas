@@ -9,7 +9,7 @@ const connectToDB = async () => {
 };
 
 const createAccessJWT = (payload) => {
-  return jwt.sign(payload, process.env.JWT_ACCESS_SECRET, { expiresIn: '1h' });
+  return jwt.sign(payload, process.env.JWT_ACCESS_SECRET, { expiresIn: '1d' });
 };
 
 const createRefreshJWT = (payload) => {
