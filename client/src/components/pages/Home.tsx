@@ -41,6 +41,8 @@ const Home = () => {
         {/* sort: date, reply count */}
         <button type="button" onClick={handleSort} value={`sort_postDate=1`}>Date ASC</button>
         <button type="button" onClick={handleSort} value={`sort_postDate=-1`}>Date DESC</button>
+        <button type="button" onClick={handleSort} value={`sort_replyCount=1`}>Replies ASC</button>
+        <button type="button" onClick={handleSort} value={`sort_replyCount=-1`}>Replies DESC</button>
         {/* filter: solved/not solved, title, topic */}
         <form onSubmit={formik.handleSubmit}>
           <InputField
