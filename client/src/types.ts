@@ -126,7 +126,8 @@ export type PostsContextTypes = {
   } | {
     success: string;
     error?: undefined;
-  }>
+  }>,
+  filteredDataCount: number
 };
 
 export type FilterStringTypes = {

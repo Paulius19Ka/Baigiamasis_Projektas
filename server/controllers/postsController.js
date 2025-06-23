@@ -102,7 +102,7 @@ const getPostCount = async (req, res) => {
       return res.status(404).send({ error: `No posts were found.` });
     };
 
-    res.send(DB_RESPONSE);
+    res.send({ count: DB_RESPONSE[0]?.count });
   } catch(err){
     console.error(err);
     res.status(500).send({ error: err, message: `Something went wrong with the server.` });

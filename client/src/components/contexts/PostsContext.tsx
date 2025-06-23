@@ -30,12 +30,14 @@ const PostsProvider = ({ children }: ChildProp) => {
   const [loading, setLoading] = useState(true);
   const sortString = useRef('');
   const filterString = useRef('');
+  const [filteredDataCount, setFilteredDataCount] = useState(0);
 
   // FILTER/SORT
   const resetFilterAndSort = () => {
     filterString.current = '';
     sortString.current = '';
     fetchPosts();
+    getFilteredDataCount();
   };
 
   const handleFilter = (values: FilterStringTypes) => {
@@ -51,11 +53,18 @@ const PostsProvider = ({ children }: ChildProp) => {
     };
     filterString.current = filterParams.join('&');
     fetchPosts();
+    getFilteredDataCount();
   };
 
   const handleSort = (e: React.MouseEvent<HTMLButtonElement>) => {
     sortString.current = `${(e.target as HTMLButtonElement).value}`;
     fetchPosts();
+  };
+
+  const getFilteredDataCount = () => {
+    fetch(`http://localhost:5500/posts/get/count?${filterString.current}`)
+      .then(res => res.json())
+      .then(data => setFilteredDataCount(data.count));
   };
 
   // NEW POST
@@ -197,6 +206,7 @@ const PostsProvider = ({ children }: ChildProp) => {
 
   useEffect(() => {
     fetchPosts();
+    getFilteredDataCount();
   }, []);
 
   return (
@@ -211,7 +221,8 @@ const PostsProvider = ({ children }: ChildProp) => {
         editPost,
         deletePost,
         updateUsernameInPosts,
-        scorePost
+        scorePost,
+        filteredDataCount
       }}
     >
       { children }
