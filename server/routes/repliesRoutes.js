@@ -1,11 +1,12 @@
 import { Router } from "express";
 
-import { editReply } from "../controllers/repliesController.js";
+import { deleteReply, editReply } from "../controllers/repliesController.js";
+import { verifyJWT } from "../middleware/auth.js";
 
 const router = Router();
 
-router.patch('/:id', editReply);
+router.patch('/:id', verifyJWT, editReply);
 
-router.delete('/:id', () => {});
+router.delete('/:id', verifyJWT, deleteReply);
 
 export default router;

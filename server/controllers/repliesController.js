@@ -142,4 +142,25 @@ const editReply = async (req, res) => {
   };
 };
 
-export { getAllRepliesByPostId, postReplyByPostId, editReply };
+const deleteReply = async (req, res) => {
+  const { id } = req.params;
+  validateUUID(id, res);
+
+  const client = await connectToDB();
+  try{
+    let filter = { _id: id };
+    const DB_Response = await client.db('Final_Project').collection('replies').deleteOne(filter);
+
+    if(!DB_Response.deletedCount){
+      return res.status(404).send({ error: `Reply with ID: ${id} was not found.`});
+    }
+    res.send({ success: `Reply with ID: ${id} was deleted successfully.` });
+  } catch(err){
+    console.error(err);
+    res.status(500).send({ error: err, message: `Something went wrong with the server.` });
+  } finally{
+    await client.close();
+  };
+};
+
+export { getAllRepliesByPostId, postReplyByPostId, editReply, deleteReply };
