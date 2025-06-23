@@ -7,6 +7,7 @@ import { Link } from "react-router";
 import { useFormik } from "formik";
 import InputField from "../UI/molecules/InputField";
 import { topics } from "../../dynamicVariables";
+import Pagination from "../UI/molecules/Pagination";
 
 const StyledSection = styled.section`
   
@@ -34,6 +35,7 @@ const Home = () => {
 
   return (
     <StyledSection>
+      <Pagination />
       <h2>Home</h2>
       <div className="tools">
         <Link to='newPost'>New Thread</Link>

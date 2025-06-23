@@ -126,7 +126,11 @@ export type PostsContextTypes = {
   } | {
     success: string;
     error?: undefined;
-  }>
+  }>,
+  filteredDataCount: number,
+  currentPage: React.RefObject<number>,
+  pageSize: React.RefObject<number>,
+  changePage: (newPage: number) => void
 };
 
 export type FilterStringTypes = {

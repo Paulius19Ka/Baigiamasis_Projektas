@@ -59,7 +59,50 @@ const getAllPosts = async (req, res) => {
       console.error({ error: `No posts were found.` });
       return res.status(404).send({ error: `No posts were found.` });
     };
+
     res.send(DB_RESPONSE);
+  } catch(err){
+    console.error(err);
+    res.status(500).send({ error: err, message: `Something went wrong with the server.` });
+  } finally{
+    await client.close();
+  };
+};
+
+// GET POSTS COUNT
+const getPostCount = async (req, res) => {
+  const client = await connectToDB();
+  try{
+    const settings = postsQuery(req.query);
+    const initialFilter = { ...settings.filter };
+    delete initialFilter.replyCount;
+
+    const DB_RESPONSE = await client.db('Final_Project').collection('posts').aggregate([
+      { $match: initialFilter },
+      {
+        $lookup: {
+          from: 'replies',
+          localField: '_id',
+          foreignField: 'postId',
+          as: 'replies'
+        }
+      },
+      {
+        $addFields: {
+          replyCount: { $size: '$replies' }
+        }
+      },
+      ...(settings.filter?.replyCount ?
+      [{ $match: { replyCount: settings.filter.replyCount } }] : []),
+      { $count: 'count' }
+    ]).toArray();
+
+    if(!DB_RESPONSE.length){
+      console.error({ error: `No posts were found.` });
+      return res.status(404).send({ error: `No posts were found.` });
+    };
+
+    res.send({ count: DB_RESPONSE[0]?.count });
   } catch(err){
     console.error(err);
     res.status(500).send({ error: err, message: `Something went wrong with the server.` });
@@ -259,4 +302,4 @@ const deletePost = async (req, res) => {
   }
 };
 
-export { getAllPosts, getPostById, createPost, editPost, deletePost };
+export { getAllPosts, getPostById, createPost, editPost, deletePost, getPostCount };
