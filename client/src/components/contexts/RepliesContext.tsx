@@ -49,6 +49,11 @@ const RepliesProvider = ({ children }: ChildProp) => {
 
   // GET REPLIES
   const fetchReplies = (id: string) => {
+    // clear replies, to avoid showing replies on unrelated posts
+    dispatch({
+      type: 'setReplies',
+      data: []
+    });
     setLoading(true);
     fetch(`http://localhost:5500/posts/${id}/replies`)
       .then(res => res.json())

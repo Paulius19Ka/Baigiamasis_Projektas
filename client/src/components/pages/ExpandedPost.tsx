@@ -16,7 +16,7 @@ const ExpandedPost = () => {
   const { id } = useParams();
   const { editPost, deletePost } = useContext(PostsContext) as PostsContextTypes;
   const { decodeUserFromToken, savePost } = useContext(UsersContext) as UsersContextTypes;
-  const { replies, fetchReplies, postReply } = useContext(RepliesContext) as RepliesContextTypes;
+  const { replies, fetchReplies, postReply, loading } = useContext(RepliesContext) as RepliesContextTypes;
   const [post, setPost] = useState<Post | null>(null);
   const [editingTitle, setEditingTitle] = useState<boolean>(false);
   const [editingContent, setEditingContent] = useState<boolean>(false);
@@ -166,14 +166,16 @@ const ExpandedPost = () => {
 
 
   useEffect(() => {
-    fetch(`http://localhost:5500/posts/${id}`)
-      .then(res => res.json())
-      .then(data => {
-        setPost(data);
-        fetchReplies(data._id);
-      });
+    if(id){
+      fetch(`http://localhost:5500/posts/${id}`)
+        .then(res => res.json())
+        .then(data => {
+          setPost(data);
+          fetchReplies(id);
+        });
+    };
   // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [id]);
 
   return (
     <section>
@@ -307,23 +309,28 @@ const ExpandedPost = () => {
         <p>Loading...</p>
       }
       {
-        replies.length ?
-        <div className="repliesWrapper">
-          {
-            replies.map(reply => 
-              <div key={reply.replyId}>
-                <ReplyCard reply={reply} />
-                {
-                  decodedUser && decodedUser._id === reply.userId &&
-                  <div>
-                    <button>Delete</button>
-                  </div>
-                }
-              </div>
-            )
-          }
-        </div> :
-        <p>Loading...</p>
+        post ?
+        (
+          loading ?
+          <p>Loading replies...</p> :
+          replies.length ?
+          <div className="repliesWrapper">
+            {
+              replies.map(reply => 
+                <div key={reply.replyId}>
+                  <ReplyCard reply={reply} />
+                  {
+                    decodedUser && decodedUser._id === reply.userId &&
+                    <div>
+                      <button>Delete</button>
+                    </div>
+                  }
+                </div>
+              )
+            }
+          </div> :
+          <p>No replies.</p>
+        ) : null
       }
     </section>
   );
