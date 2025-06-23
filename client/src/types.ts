@@ -87,7 +87,8 @@ export type InputFieldPropTypes = {
 // POSTS
 
 export type PostsContextReducerActionTypes =
-{ type: 'setPosts', data: Post[] };
+{ type: 'setPosts', data: Post[] } |
+{ type: 'updateUsernameInPosts', updatedUsername: string, userId: string };
 // { type: 'editPost', updatedPost: Post };
 // { type: 'addPost', newPost: Pick<Post, "title" | "content" | "topic"> };
 
@@ -117,12 +118,21 @@ export type PostsContextTypes = {
   } | {
     success: string;
     error?: undefined;
+  }>,
+  updateUsernameInPosts: (userId: string, updatedUsername: string) => void,
+  scorePost: (postId: string, plusOrMinus: string) => Promise<{
+    error: string;
+    success?: undefined;
+  } | {
+    success: string;
+    error?: undefined;
   }>
 };
 
 export type FilterStringTypes = {
   title: string,
-  topic: string
+  topic: string,
+  replied: boolean
 };
 
 export type Topics = 'Misc' | 'General' | 'Releases' | 'Collecting' | 'Concerts' | 'Rock-Blues' | 'Pop-Dance' | 'Metal-Hard Rock' | 'Jazz' | 'Classical' | 'Electronic' | 'Country-Folk' | 'Soul-Rap' | 'Alternative' | '';
@@ -138,5 +148,49 @@ export type Post = {
   topic: Topics,
   postDate: string,
   lastEditDate: string,
-  score: number
-}
+  score: number,
+  replyCount: number
+};
+
+// REPLIES
+
+export type Reply = {
+  userId: string,
+  reply: string,
+  replyDate: string,
+  lastEditDate? : string
+  replyId: string,
+  username: string,
+  avatar: string
+};
+
+export type RepliesContextReducerActionTypes = 
+{ type: 'setReplies', data: Reply[] };
+
+export type RepliesContextTypes = {
+  replies: Reply[],
+  loading: boolean,
+  fetchReplies: (id: string) => void,
+  postReply: (newReply: Pick<Reply, "reply">, userId: string, postId: string) => Promise<{
+    error: string;
+    success?: undefined;
+  } | {
+    success: string;
+    error?: undefined;
+  }>,
+  editReply: (editedReply: Pick<Reply, "reply">, replyId: string, postId: string) => Promise<{
+    error: string;
+    success?: undefined;
+  } | {
+    success: string;
+    error?: undefined;
+  }>,
+  deleteReply: (replyId: string, postId: string) => Promise<{
+    error: string;
+    success?: undefined;
+  } | {
+    success: string;
+    error?: undefined;
+  }>,
+  clearReplies: () => void
+};

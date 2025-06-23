@@ -3,17 +3,20 @@ import { useNavigate, useParams } from "react-router";
 import { useFormik } from "formik";
 import * as Yup from 'yup';
 
-import { Post, PostsContextTypes, UsersContextTypes } from "../../types";
+import { Post, PostsContextTypes, RepliesContextTypes, UsersContextTypes } from "../../types";
 import InputField from "../UI/molecules/InputField";
 import { topics } from "../../dynamicVariables";
 import PostsContext from "../contexts/PostsContext";
 import UsersContext from "../contexts/UsersContext";
+import RepliesContext from "../contexts/RepliesContext";
+import ReplyCard from "../UI/molecules/ReplyCard";
 
 const ExpandedPost = () => {
 
   const { id } = useParams();
-  const { editPost, deletePost } = useContext(PostsContext) as PostsContextTypes;
+  const { editPost, deletePost, scorePost } = useContext(PostsContext) as PostsContextTypes;
   const { decodeUserFromToken, savePost } = useContext(UsersContext) as UsersContextTypes;
+  const { replies, fetchReplies, postReply, loading, clearReplies } = useContext(RepliesContext) as RepliesContextTypes;
   const [post, setPost] = useState<Post | null>(null);
   const [editingTitle, setEditingTitle] = useState<boolean>(false);
   const [editingContent, setEditingContent] = useState<boolean>(false);
@@ -21,6 +24,8 @@ const ExpandedPost = () => {
   const [editMessage, setEditMessage] = useState('');
   const [deleteMessage, setDeleteMessage] = useState('');
   const [saveBtnText, setSaveBtnText] = useState('Save');
+  const [postingReply, setPostingReply] = useState(false);
+  const [postReplyMessage, setPostReplyMessage] = useState('');
   const decodedUser = decodeUserFromToken();
   const navigate = useNavigate();
 
@@ -70,6 +75,37 @@ const ExpandedPost = () => {
     }
   });
 
+  const formikReply = useFormik({
+    initialValues: {
+      reply: ''
+    },
+    validationSchema: Yup.object({
+      reply: Yup.string()
+        .min(10, 'The reply must be longer than 10 symbols.')
+        .max(1000, 'The reply must be shorter than 1000 symbols.')
+        .required('Enter the reply')
+    }),
+    onSubmit: async (values) => {
+      if(!post?._id){
+        setPostReplyMessage(`Failed to retrieve Post ID.`);
+        throw new Error(`Failed to retrieve Post ID.`);
+      };
+      if(!decodedUser?._id){
+        setPostReplyMessage(`Failed to retrieve user ID.`);
+        throw new Error(`Failed to retrieve user ID.`);
+      };
+
+      const Response = await postReply(values, decodedUser._id, post._id);
+      if('error' in Response){
+        setPostReplyMessage('Failed to post a new reply.');
+        throw new Error('Failed to post a new reply.');
+      };
+      setPostReplyMessage('Successfully posted a reply.');
+      setPostingReply(false);
+      formikReply.resetForm();
+    }
+  });
+
   const deleteHandler = () => {
     if(!post?._id){
       setDeleteMessage(`Failed to retrieve Post ID.`);
@@ -77,6 +113,7 @@ const ExpandedPost = () => {
     };
     deletePost(post?._id);
     setDeleteMessage('Post was successfully deleted.');
+    clearReplies();
     setTimeout(() => {
       setDeleteMessage('');
       navigate('/');
@@ -103,6 +140,12 @@ const ExpandedPost = () => {
 
   };
 
+  const replyPostHandler = async () => {
+    if(!postingReply){
+      setPostingReply(true);
+    };
+  };
+
   // update the save button text whether the post is already saved or not
   useEffect(() => {
     if(post && decodedUser){
@@ -125,11 +168,16 @@ const ExpandedPost = () => {
 
 
   useEffect(() => {
-    fetch(`http://localhost:5500/posts/${id}`)
-      .then(res => res.json())
-      .then(data => setPost(data));
+    if(id){
+      fetch(`http://localhost:5500/posts/${id}`)
+        .then(res => res.json())
+        .then(data => {
+          setPost(data);
+          fetchReplies(id);
+        });
+    };
   // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [id]);
 
   return (
     <section>
@@ -137,16 +185,16 @@ const ExpandedPost = () => {
         deleteMessage ?
         <h2>{deleteMessage}</h2> :
         post ?
-        <div>
+        <div className="postWrapper">
           <div className="score">
             {
               decodedUser && 
-              <button>🔼</button>
+              <button onClick={() => scorePost(post._id, '+1')}>🔼</button>
             }
             <p>Score: {post.score}</p>
             {
               decodedUser && 
-              <button>🔽</button>
+              <button onClick={() => scorePost(post._id, '-1')}>🔽</button>
             }
           </div>
           <p>Posted: {post.postDate ? post.postDate.slice(0, 10): ''}, {post.postDate ? post.postDate.slice(11, 16): ''}</p>
@@ -201,15 +249,15 @@ const ExpandedPost = () => {
             {
               editingTopic ?
               <InputField
-              labelText='Topic:'
-              inputType='select'
-              inputName='topic' inputId='topic'
-              inputValue={formik.values.topic}
-              inputOnChange={formik.handleChange}
-              inputOnBlur={formik.handleBlur}
-              errors={formik.errors.topic}
-              touched={formik.touched.topic}
-              selectOps={topics}
+                labelText='Topic:'
+                inputType='select'
+                inputName='topic' inputId='topic'
+                inputValue={formik.values.topic}
+                inputOnChange={formik.handleChange}
+                inputOnBlur={formik.handleBlur}
+                errors={formik.errors.topic}
+                touched={formik.touched.topic}
+                selectOps={topics}
               /> :
               <div>
                 <p>Topic: {post.topic}</p>
@@ -222,12 +270,16 @@ const ExpandedPost = () => {
             {
               decodedUser &&
               <div>
-                <button>Reply</button>
+                <button type="button" onClick={replyPostHandler}>Reply</button>
                 <button type="button" onClick={savePostHandler}>{saveBtnText}</button>
                 {
                   post.postedBy.userId === decodedUser._id &&
                   <>
-                    <input type="submit" value='Complete Edit' />
+                    {
+                      editingTitle || editingContent || editingTopic ?
+                      <input type="submit" value='Complete Edit' /> :
+                      null
+                    }
                     <button onClick={deleteHandler}>Delete</button>
                   </>
                 }
@@ -237,8 +289,51 @@ const ExpandedPost = () => {
           {
             editMessage && <p>{editMessage}</p>
           }
+          {
+            postingReply &&
+            <div>
+              <form onSubmit={formikReply.handleSubmit}>
+                <InputField
+                  labelText='Reply:'
+                  inputType='text'
+                  inputName='reply' inputId='reply'
+                  inputValue={formikReply.values.reply}
+                  inputOnChange={formikReply.handleChange}
+                  inputOnBlur={formikReply.handleBlur}
+                  errors={formikReply.errors.reply}
+                  touched={formikReply.touched.reply}
+                  inputPlaceholder={'Enter a reply...'}
+                />
+                <input type="submit" value='Post Reply' />
+              </form>
+              {
+                postReplyMessage && <p>{postReplyMessage}</p>
+              }
+            </div>
+          }
         </div> :
         <p>Loading...</p>
+      }
+      {
+        post ?
+        (
+          loading ?
+          <p>Loading replies...</p> :
+          replies.length ?
+          <div className="repliesWrapper">
+            {
+              replies.map(reply => 
+                <ReplyCard
+                  key={reply.replyId}
+                  reply={reply}
+                  decodedUser={decodedUser}
+                  postId={post._id}
+                />
+              )
+            }
+          </div> :
+          <p>No replies.</p>
+        ) : null
       }
     </section>
   );

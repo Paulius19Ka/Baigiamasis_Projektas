@@ -8,7 +8,53 @@ const getAllPosts = async (req, res) => {
   const client = await connectToDB();
   try{
     const settings = postsQuery(req.query);
-    const DB_RESPONSE = await client.db('Final_Project').collection('posts').find(settings.filter).sort(settings.sort).skip(settings.skip).limit(settings.limit).toArray();
+    // const DB_RESPONSE = await client.db('Final_Project').collection('posts').find(settings.filter).sort(settings.sort).skip(settings.skip).limit(settings.limit).toArray();
+
+    // copy settings.filter, then delete replyCount, so that it is not used too early, because replyCount is created later in the aggregation pipeline
+    const initialFilter = { ...settings.filter };
+    delete initialFilter.replyCount;
+
+    // get posts with number of replies
+    const DB_RESPONSE = await client.db('Final_Project').collection('posts').aggregate([
+      { $match: initialFilter },
+      {
+        '$lookup': {
+          'from': 'replies', 
+          'localField': '_id', 
+          'foreignField': 'postId', 
+          'as': 'replies'
+        }
+      },
+      {
+        '$addFields': {
+          'replyCount': {
+            '$size': '$replies'
+          }
+        }
+      },
+      ...(settings.filter?.replyCount ?
+      [{ $match: { replyCount: settings.filter.replyCount } }] : []),
+      settings.sortStage ?
+      { $sort: settings.sortStage } :
+      { $sort: settings.sort },
+      { $skip: settings.skip },
+      { $limit: settings.limit },
+      {
+        '$project': {
+          'postedBy': 1, 
+          'score': 1, 
+          'lastEditDate': 1, 
+          'topic': 1, 
+          'postDate': 1, 
+          '_id': 1, 
+          'title': 1, 
+          'content': 1, 
+          'replyCount': 1
+        }
+      }
+    ]).toArray();
+
+
     if(!DB_RESPONSE.length){
       console.error({ error: `No posts were found.` });
       return res.status(404).send({ error: `No posts were found.` });
@@ -27,10 +73,7 @@ const getPostById = async (req, res) => {
   const { id } = req.params;
   const client = await connectToDB();
 
-  if(!uuidValidate(id)){
-    console.error({ error: `[${id}] is not a valid id. The id must be a valid uuid.` });
-    return res.status(400).send({ error: `[${id}] is not a valid id. The id must be a valid uuid.` });
-  };
+  validateUUID(id, res);
 
   let filter = { _id: id };
   try{
@@ -54,10 +97,7 @@ const topics = [ 'Misc', 'General', 'Releases', 'Collecting', 'Concerts', 'Rock-
 const createPost = async (req, res) => {
   const { title, content, topic, userId } = req.body;
 
-  if(!uuidValidate(userId)){
-    console.error({ error: `[${userId}] is not a valid id. The id must be a valid uuid.` });
-    return res.status(400).send({ error: `[${userId}] is not a valid id. The id must be a valid uuid.` });
-  };
+  validateUUID(userId, res);
 
   if(!title || !content || !topic || !userId){
     return res.status(400).send({ error: 'Missing required fields, please enter - title, content, topic, userId.'});
@@ -168,7 +208,7 @@ const editPost = async (req, res) => {
 
     updateFields.lastEditDate = new Date();
 
-    if(!Object.keys(updateFields).length){
+    if(!Object.keys(req.body).length){
       return res.status(400).send({ error: 'No fields were provided for editing.' });
     };
 
@@ -201,6 +241,15 @@ const deletePost = async (req, res) => {
     if(!DB_Response.deletedCount){
       return res.status(404).send({ error: `Post with ID: ${id} was not found.`});
     };
+
+    // delete associated replies
+    await client.db('Final_Project').collection('replies').deleteMany({ postId: id });
+    // delete saved post id from users
+    await client.db('Final_Project').collection('users').updateMany(
+      { savedPosts: id },
+      { $pull: { savedPosts: id } }
+    );
+
     res.send({ success: `Post with ID: ${id} was deleted successfully.` });
   } catch(err){
     console.error(err);

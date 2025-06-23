@@ -41,6 +41,11 @@ const PostCard = ({ post }: Props) => {
       </div>
       <div className="info">
         <span>Topic: {post.topic}</span>
+        {
+          post.replyCount ?
+          <span>Replies: {post.replyCount}</span> :
+          <span>No Replies...</span>
+        }
         <span>By: {post.postedBy?.username ?? ''}</span>
       </div>
     </StyledDiv>

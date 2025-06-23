@@ -134,6 +134,14 @@ const editUser = async (req, res) => {
         return user;
       }, {});
 
+    if(updateFields.username){
+      await client.db('Final_Project').collection('posts').updateMany(
+        { 'postedBy.userId': id },
+        { $set: { 'postedBy.username': updateFields.username } }
+      );
+    };
+
+
     // if editing password, enter the old password, check if they match, then hash and update the password
     if(updateFields.password){
       if(!req.body.oldPassword){

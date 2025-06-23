@@ -12,6 +12,12 @@ const reducer = (state: Post[], action: PostsContextReducerActionTypes) => {
     //     { ...post, ...action.updatedPost } :
     //     post
     //   );
+    case 'updateUsernameInPosts':
+      return state.map(post =>
+        post.postedBy.userId === action.userId ?
+        { ...post, postedBy: { ...post.postedBy, username: action.updatedUsername } }:
+        post
+      );
     default:
       return state;
   };
@@ -39,6 +45,9 @@ const PostsProvider = ({ children }: ChildProp) => {
     };
     if(values.title){
       filterParams.push(`filter_title=${values.title}`);
+    };
+    if(values.replied){
+      filterParams.push(`filter_replyCount_gte=1`);
     };
     filterString.current = filterParams.join('&');
     fetchPosts();
@@ -115,6 +124,28 @@ const PostsProvider = ({ children }: ChildProp) => {
     return { success: Back_Response };
   };
 
+  const scorePost = async (postId: string, plusOrMinus: string) => {
+    const accessToken = localStorage.getItem('accessToken') || sessionStorage.getItem('accessToken');
+    const res = await fetch(`http://localhost:5500/posts/${postId}/score`, {
+      method: "PATCH",
+      headers: {
+        "Content-Type":"application/json",
+        Authorization: `Bearer ${accessToken}`
+      },
+      body: JSON.stringify({ plusOrMinus })
+    });
+
+    if(!res.ok){
+      const errorResponse = await res.json();
+      console.error(`Scoring failed: ${errorResponse.error}`);
+      return { error: errorResponse.error };
+    };
+
+    const Back_Response = await res.json();
+
+    return { success: Back_Response };
+  };
+
   // DELETE POST
   const deletePost = async (id: string) => {
     const accessToken = localStorage.getItem('accessToken') || sessionStorage.getItem('accessToken');
@@ -137,6 +168,15 @@ const PostsProvider = ({ children }: ChildProp) => {
     fetchPosts();
 
     return { success: Back_Response };
+  };
+
+  // UPDATE USERNAMES IN POSTS WHEN EDITING USER
+  const updateUsernameInPosts = (userId: string, updatedUsername: string) => {
+    dispatch({
+      type: 'updateUsernameInPosts',
+      userId,
+      updatedUsername
+    });
   };
 
   // GET POSTS
@@ -169,7 +209,9 @@ const PostsProvider = ({ children }: ChildProp) => {
         handleFilter,
         resetFilterAndSort,
         editPost,
-        deletePost
+        deletePost,
+        updateUsernameInPosts,
+        scorePost
       }}
     >
       { children }
