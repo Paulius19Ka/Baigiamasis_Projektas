@@ -16,7 +16,7 @@ const ExpandedPost = () => {
   const { id } = useParams();
   const { editPost, deletePost } = useContext(PostsContext) as PostsContextTypes;
   const { decodeUserFromToken, savePost } = useContext(UsersContext) as UsersContextTypes;
-  const { replies, fetchReplies } = useContext(RepliesContext) as RepliesContextTypes;
+  const { replies, fetchReplies, postReply } = useContext(RepliesContext) as RepliesContextTypes;
   const [post, setPost] = useState<Post | null>(null);
   const [editingTitle, setEditingTitle] = useState<boolean>(false);
   const [editingContent, setEditingContent] = useState<boolean>(false);
@@ -24,6 +24,8 @@ const ExpandedPost = () => {
   const [editMessage, setEditMessage] = useState('');
   const [deleteMessage, setDeleteMessage] = useState('');
   const [saveBtnText, setSaveBtnText] = useState('Save');
+  const [postingReply, setPostingReply] = useState(false);
+  const [postReplyMessage, setPostReplyMessage] = useState('');
   const decodedUser = decodeUserFromToken();
   const navigate = useNavigate();
 
@@ -73,6 +75,36 @@ const ExpandedPost = () => {
     }
   });
 
+  const formikReply = useFormik({
+    initialValues: {
+      reply: ''
+    },
+    validationSchema: Yup.object({
+      reply: Yup.string()
+        .min(10, 'The reply must be longer than 10 symbols.')
+        .max(1000, 'The reply must be shorter than 1000 symbols.')
+        .required('Enter the reply')
+    }),
+    onSubmit: async (values) => {
+      if(!post?._id){
+        setPostReplyMessage(`Failed to retrieve Post ID.`);
+        throw new Error(`Failed to retrieve Post ID.`);
+      };
+      if(!decodedUser?._id){
+        setPostReplyMessage(`Failed to retrieve user ID.`);
+        throw new Error(`Failed to retrieve user ID.`);
+      };
+
+      const Response = await postReply(values, decodedUser._id, post._id);
+      if('error' in Response){
+        setPostReplyMessage('Failed to post a new reply.');
+        throw new Error('Failed to post a new reply.');
+      };
+      setPostReplyMessage('Successfully posted a reply.');
+      setPostingReply(false);
+    }
+  });
+
   const deleteHandler = () => {
     if(!post?._id){
       setDeleteMessage(`Failed to retrieve Post ID.`);
@@ -104,6 +136,12 @@ const ExpandedPost = () => {
     const isNowSaved = updatedUser?.savedPosts.includes(post._id);
     setSaveBtnText(isNowSaved ? 'Unsave' : 'Save');
 
+  };
+
+  const replyPostHandler = async () => {
+    if(!postingReply){
+      setPostingReply(true);
+    };
   };
 
   // update the save button text whether the post is already saved or not
@@ -207,15 +245,15 @@ const ExpandedPost = () => {
             {
               editingTopic ?
               <InputField
-              labelText='Topic:'
-              inputType='select'
-              inputName='topic' inputId='topic'
-              inputValue={formik.values.topic}
-              inputOnChange={formik.handleChange}
-              inputOnBlur={formik.handleBlur}
-              errors={formik.errors.topic}
-              touched={formik.touched.topic}
-              selectOps={topics}
+                labelText='Topic:'
+                inputType='select'
+                inputName='topic' inputId='topic'
+                inputValue={formik.values.topic}
+                inputOnChange={formik.handleChange}
+                inputOnBlur={formik.handleBlur}
+                errors={formik.errors.topic}
+                touched={formik.touched.topic}
+                selectOps={topics}
               /> :
               <div>
                 <p>Topic: {post.topic}</p>
@@ -228,7 +266,7 @@ const ExpandedPost = () => {
             {
               decodedUser &&
               <div>
-                <button type="button" onClick={() => console.log('click')}>Reply</button>
+                <button type="button" onClick={replyPostHandler}>Reply</button>
                 <button type="button" onClick={savePostHandler}>{saveBtnText}</button>
                 {
                   post.postedBy.userId === decodedUser._id &&
@@ -242,6 +280,28 @@ const ExpandedPost = () => {
           </form>
           {
             editMessage && <p>{editMessage}</p>
+          }
+          {
+            postingReply &&
+            <div>
+              <form onSubmit={formikReply.handleSubmit}>
+                <InputField
+                  labelText='Reply:'
+                  inputType='text'
+                  inputName='reply' inputId='reply'
+                  inputValue={formikReply.values.reply}
+                  inputOnChange={formikReply.handleChange}
+                  inputOnBlur={formikReply.handleBlur}
+                  errors={formikReply.errors.reply}
+                  touched={formikReply.touched.reply}
+                  inputPlaceholder={'Enter a reply...'}
+                />
+                <input type="submit" value='Post Reply' />
+              </form>
+              {
+                postReplyMessage && <p>{postReplyMessage}</p>
+              }
+            </div>
           }
         </div> :
         <p>Loading...</p>
