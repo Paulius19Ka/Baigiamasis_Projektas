@@ -273,7 +273,11 @@ const ExpandedPost = () => {
                 {
                   post.postedBy.userId === decodedUser._id &&
                   <>
-                    <input type="submit" value='Complete Edit' />
+                    {
+                      editingTitle || editingContent || editingTopic ?
+                      <input type="submit" value='Complete Edit' /> :
+                      null
+                    }
                     <button onClick={deleteHandler}>Delete</button>
                   </>
                 }
