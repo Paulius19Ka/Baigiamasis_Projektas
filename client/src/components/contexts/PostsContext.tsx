@@ -12,6 +12,12 @@ const reducer = (state: Post[], action: PostsContextReducerActionTypes) => {
     //     { ...post, ...action.updatedPost } :
     //     post
     //   );
+    case 'updateUsernameInPosts':
+      return state.map(post =>
+        post.postedBy.userId === action.userId ?
+        { ...post, postedBy: { ...post.postedBy, username: action.updatedUsername } }:
+        post
+      );
     default:
       return state;
   };
@@ -139,6 +145,15 @@ const PostsProvider = ({ children }: ChildProp) => {
     return { success: Back_Response };
   };
 
+  // UPDATE USERNAMES IN POSTS WHEN EDITING USER
+  const updateUsernameInPosts = (userId: string, updatedUsername: string) => {
+    dispatch({
+      type: 'updateUsernameInPosts',
+      userId,
+      updatedUsername
+    });
+  };
+
   // GET POSTS
   const fetchPosts = () => {
     setLoading(true);
@@ -169,7 +184,8 @@ const PostsProvider = ({ children }: ChildProp) => {
         handleFilter,
         resetFilterAndSort,
         editPost,
-        deletePost
+        deletePost,
+        updateUsernameInPosts
       }}
     >
       { children }

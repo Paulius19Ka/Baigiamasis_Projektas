@@ -87,7 +87,8 @@ export type InputFieldPropTypes = {
 // POSTS
 
 export type PostsContextReducerActionTypes =
-{ type: 'setPosts', data: Post[] };
+{ type: 'setPosts', data: Post[] } |
+{ type: 'updateUsernameInPosts', updatedUsername: string, userId: string };
 // { type: 'editPost', updatedPost: Post };
 // { type: 'addPost', newPost: Pick<Post, "title" | "content" | "topic"> };
 
@@ -117,7 +118,8 @@ export type PostsContextTypes = {
   } | {
     success: string;
     error?: undefined;
-  }>
+  }>,
+  updateUsernameInPosts: (userId: string, updatedUsername: string) => void
 };
 
 export type FilterStringTypes = {

@@ -1,7 +1,8 @@
-import { createContext, useEffect, useReducer } from 'react';
+import { createContext, useContext, useEffect, useReducer } from 'react';
 import { jwtDecode } from "jwt-decode";
 
-import { ChildProp, User, UsersContextActionTypes, UsersContextTypes } from '../../types';
+import { ChildProp, PostsContextTypes, User, UsersContextActionTypes, UsersContextTypes } from '../../types';
+import PostsContext from './PostsContext';
 
 const reducer = (state: Omit<User, 'password'> | null, action: UsersContextActionTypes) => {
   switch(action.type){
@@ -20,6 +21,7 @@ const UsersContext = createContext<UsersContextTypes | undefined>(undefined);
 const UsersProvider = ({ children }: ChildProp) => {
 
   const [loggedInUser, dispatch] = useReducer(reducer, null);
+  const { updateUsernameInPosts } = useContext(PostsContext) as PostsContextTypes;
 
   type LoginResponse = { error: string } | { success: string, userData: Omit<User, 'password'> };
   type RegistrationResponse = { error: string } | { success: string, userData: User };
@@ -188,6 +190,10 @@ const UsersProvider = ({ children }: ChildProp) => {
       type: 'setUser',
       userData: Back_Response.userData
     });
+
+    if(userData.username){
+      updateUsernameInPosts(id, userData.username);
+    };
 
     return { success: Back_Response.success };
   };

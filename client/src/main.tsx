@@ -7,10 +7,10 @@ import { PostsProvider } from './components/contexts/PostsContext.tsx';
 
 createRoot(document.getElementById('root') as HTMLDivElement).render(
   <BrowserRouter>
-    <UsersProvider>
-      <PostsProvider>
+    <PostsProvider>
+      <UsersProvider>
         <App />
-      </PostsProvider>
-    </UsersProvider>
+      </UsersProvider>
+    </PostsProvider>
   </BrowserRouter>
 )
