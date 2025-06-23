@@ -228,7 +228,7 @@ const ExpandedPost = () => {
             {
               decodedUser &&
               <div>
-                <button>Reply</button>
+                <button type="button" onClick={() => console.log('click')}>Reply</button>
                 <button type="button" onClick={savePostHandler}>{saveBtnText}</button>
                 {
                   post.postedBy.userId === decodedUser._id &&
