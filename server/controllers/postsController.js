@@ -162,7 +162,7 @@ const editPost = async (req, res) => {
 
     updateFields.lastEditDate = new Date();
 
-    if(!Object.keys(updateFields).length){
+    if(!Object.keys(req.body).length){
       return res.status(400).send({ error: 'No fields were provided for editing.' });
     };
 

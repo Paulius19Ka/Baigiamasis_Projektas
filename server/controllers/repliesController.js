@@ -47,16 +47,14 @@ const getAllRepliesByPostId = async (req, res) => {
     res.status(500).send({ error: err, message: `Something went wrong with the server.` });
   } finally{
     await client.close();
-  }
+  };
 };
 
 const postReplyByPostId = async (req, res) => {
   const { id } = req.params;
-
   validateUUID(id, res);
 
   const { reply, userId } = req.body;
-
   validateUUID(userId, res);
 
   if(!reply || !userId){
@@ -85,7 +83,63 @@ const postReplyByPostId = async (req, res) => {
     res.status(500).send({ error: err, message: `Something went wrong with the server.` });
   } finally{
     await client.close();
-  }
+  };
 };
 
-export { getAllRepliesByPostId, postReplyByPostId };
+// PATCH REPLY
+const editReply = async (req, res) => {
+  const { id } = req.params;
+  validateUUID(id, res);
+
+  const { reply } = req.body;
+  const client = await connectToDB();
+  try{
+    let filter = { _id: id };
+    if('_id' in req.body || 'replyDate' in req.body || 'userId' in req.body || 'postId' in req.body){
+      return res.status(400).send({ error: 'Editing [id], [replyDate], [userId] or [postId] is forbidden.' });
+    };
+
+    const editableFields = ['reply'];
+
+    const invalidFields = Object.keys(req.body).filter(field => !editableFields.includes(field));
+    if(invalidFields.length){
+      return res.status(400).send({ error: `Trying to edit invalid fields: [${invalidFields.join(', ')}]. Fields allowed to edit: [${editableFields.join(', ')}].` });
+    };
+
+        // server side validation of input fields
+    if('reply' in req.body){
+      if(reply.trim().length <= 10){
+        return res.status(400).send({ error: 'Reply too short.' });
+      };
+      if(reply.trim().length > 1000){
+        return res.status(400).send({ error: 'Reply too long.' });
+      };
+    };
+
+    const updateFields = {};
+    if('reply' in req.body){
+      updateFields.reply = reply;
+    };
+
+    updateFields.lastEditDate = new Date();
+
+    if(!Object.keys(req.body).length){
+      return res.status(400).send({ error: 'No fields were provided for editing.' });
+    };
+
+    let update = { $set: updateFields };
+    const DB_Response = await client.db('Final_Project').collection('replies').updateOne(filter, update);
+    if(DB_Response.matchedCount === 0){
+      return res.status(404).send({ error: `Reply with ID: ${id} was not found.`});
+    };
+
+    res.send({ success: `Reply with ID: ${id} was updated successfully.` });
+  } catch(err){
+    console.error(err);
+    res.status(500).send({ error: err, message: `Something went wrong with the server.` });
+  } finally{
+    await client.close();
+  };
+};
+
+export { getAllRepliesByPostId, postReplyByPostId, editReply };
