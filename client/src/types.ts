@@ -140,7 +140,8 @@ export type Post = {
   topic: Topics,
   postDate: string,
   lastEditDate: string,
-  score: number
+  score: number,
+  replyCount: number
 };
 
 // REPLIES

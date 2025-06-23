@@ -8,7 +8,43 @@ const getAllPosts = async (req, res) => {
   const client = await connectToDB();
   try{
     const settings = postsQuery(req.query);
-    const DB_RESPONSE = await client.db('Final_Project').collection('posts').find(settings.filter).sort(settings.sort).skip(settings.skip).limit(settings.limit).toArray();
+    // const DB_RESPONSE = await client.db('Final_Project').collection('posts').find(settings.filter).sort(settings.sort).skip(settings.skip).limit(settings.limit).toArray();
+
+    // get posts with number of replies
+    const DB_RESPONSE = await client.db('Final_Project').collection('posts').aggregate([
+      { $match: settings.filter },
+      { $sort: settings.sort },
+      { $skip: settings.skip },
+      { $limit: settings.limit },
+      {
+        '$lookup': {
+          'from': 'replies', 
+          'localField': '_id', 
+          'foreignField': 'postId', 
+          'as': 'replies'
+        }
+      }, {
+        '$addFields': {
+          'replyCount': {
+            '$size': '$replies'
+          }
+        }
+      }, {
+        '$project': {
+          'postedBy': 1, 
+          'score': 1, 
+          'lastEditDate': 1, 
+          'topic': 1, 
+          'postDate': 1, 
+          '_id': 1, 
+          'title': 1, 
+          'content': 1, 
+          'replyCount': 1
+        }
+      }
+    ]).toArray();
+
+
     if(!DB_RESPONSE.length){
       console.error({ error: `No posts were found.` });
       return res.status(404).send({ error: `No posts were found.` });
