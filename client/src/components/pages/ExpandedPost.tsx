@@ -252,10 +252,10 @@ const ExpandedPost = () => {
             replies.map(reply => 
               <div key={reply.replyId}>
                 <p>{reply.reply}</p>
-                <p>{reply.username}</p>
-                <p>{reply.replyDate}</p>
+                <p>User: {reply.username}</p>
+                <p>Replied: {reply.replyDate.slice(0, 10)}, {reply.replyDate.slice(11, 16)}</p>
                 {
-                  reply.lastEditDate && <p>{reply.lastEditDate}</p>
+                  reply.lastEditDate && <p>Edited: {reply.lastEditDate.slice(0, 10)}, {reply.lastEditDate.slice(11, 16)}</p>
                 }
                 {
                   decodedUser && decodedUser._id === reply.userId &&
