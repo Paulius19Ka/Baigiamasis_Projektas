@@ -182,5 +182,6 @@ export type RepliesContextTypes = {
   } | {
     success: string;
     error?: undefined;
-  }>
+  }>,
+  clearReplies: () => void
 };

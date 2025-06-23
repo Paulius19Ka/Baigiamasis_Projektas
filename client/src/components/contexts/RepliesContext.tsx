@@ -96,13 +96,19 @@ const RepliesProvider = ({ children }: ChildProp) => {
     return { success: Back_Response.success };
   };
 
-  // GET REPLIES
-  const fetchReplies = (id: string) => {
-    // clear replies, to avoid showing replies on unrelated posts
+  // CLEAR REPLIES
+  const clearReplies = () => {
     dispatch({
       type: 'setReplies',
       data: []
     });
+  };
+
+  // GET REPLIES
+  const fetchReplies = (id: string) => {
+    // clear replies, to avoid showing replies on unrelated posts
+    clearReplies();
+    
     setLoading(true);
     fetch(`http://localhost:5500/posts/${id}/replies`)
       .then(res => res.json())
@@ -125,7 +131,8 @@ const RepliesProvider = ({ children }: ChildProp) => {
         fetchReplies,
         postReply,
         editReply,
-        deleteReply
+        deleteReply,
+        clearReplies
       }}
     >
       { children }

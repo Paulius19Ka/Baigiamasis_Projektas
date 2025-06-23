@@ -195,6 +195,9 @@ const deletePost = async (req, res) => {
     if(!DB_Response.deletedCount){
       return res.status(404).send({ error: `Post with ID: ${id} was not found.`});
     };
+
+    await client.db('Final_Project').collection('replies').deleteMany({ postId: id });
+
     res.send({ success: `Post with ID: ${id} was deleted successfully.` });
   } catch(err){
     console.error(err);

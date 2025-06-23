@@ -16,7 +16,7 @@ const ExpandedPost = () => {
   const { id } = useParams();
   const { editPost, deletePost } = useContext(PostsContext) as PostsContextTypes;
   const { decodeUserFromToken, savePost } = useContext(UsersContext) as UsersContextTypes;
-  const { replies, fetchReplies, postReply, loading } = useContext(RepliesContext) as RepliesContextTypes;
+  const { replies, fetchReplies, postReply, loading, clearReplies } = useContext(RepliesContext) as RepliesContextTypes;
   const [post, setPost] = useState<Post | null>(null);
   const [editingTitle, setEditingTitle] = useState<boolean>(false);
   const [editingContent, setEditingContent] = useState<boolean>(false);
@@ -102,6 +102,7 @@ const ExpandedPost = () => {
       };
       setPostReplyMessage('Successfully posted a reply.');
       setPostingReply(false);
+      formikReply.resetForm();
     }
   });
 
@@ -112,6 +113,7 @@ const ExpandedPost = () => {
     };
     deletePost(post?._id);
     setDeleteMessage('Post was successfully deleted.');
+    clearReplies();
     setTimeout(() => {
       setDeleteMessage('');
       navigate('/');
