@@ -1,7 +1,7 @@
 const postsQuery = (reqQuery) => {
   const settings = {
     filter: {},
-    sort: {},
+    sort: { postDate: -1 },
     skip: 0,
     limit: 25
   };
