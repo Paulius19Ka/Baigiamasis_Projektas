@@ -46,6 +46,9 @@ const PostsProvider = ({ children }: ChildProp) => {
     if(values.title){
       filterParams.push(`filter_title=${values.title}`);
     };
+    if(values.replied){
+      filterParams.push(`filter_replyCount_gte=1`);
+    };
     filterString.current = filterParams.join('&');
     fetchPosts();
   };

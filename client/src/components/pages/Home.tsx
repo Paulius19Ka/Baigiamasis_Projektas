@@ -24,12 +24,11 @@ const Home = () => {
   const formik = useFormik({
     initialValues: {
       title: '',
-      topic: ''
+      topic: '',
+      replied: false
     },
     onSubmit: async (values) => {
-      if(values.topic || values.title){
-        handleFilter(values);
-      };
+      handleFilter(values);
     }
   });
 
@@ -67,10 +66,18 @@ const Home = () => {
             touched={formik.touched.topic}
             selectOps={topics}
           />
+          <div>
+            <input
+              type='checkbox'
+              name='replied' id='replied'
+              onChange={formik.handleChange}
+              checked={formik.values.replied}
+            />
+            <label htmlFor='replied'>Show Only Posts With Replies</label>
+          </div>
           <input type="submit" value='Filter' />
           <button type="button" onClick={() => {
-            formik.values.topic = '';
-            formik.values.title = '';
+            formik.resetForm();
             resetFilterAndSort();
           }}>Reset</button>
         </form>

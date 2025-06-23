@@ -10,9 +10,13 @@ const getAllPosts = async (req, res) => {
     const settings = postsQuery(req.query);
     // const DB_RESPONSE = await client.db('Final_Project').collection('posts').find(settings.filter).sort(settings.sort).skip(settings.skip).limit(settings.limit).toArray();
 
+    // copy settings.filter, then delete replyCount, so that it is not used too early, because replyCount is created later in the aggregation pipeline
+    const initialFilter = { ...settings.filter };
+    delete initialFilter.replyCount;
+
     // get posts with number of replies
     const DB_RESPONSE = await client.db('Final_Project').collection('posts').aggregate([
-      { $match: settings.filter },
+      { $match: initialFilter },
       {
         '$lookup': {
           'from': 'replies', 
@@ -28,6 +32,8 @@ const getAllPosts = async (req, res) => {
           }
         }
       },
+      ...(settings.filter?.replyCount ?
+      [{ $match: { replyCount: settings.filter.replyCount } }] : []),
       settings.sortStage ?
       { $sort: settings.sortStage } :
       { $sort: settings.sort },

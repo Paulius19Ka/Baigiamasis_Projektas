@@ -124,7 +124,8 @@ export type PostsContextTypes = {
 
 export type FilterStringTypes = {
   title: string,
-  topic: string
+  topic: string,
+  replied: boolean
 };
 
 export type Topics = 'Misc' | 'General' | 'Releases' | 'Collecting' | 'Concerts' | 'Rock-Blues' | 'Pop-Dance' | 'Metal-Hard Rock' | 'Jazz' | 'Classical' | 'Electronic' | 'Country-Folk' | 'Soul-Rap' | 'Alternative' | '';
