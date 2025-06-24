@@ -28,6 +28,8 @@ const PostCard = ({ post }: Props) => {
   const postTitle = post.title.trim().toLowerCase().replace(/\s+/g, '-').replace(/[^a-z0-9-]/g, '').replace(/-+/g, '-');
   const postTopic = post.topic.trim().toLowerCase();
 
+  const paragraphZero = post.content.split('\n\n')[0];
+
   return (
     <StyledDiv>
       {/* <span>Last edited: {post.lastEditDate}</span> */}
@@ -38,7 +40,7 @@ const PostCard = ({ post }: Props) => {
         <span>{post.postDate ? <DateFormat date={post.postDate} /> : ''}</span>
       </div>
       <div className="content">
-        <span>{post.content.length > 150 ? `${post.content.slice(0, 150)}...` : post.content.slice(0, 150)}</span>
+        <span>{paragraphZero.length > 150 ? `${paragraphZero.slice(0, 150)}...` : paragraphZero}</span>
       </div>
       <div className="info">
         <span>Topic: {post.topic}</span>

@@ -266,7 +266,10 @@ const ExpandedPost = () => {
                 inputPlaceholder={'Enter content...'}
               /> :
               <div>
-                <p>{post.content}</p>
+                {/* <p>{post.content}</p> */}
+                <>
+                  {post.content.split('\n\n').map((par, i) => <p key={i}>{par}</p>)}
+                </>
                 {
                   decodedUser && post.postedBy.userId === decodedUser._id &&
                   <button onClick={() => setEditingContent(true)}>Edit</button>
