@@ -54,7 +54,19 @@ const StyledHeader = styled.header`
           object-fit: cover;
         }
       }
+      
+      > svg{
+        cursor: pointer;
+        width: 27px;
+        height: auto;
 
+        &:hover{
+          color: var(--accent-hover);
+        }
+        &:active{
+          color: var(--accent-active);
+        }
+      }
     }
   }
 
@@ -140,7 +152,7 @@ const Header = () => {
                 <LogoutIcon onClick={() => {
                   navigate('/');
                   logoutUser();
-                }} />
+                }}/>
               </li>
             </> :
             <>
