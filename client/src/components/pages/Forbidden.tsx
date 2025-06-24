@@ -12,7 +12,7 @@ const Forbidden = ({ reason }: Props) => {
     <section>
       <h2>You do not have permission to access this page!</h2>
       <p>Reason: {reason}</p>
-      <button onClick={() => navigate(-1)}>Go Back</button>
+      <button onClick={() => navigate('/')}>Home</button>
     </section>
   );
 }

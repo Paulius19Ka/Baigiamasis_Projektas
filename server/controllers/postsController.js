@@ -116,7 +116,8 @@ const getPostById = async (req, res) => {
   const { id } = req.params;
   const client = await connectToDB();
 
-  validateUUID(id, res);
+  // validateUUID(id, res);
+  if(!validateUUID(id, res)) return;
 
   let filter = { _id: id };
   try{

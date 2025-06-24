@@ -11,6 +11,7 @@ import UsersContext from "../contexts/UsersContext";
 import RepliesContext from "../contexts/RepliesContext";
 import ReplyCard from "../UI/molecules/ReplyCard";
 import Modal from "../UI/atoms/Modal";
+import FourZeroFour from "./FourZeroFour";
 
 const ExpandedPost = () => {
 
@@ -18,6 +19,7 @@ const ExpandedPost = () => {
   const { editPost, deletePost, scorePost } = useContext(PostsContext) as PostsContextTypes;
   const { decodeUserFromToken, savePost } = useContext(UsersContext) as UsersContextTypes;
   const { replies, fetchReplies, postReply, loading, clearReplies } = useContext(RepliesContext) as RepliesContextTypes;
+  const [postLoading, setPostLoading] = useState(true);
   const [post, setPost] = useState<Post | null>(null);
   const [editingTitle, setEditingTitle] = useState<boolean>(false);
   const [editingContent, setEditingContent] = useState<boolean>(false);
@@ -174,14 +176,34 @@ const ExpandedPost = () => {
   useEffect(() => {
     if(id){
       fetch(`http://localhost:5500/posts/${id}`)
-        .then(res => res.json())
+        .then(res => {
+          if(!res.ok){
+            throw new Error('Post was not found.');
+          };
+          return res.json();
+        })
         .then(data => {
           setPost(data);
           fetchReplies(id);
+        })
+        .finally(() => {
+          setPostLoading(false);
         });
     };
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [id]);
+
+  if(postLoading){
+    return (
+      <p>Post Loading...</p>
+    )
+  };
+
+  if(!post){
+    return (
+      <FourZeroFour />
+    )
+  };
 
   return (
     <section>
