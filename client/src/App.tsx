@@ -6,6 +6,7 @@ import Login from "./components/pages/Login"
 import User from "./components/pages/UserPage"
 import CreatePost from "./components/pages/CreatePost"
 import ExpandedPost from "./components/pages/ExpandedPost"
+import SavedPosts from "./components/pages/SavedPosts"
 
 const App = () => {
 
@@ -15,6 +16,7 @@ const App = () => {
       <Routes>
         <Route path='' element={<MainOutlet />} >
           <Route index element={<Home />} />
+          <Route path='savedPosts' element={<SavedPosts />} />
           <Route path='user' element={<User />} />
           <Route path='newPost' element={<CreatePost />} />
           <Route path='post/:topic/:title/:id' element={<ExpandedPost />} />
