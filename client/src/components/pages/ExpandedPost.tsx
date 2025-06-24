@@ -16,7 +16,7 @@ import FourZeroFour from "./FourZeroFour";
 const ExpandedPost = () => {
 
   const { id } = useParams();
-  const { editPost, deletePost, scorePost } = useContext(PostsContext) as PostsContextTypes;
+  const { editPost, deletePost, /* scorePost */ } = useContext(PostsContext) as PostsContextTypes;
   const { decodeUserFromToken, savePost } = useContext(UsersContext) as UsersContextTypes;
   const { replies, fetchReplies, postReply, loading, clearReplies } = useContext(RepliesContext) as RepliesContextTypes;
   const [postLoading, setPostLoading] = useState(true);
@@ -213,7 +213,7 @@ const ExpandedPost = () => {
         <h2>{deleteMessage}</h2> :
         post ?
         <div className="postWrapper">
-          <div className="score">
+          {/* <div className="score">
             {
               decodedUser && 
               <button onClick={() => scorePost(post._id, '+1')}>🔼</button>
@@ -223,7 +223,7 @@ const ExpandedPost = () => {
               decodedUser && 
               <button onClick={() => scorePost(post._id, '-1')}>🔽</button>
             }
-          </div>
+          </div> */}
           <p>Posted: {post.postDate ? post.postDate.slice(0, 10): ''}, {post.postDate ? post.postDate.slice(11, 16): ''}</p>
           {
             post.lastEditDate ?

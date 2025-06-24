@@ -31,7 +31,7 @@ const PostCard = ({ post }: Props) => {
     <StyledDiv>
       {/* <span>Last edited: {post.lastEditDate}</span> */}
       <div className="heading">
-        <span>{post.score}</span>
+        {/* <span>{post.score}</span> */}
         {/* <h3><Link to={`post/${post._id}/${postTitle}`}>{post.title}</Link></h3> */}
         <h3><Link to={`/post/${postTopic}/${postTitle}/${post._id}`}>{post.title}</Link></h3>
         <span>{post.postDate ? post.postDate.slice(0, 10): ''}, {post.postDate ? post.postDate.slice(11, 16): ''}</span>
