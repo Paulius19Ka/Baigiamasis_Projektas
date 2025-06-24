@@ -15,6 +15,7 @@ const Register = () => {
   const { registerUser } = useContext(UsersContext) as UsersContextTypes;
   const [registerMessage, setRegisterMessage] = useState('');
   const [stayLoggedIn, setStayLoggedIn] = useState(false);
+  const [rulesAggreed, setRulesAggreed] = useState(false);
 
   const initValues: Omit<User, '_id'> & { passwordConfirm: string }= {
     email: '',
@@ -71,6 +72,7 @@ const Register = () => {
   return (
     <section>
       <h2>Register</h2>
+      <Link to='/rules'>Read forum rules.</Link>
       <form onSubmit={formik.handleSubmit}>
         <InputField
           labelText='Email:'
@@ -143,13 +145,25 @@ const Register = () => {
           <div>
             <input
               type='checkbox'
+              name='acceptRules' id='acceptRules'
+              onChange={() => setRulesAggreed(!rulesAggreed)}
+            />
+            <label htmlFor='acceptRules'>I aggree to the rules of the forum</label>
+          </div>
+          <div>
+            <input
+              type='checkbox'
               name='stayLoggedIn' id='stayLoggedIn'
               onChange={() => {setStayLoggedIn(!stayLoggedIn)}}
             />
             <label htmlFor='stayLoggedIn'>Stay logged in after registration</label>
           </div>
         </div>
-        <input type="submit" value='Register' />
+        {
+          rulesAggreed ?
+          <input type="submit" value='Register' /> :
+          <input disabled type="submit" value='Register' />
+        }
       </form>
       {
         registerMessage && <p>{registerMessage}</p>
