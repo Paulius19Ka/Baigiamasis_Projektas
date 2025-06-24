@@ -13,6 +13,10 @@ const StyledMain = styled.main`
     margin: 0;
   }
 
+  h2{
+    text-align: center;
+  }
+
   @media (min-width: 768px){
     background-color: red;
     min-height: calc(100vh - 60px - 200px - 40px);
