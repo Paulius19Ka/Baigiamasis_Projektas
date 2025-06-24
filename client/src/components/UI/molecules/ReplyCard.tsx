@@ -68,7 +68,9 @@ const ReplyCard = ({ reply, decodedUser, postId }: Props) => {
         deleteMessage ?
         <p>{deleteMessage}</p> :
         <div>
-          <p>{reply.reply}</p>
+          <>
+            {reply.reply.split('\n\n').map((par, i) => <p key={i}>{par}</p>)}
+          </>
           {
             !editingReply ?
             <p>User: {reply.username}</p> :
@@ -76,7 +78,7 @@ const ReplyCard = ({ reply, decodedUser, postId }: Props) => {
               <form onSubmit={formik.handleSubmit}>
                 <InputField
                   labelText='Reply:'
-                  inputType='text'
+                  inputType='textarea'
                   inputName='reply' inputId='reply'
                   inputValue={formik.values.reply}
                   inputOnChange={formik.handleChange}

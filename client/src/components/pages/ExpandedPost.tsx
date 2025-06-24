@@ -332,7 +332,7 @@ const ExpandedPost = () => {
               <form onSubmit={formikReply.handleSubmit}>
                 <InputField
                   labelText='Reply:'
-                  inputType='text'
+                  inputType='textarea'
                   inputName='reply' inputId='reply'
                   inputValue={formikReply.values.reply}
                   inputOnChange={formikReply.handleChange}
