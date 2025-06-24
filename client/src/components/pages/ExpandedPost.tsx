@@ -10,6 +10,7 @@ import PostsContext from "../contexts/PostsContext";
 import UsersContext from "../contexts/UsersContext";
 import RepliesContext from "../contexts/RepliesContext";
 import ReplyCard from "../UI/molecules/ReplyCard";
+import Modal from "../UI/atoms/Modal";
 
 const ExpandedPost = () => {
 
@@ -28,6 +29,8 @@ const ExpandedPost = () => {
   const [postReplyMessage, setPostReplyMessage] = useState('');
   const decodedUser = decodeUserFromToken();
   const navigate = useNavigate();
+  const [showDeleteModal, setShowDeleteModal] = useState(false);
+  const [showEditModal, setShowEditModal] = useState(false);
 
   const initValues: Pick<Post, "title" | "content" | "topic"> = {
     title: post?.title ?? '',
@@ -277,10 +280,33 @@ const ExpandedPost = () => {
                   <>
                     {
                       editingTitle || editingContent || editingTopic ?
-                      <input type="submit" value='Complete Edit' /> :
+                      // <input type="submit" value='Complete Edit' />
+                      <>
+                        <button  type="button" onClick={() => setShowEditModal(true)}>Complete Edit</button>
+                        <Modal isOpen={showEditModal} onClose={() => setShowEditModal(false)}>
+                          <h2>Are you sure you want to edit the post?</h2>
+                          <div>
+                            <button
+                              type='submit'
+                              onClick={() => {
+                                formik.handleSubmit();
+                                setShowEditModal(false);
+                              }}
+                            >Yes</button>
+                            <button type="button" onClick={() => setShowEditModal(false)}>No</button>
+                          </div>
+                        </Modal>
+                      </> :
                       null
                     }
-                    <button onClick={deleteHandler}>Delete</button>
+                    <button  type="button" onClick={() => setShowDeleteModal(true)}>Delete</button>
+                    <Modal isOpen={showDeleteModal} onClose={() => setShowDeleteModal(false)}>
+                      <h2>Are you sure you want to delete this post?</h2>
+                      <div>
+                        <button type="button" onClick={deleteHandler}>Yes</button>
+                        <button type="button" onClick={() => setShowDeleteModal(false)}>No</button>
+                      </div>
+                    </Modal>
                   </>
                 }
               </div>

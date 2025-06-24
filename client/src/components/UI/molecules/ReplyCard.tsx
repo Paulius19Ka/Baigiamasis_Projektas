@@ -5,6 +5,7 @@ import * as Yup from 'yup';
 import { RepliesContextTypes, Reply, User } from "../../../types";
 import RepliesContext from "../../contexts/RepliesContext";
 import InputField from "./InputField";
+import Modal from "../atoms/Modal";
 
 type Props = { reply: Reply, decodedUser: Omit<User, "role" | "password"> | null, postId: string };
 const ReplyCard = ({ reply, decodedUser, postId }: Props) => {
@@ -13,6 +14,8 @@ const ReplyCard = ({ reply, decodedUser, postId }: Props) => {
   const [editingReply, setEditingReply] = useState(false);
   const [postReplyEditMessage, setPostReplyEditMessage] = useState('');
   const [deleteMessage, setDeleteMessage] = useState('');
+  const [showDeleteModal, setShowDeleteModal] = useState(false);
+  const [showEditModal, setShowEditModal] = useState(false);
 
     const formik = useFormik({
       initialValues: {
@@ -82,7 +85,20 @@ const ReplyCard = ({ reply, decodedUser, postId }: Props) => {
                   touched={formik.touched.reply}
                   inputPlaceholder={'Enter a reply...'}
                 />
-                <input type="submit" value='Confirm Edit' />
+                <button  type="button" onClick={() => setShowEditModal(true)}>Confirm Edit</button>
+                <Modal isOpen={showEditModal} onClose={() => setShowEditModal(false)}>
+                  <h2>Are you sure you want to edit the reply?</h2>
+                  <div>
+                    <button
+                      type='submit'
+                      onClick={() => {
+                        formik.handleSubmit();
+                        setShowEditModal(false);
+                      }}
+                    >Yes</button>
+                    <button type="button" onClick={() => setShowEditModal(false)}>No</button>
+                  </div>
+                </Modal>
               </form>
               {
                 postReplyEditMessage && <p>{postReplyEditMessage}</p>
@@ -97,7 +113,14 @@ const ReplyCard = ({ reply, decodedUser, postId }: Props) => {
             decodedUser && decodedUser._id === reply.userId &&
             <div>
               <button onClick={replyEdittHandler}>Edit Reply</button>
-              <button onClick={deleteReplyHandler}>Delete</button>
+              <button  type="button" onClick={() => setShowDeleteModal(true)}>Delete</button>
+              <Modal isOpen={showDeleteModal} onClose={() => setShowDeleteModal(false)}>
+                <h2>Are you sure you want to delete this reply?</h2>
+                <div>
+                  <button type="button" onClick={deleteReplyHandler}>Yes</button>
+                  <button type="button" onClick={() => setShowDeleteModal(false)}>No</button>
+                </div>
+              </Modal>
             </div>
           }
         </div>

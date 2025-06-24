@@ -8,6 +8,7 @@ import { User, UsersContextTypes } from "../../types";
 import InputField from "../UI/molecules/InputField";
 import { Link, useNavigate } from "react-router";
 import { genders } from "../../dynamicVariables";
+import Modal from "../UI/atoms/Modal";
 
 const StyledSection = styled.section`
   display: flex;
@@ -28,6 +29,7 @@ const UserPage = () => {
   const [userId, setUserId] = useState<string | null>(null);
   const [editMessage, setEditMessage] = useState('');
   const navigate = useNavigate();
+  const [showModal, setShowModal] = useState(false);
 
   useEffect(() => {
     const fetchId = async () => {
@@ -40,7 +42,7 @@ const UserPage = () => {
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  const initValues: Omit<User, '_id' | 'role' | 'password'> & { oldPassword?: string, password?: string, passwordConfirm?: string }= {
+  const initValues: Omit<User, '_id' | 'role' | 'password' | 'savedPosts'> & { oldPassword?: string, password?: string, passwordConfirm?: string }= {
     email: decodedUser?.email || '',
     username: decodedUser?.username || '',
     oldPassword: '',
@@ -233,7 +235,21 @@ const UserPage = () => {
               touched={formik.touched.avatar}
               inputPlaceholder={'Enter a new avatar url...'}
             />
-            <input type="submit" value="Edit"/>
+            {/* <input type="submit" value="Edit"/> */}
+            <button  type="button" onClick={() => setShowModal(true)}>Edit</button>
+            <Modal isOpen={showModal} onClose={() => setShowModal(false)}>
+              <h2>Are you sure you want to edit user details?</h2>
+              <div>
+                <button
+                  type='submit'
+                  onClick={() => {
+                    formik.handleSubmit();
+                    setShowModal(false);
+                  }}
+                >Yes</button>
+                <button type="button" onClick={() => setShowModal(false)}>No</button>
+              </div>
+            </Modal>
           </form>
           {
             editMessage && <p>{editMessage}</p>
