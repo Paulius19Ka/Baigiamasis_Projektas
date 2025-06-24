@@ -9,9 +9,14 @@ import ExpandedPost from "./components/pages/ExpandedPost"
 import SavedPosts from "./components/pages/SavedPosts"
 import ForumRules from "./components/pages/ForumRules"
 import AboutUs from "./components/pages/AboutUs"
+import { useContext } from "react"
+import UsersContext from "./components/contexts/UsersContext"
+import { UsersContextTypes } from "./types"
+import Forbidden from "./components/pages/Forbidden"
 
 const App = () => {
 
+  const { loggedInUser, justLoggedIn } = useContext(UsersContext) as UsersContextTypes;
 
   return (
     <>
@@ -25,8 +30,8 @@ const App = () => {
           <Route path='rules' element={<ForumRules />} />
           <Route path='about' element={<AboutUs />} />
         </Route>
-        <Route path='register' element={<Register />} />
-        <Route path='login' element={<Login />} />
+        <Route path='register' element={!loggedInUser || justLoggedIn ? <Register /> : <Forbidden reason={`You are already logged in.`} />} />
+        <Route path='login' element={!loggedInUser || justLoggedIn ? <Login /> : <Forbidden reason={`You are already logged in.`} />} />
       </Routes>
     </>
   )

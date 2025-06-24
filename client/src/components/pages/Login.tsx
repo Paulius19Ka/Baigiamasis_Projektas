@@ -10,7 +10,7 @@ import UsersContext from '../contexts/UsersContext';
 const Login = () => {
 
   const navigate = useNavigate();
-  const { loginUser } = useContext(UsersContext) as UsersContextTypes;
+  const { loginUser, setJustLoggedIn } = useContext(UsersContext) as UsersContextTypes;
   const [loginMessage, setLoginMessage] = useState('');
   const [stayLoggedIn, setStayLoggedIn] = useState(false);
 
@@ -40,9 +40,13 @@ const Login = () => {
         setLoginMessage(Response.error ?? 'Unsuccessful login.');
         throw new Error('Unsuccessful login.');
       };
+      setJustLoggedIn(true);
       // success message and navigate
       setLoginMessage(Response.success);
-      setTimeout(() => navigate('/'), 2000);
+      setTimeout(() => {
+        navigate('/');
+        setJustLoggedIn(false);
+      }, 2000);
       // navigate('/');
     }
   });

@@ -1,4 +1,4 @@
-import { createContext, useContext, useEffect, useReducer } from 'react';
+import { createContext, useContext, useEffect, useReducer, useState } from 'react';
 import { jwtDecode } from "jwt-decode";
 
 import { ChildProp, PostsContextTypes, User, UsersContextActionTypes, UsersContextTypes } from '../../types';
@@ -22,6 +22,7 @@ const UsersProvider = ({ children }: ChildProp) => {
 
   const [loggedInUser, dispatch] = useReducer(reducer, null);
   const { updateUsernameInPosts } = useContext(PostsContext) as PostsContextTypes;
+  const [justLoggedIn, setJustLoggedIn] = useState(false);
 
   type LoginResponse = { error: string } | { success: string, userData: Omit<User, 'password'> };
   type RegistrationResponse = { error: string } | { success: string, userData: User };
@@ -267,7 +268,9 @@ const UsersProvider = ({ children }: ChildProp) => {
         getUserId,
         editUser,
         dispatch,
-        savePost
+        savePost,
+        justLoggedIn,
+        setJustLoggedIn
       }}
     >
       { children }
