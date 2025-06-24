@@ -6,6 +6,7 @@ import { RepliesContextTypes, Reply, User } from "../../../types";
 import RepliesContext from "../../contexts/RepliesContext";
 import InputField from "./InputField";
 import Modal from "../atoms/Modal";
+import DateFormat from "../atoms/DateFormat";
 
 type Props = { reply: Reply, decodedUser: Omit<User, "role" | "password"> | null, postId: string };
 const ReplyCard = ({ reply, decodedUser, postId }: Props) => {
@@ -91,9 +92,9 @@ const ReplyCard = ({ reply, decodedUser, postId }: Props) => {
               }
             </div>
           }
-          <p>Replied: {reply.replyDate.slice(0, 10)}, {reply.replyDate.slice(11, 16)}</p>
+          <p>Replied: {<DateFormat date={reply.replyDate} />}</p>
           {
-            reply.lastEditDate && <p>Edited: {reply.lastEditDate.slice(0, 10)}, {reply.lastEditDate.slice(11, 16)}</p>
+            reply.lastEditDate && <p>Edited: {<DateFormat date={reply.lastEditDate} />}</p>
           }
           {
             decodedUser && decodedUser._id === reply.userId &&

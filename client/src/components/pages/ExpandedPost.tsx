@@ -12,6 +12,7 @@ import RepliesContext from "../contexts/RepliesContext";
 import ReplyCard from "../UI/molecules/ReplyCard";
 import Modal from "../UI/atoms/Modal";
 import FourZeroFour from "./FourZeroFour";
+import DateFormat from "../UI/atoms/DateFormat";
 
 const ExpandedPost = () => {
 
@@ -223,10 +224,10 @@ const ExpandedPost = () => {
               <button onClick={() => scorePost(post._id, '-1')}>🔽</button>
             }
           </div> */}
-          <p>Posted: {post.postDate ? post.postDate.slice(0, 10): ''}, {post.postDate ? post.postDate.slice(11, 16): ''}</p>
+          <p>Posted: {post.postDate ? <DateFormat date={post.postDate} /> : ''}</p>
           {
             post.lastEditDate ?
-            <p>Edited: {post.lastEditDate ? post.lastEditDate.slice(0, 10): ''}, {post.lastEditDate ? post.lastEditDate.slice(11, 16): ''}</p> : <></>
+            <p>Edited: {post.lastEditDate ? <DateFormat date={post.lastEditDate} /> : ''}</p> : <></>
           }
           <p>By: {post.postedBy.username}</p>
           <form onSubmit={formik.handleSubmit}>
