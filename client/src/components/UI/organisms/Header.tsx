@@ -118,6 +118,39 @@ const StyledHeader = styled.header`
     }
   }
 
+  @media (min-width: 768px){
+    height: 60px;
+    padding: 0px 20px;
+
+    a{
+
+      > svg{
+        width: 32px;
+      }
+    }
+
+    ul{
+
+      > li{
+  
+        > svg{
+          width: 32px;
+        }
+
+        > a{
+
+          > img{
+            width: 30px;
+            height: 30px;
+          }
+        }
+      }
+    }
+  }
+
+  @media (min-width: 1024px){
+    padding: 0px 30px;
+  }
 `;
 
 const Header = () => {

@@ -12,6 +12,16 @@ const StyledMain = styled.main`
   h1, h2, h3, h4, h5, h6{
     margin: 0;
   }
+
+  @media (min-width: 768px){
+    background-color: red;
+    margin: 20px 20px;
+  }
+
+  @media (min-width: 1024px){
+    background-color: green;
+    margin: 20px 30px;
+  }
 `;
 
 const MainOutlet = () => {
