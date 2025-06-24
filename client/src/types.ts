@@ -200,3 +200,10 @@ export type RepliesContextTypes = {
   }>,
   clearReplies: () => void
 };
+
+// THEME
+
+export type ThemeContextTypes = {
+  theme: string,
+  themeToggle: () => void
+};

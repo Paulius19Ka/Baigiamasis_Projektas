@@ -7,9 +7,12 @@ import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import GavelIcon from '@mui/icons-material/Gavel';
 import InfoIcon from '@mui/icons-material/Info';
 import HomeIcon from '@mui/icons-material/Home';
+import DarkModeIcon from '@mui/icons-material/DarkMode';
+import LightModeIcon from '@mui/icons-material/LightMode';
 
 import UsersContext from "../../contexts/UsersContext";
-import { UsersContextTypes } from "../../../types";
+import { ThemeContextTypes, UsersContextTypes } from "../../../types";
+import ThemeContext from "../../contexts/ThemeContext";
 
 const StyledHeader = styled.header`
   background-color: var(--background-dark);
@@ -120,6 +123,7 @@ const StyledHeader = styled.header`
 const Header = () => {
 
   const { loggedInUser, logoutUser } = useContext(UsersContext) as UsersContextTypes;
+  const { themeToggle, theme } = useContext(ThemeContext) as ThemeContextTypes;
   const navigate = useNavigate();
 
   return (
@@ -133,6 +137,11 @@ const Header = () => {
       </div>
       <nav>
         <ul>
+          {
+            theme === 'dark' ?
+            <li><LightModeIcon onClick={themeToggle}/></li> :
+            <li><DarkModeIcon onClick={themeToggle}/></li>
+          }
           {
             loggedInUser ?
             <>
