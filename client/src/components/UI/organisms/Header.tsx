@@ -200,7 +200,6 @@ const Header = () => {
               </li>
             </> :
             <>
-              <li><ArrowBackIcon onClick={() => navigate(-1)} /></li>
               <li><NavLink to='/rules' ><GavelIcon /></NavLink></li>
               <li><NavLink to='/about' ><InfoIcon /></NavLink></li>
               <li><Link to='/register'>Register</Link></li>
