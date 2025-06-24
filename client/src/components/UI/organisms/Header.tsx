@@ -6,6 +6,7 @@ import SaveIcon from '@mui/icons-material/Save';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import GavelIcon from '@mui/icons-material/Gavel';
 import InfoIcon from '@mui/icons-material/Info';
+import HomeIcon from '@mui/icons-material/Home';
 
 import UsersContext from "../../contexts/UsersContext";
 import { UsersContextTypes } from "../../../types";
@@ -54,19 +55,6 @@ const StyledHeader = styled.header`
         }
       }
 
-      svg{
-        cursor: pointer;
-        width: 27px;
-        height: 27px;
-
-
-        &:hover{
-          color: var(--accent-hover);
-        }
-        &:active{
-          color: var(--accent-active);
-        }
-      }
     }
   }
 
@@ -74,6 +62,21 @@ const StyledHeader = styled.header`
     text-decoration: none;
     color: var(--font-main);
     font-size: 1em;
+    display: flex;
+    align-items: center;
+
+    svg{
+      cursor: pointer;
+      width: 27px;
+      height: auto;
+
+      &:hover{
+        color: var(--accent-hover);
+      }
+      &:active{
+        color: var(--accent-active);
+      }
+    }
 
     &:hover{
       color: var(--accent-hover);
@@ -99,6 +102,7 @@ const StyledHeader = styled.header`
       }
     }
   }
+
 `;
 
 const Header = () => {
@@ -110,7 +114,7 @@ const Header = () => {
     <StyledHeader>
       <div>
         <img src="/public/media/forumLogo.png" alt="a vinyl record with message symbol on the side" />
-        <NavLink to=''>Home</NavLink>
+        <NavLink to=''><HomeIcon /></NavLink>
       </div>
       <div className="searchBar">
         
