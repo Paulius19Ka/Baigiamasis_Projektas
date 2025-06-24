@@ -4,6 +4,7 @@ import styled from "styled-components";
 import LogoutIcon from '@mui/icons-material/Logout';
 import SaveIcon from '@mui/icons-material/Save';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
+import GavelIcon from '@mui/icons-material/Gavel';
 
 import UsersContext from "../../contexts/UsersContext";
 import { UsersContextTypes } from "../../../types";
@@ -120,6 +121,7 @@ const Header = () => {
             <>
               <li>
                 <ArrowBackIcon onClick={() => navigate(-1)} />
+                <NavLink to='/rules' ><GavelIcon /></NavLink>
                 <NavLink to='/savedPosts' ><SaveIcon /></NavLink>
                 <NavLink to='/user'>
                   {
@@ -137,6 +139,7 @@ const Header = () => {
             </> :
             <>
               <li><ArrowBackIcon onClick={() => navigate(-1)} /></li>
+              <li><NavLink to='/rules' ><GavelIcon /></NavLink></li>
               <li><Link to='/register'>Register</Link></li>
               <li><Link to='/login'>Login</Link></li>
             </>

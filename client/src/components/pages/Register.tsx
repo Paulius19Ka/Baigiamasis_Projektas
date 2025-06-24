@@ -23,7 +23,8 @@ const Register = () => {
     passwordConfirm: '',
     gender: 'other',
     avatar: '',
-    role: 'user'
+    role: 'user',
+    savedPosts: []
   };
 
   const formik = useFormik({
