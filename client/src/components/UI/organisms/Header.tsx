@@ -132,21 +132,23 @@ const Header = () => {
         <img src="/public/media/forumLogo.png" alt="a vinyl record with message symbol on the side" />
         <NavLink to=''><HomeIcon /></NavLink>
       </div>
-      <div className="searchBar">
-        
-      </div>
       <nav>
         <ul>
           {
             theme === 'dark' ?
-            <li><LightModeIcon onClick={themeToggle}/></li> :
-            <li><DarkModeIcon onClick={themeToggle}/></li>
+            <li>
+              <ArrowBackIcon onClick={() => navigate(-1)} />
+              <LightModeIcon onClick={themeToggle}/>
+            </li> :
+            <li>
+              <ArrowBackIcon onClick={() => navigate(-1)} />
+              <DarkModeIcon onClick={themeToggle}/>
+            </li>
           }
           {
             loggedInUser ?
             <>
               <li>
-                <ArrowBackIcon onClick={() => navigate(-1)} />
                 <NavLink to='/rules' ><GavelIcon /></NavLink>
                 <NavLink to='/about' ><InfoIcon /></NavLink>
                 <NavLink to='/savedPosts' ><SaveIcon /></NavLink>
