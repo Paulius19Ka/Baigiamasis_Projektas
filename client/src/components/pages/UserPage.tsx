@@ -32,6 +32,7 @@ const UserPage = () => {
   const [showModal, setShowModal] = useState(false);
 
   useEffect(() => {
+    document.title = `User Area \u2666 MusicForum`;
     const fetchId = async () => {
       const res = await getUserId();
       if(res?.id){

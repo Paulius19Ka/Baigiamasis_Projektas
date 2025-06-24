@@ -26,6 +26,9 @@ const SavedPosts = () => {
     };
   }, [posts]);
 
+  useEffect(() => {
+    document.title = `Saved Posts \u2666 MusicForum`;
+  }, []);
 
   return (
     <section>

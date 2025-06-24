@@ -1,4 +1,11 @@
+import { useEffect } from "react";
+
 const ForumRules = () => {
+
+  useEffect(() => {
+    document.title = `Forum Rules \u2666 MusicForum`;
+  }, []);
+
   return (
     <section>
       <h2>Forum Rules</h2>

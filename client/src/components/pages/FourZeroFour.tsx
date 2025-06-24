@@ -1,8 +1,13 @@
+import { useEffect } from "react";
 import { useNavigate } from "react-router";
 
 const FourZeroFour = () => {
 
   const navigate = useNavigate();
+
+  useEffect(() => {
+    document.title = `Page Not Found \u2666 MusicForum`;
+  }, []);
 
   return (
     <section>

@@ -1,3 +1,4 @@
+import { useEffect } from "react";
 import styled from "styled-components";
 
 const StyledSection = styled.section`
@@ -19,6 +20,11 @@ const StyledSection = styled.section`
 `;
 
 const AboutUs = () => {
+
+  useEffect(() => {
+    document.title = `About \u2666 MusicForum`;
+  }, []);
+
   return (
     <StyledSection>
       <h2>About the Forum</h2>

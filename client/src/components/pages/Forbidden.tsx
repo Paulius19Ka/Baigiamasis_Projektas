@@ -1,3 +1,4 @@
+import { useEffect } from "react";
 import { useNavigate } from "react-router";
 
 type Props = {
@@ -7,6 +8,10 @@ type Props = {
 const Forbidden = ({ reason }: Props) => {
 
   const navigate = useNavigate();
+
+  useEffect(() => {
+    document.title = `Access Denied \u2666 MusicForum`;
+  }, []);
 
   return (
     <section>

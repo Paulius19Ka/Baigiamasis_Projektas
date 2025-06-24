@@ -13,7 +13,7 @@ const createAccessJWT = (payload) => {
 };
 
 const createRefreshJWT = (payload) => {
-  return jwt.sign(payload, process.env.JWT_REFRESH_SECRET, { expiresIn: '1d' });
+  return jwt.sign(payload, process.env.JWT_REFRESH_SECRET, { expiresIn: '7d' });
 };
 
 const validateJWT = (providedJWT) => {

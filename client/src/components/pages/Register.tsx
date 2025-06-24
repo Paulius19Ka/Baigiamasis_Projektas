@@ -1,6 +1,6 @@
 import { useFormik } from 'formik';
 import * as Yup from 'yup';
-import { useContext, useState } from 'react';
+import { useContext, useEffect, useState } from 'react';
 import { Link, useNavigate } from 'react-router';
 
 import { User, UsersContextTypes } from '../../types';
@@ -72,6 +72,10 @@ const Register = () => {
       // navigate('/');
     }
   });
+
+  useEffect(() => {
+    document.title = `Register \u2666 MusicForum`;
+  }, []);
 
   return (
     <section>

@@ -21,6 +21,7 @@ const CreatePost = () => {
   const [showModal, setShowModal] = useState(false);
 
   useEffect(() => {
+    document.title = `New Post \u2666 MusicForum`;
     const fetchId = async () => {
       const res = await getUserId();
       if(res?.id){

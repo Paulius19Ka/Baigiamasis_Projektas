@@ -163,6 +163,7 @@ const ExpandedPost = () => {
   // update formik values when post loads
   useEffect(() => {
     if(post){
+      document.title = `${post?.title} \u2666 MusicForum`;
       formik.setValues({
         title: post.title,
         content: post.content,
