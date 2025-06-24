@@ -3,6 +3,7 @@ import { Link, NavLink, useNavigate } from "react-router";
 import styled from "styled-components";
 import LogoutIcon from '@mui/icons-material/Logout';
 import SaveIcon from '@mui/icons-material/Save';
+import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 
 import UsersContext from "../../contexts/UsersContext";
 import { UsersContextTypes } from "../../../types";
@@ -110,7 +111,7 @@ const Header = () => {
         <NavLink to=''>Home</NavLink>
       </div>
       <div className="searchBar">
-
+        
       </div>
       <nav>
         <ul>
@@ -118,6 +119,7 @@ const Header = () => {
             loggedInUser ?
             <>
               <li>
+                <ArrowBackIcon onClick={() => navigate(-1)} />
                 <NavLink to='/savedPosts' ><SaveIcon /></NavLink>
                 <NavLink to='/user'>
                   {
@@ -134,6 +136,7 @@ const Header = () => {
               </li>
             </> :
             <>
+              <li><ArrowBackIcon onClick={() => navigate(-1)} /></li>
               <li><Link to='/register'>Register</Link></li>
               <li><Link to='/login'>Login</Link></li>
             </>
