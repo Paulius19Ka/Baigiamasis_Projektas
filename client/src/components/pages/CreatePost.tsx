@@ -8,6 +8,7 @@ import { Post, PostsContextTypes, UsersContextTypes } from "../../types";
 import InputField from "../UI/molecules/InputField";
 import { topics } from "../../dynamicVariables";
 import PostsContext from "../contexts/PostsContext";
+import Modal from "../UI/atoms/Modal";
 
 const CreatePost = () => {
 
@@ -17,6 +18,7 @@ const CreatePost = () => {
   const [userId, setUserId] = useState<string | null>(null);
   const [postMessage, setPostMessage] = useState('');
   const navigate = useNavigate();
+  const [showModal, setShowModal] = useState(false);
 
   useEffect(() => {
     const fetchId = async () => {
@@ -106,7 +108,20 @@ const CreatePost = () => {
               touched={formik.touched.topic}
               selectOps={topics}
             />
-            <input type="submit" value='Submit Post' />
+            <button  type="button" onClick={() => setShowModal(true)}>Submit Post</button>
+            <Modal isOpen={showModal} onClose={() => setShowModal(false)}>
+              <h2>Are you sure you want to submit post?</h2>
+              <div>
+                <button
+                  type='submit'
+                  onClick={() => {
+                    formik.handleSubmit();
+                    setShowModal(false);
+                  }}
+                >Yes</button>
+                <button type="button" onClick={() => setShowModal(false)}>No</button>
+              </div>
+            </Modal>
           </form>
           {
             postMessage && <p>{postMessage}</p>

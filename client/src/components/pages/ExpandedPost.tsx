@@ -31,6 +31,7 @@ const ExpandedPost = () => {
   const navigate = useNavigate();
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [showEditModal, setShowEditModal] = useState(false);
+  const [showReplyModal, setShowReplyModal] = useState(false);
 
   const initValues: Pick<Post, "title" | "content" | "topic"> = {
     title: post?.title ?? '',
@@ -330,7 +331,20 @@ const ExpandedPost = () => {
                   touched={formikReply.touched.reply}
                   inputPlaceholder={'Enter a reply...'}
                 />
-                <input type="submit" value='Post Reply' />
+                <button  type="button" onClick={() => setShowReplyModal(true)}>Post Reply</button>
+                <Modal isOpen={showReplyModal} onClose={() => setShowReplyModal(false)}>
+                  <h2>Are you sure you want to post a reply?</h2>
+                  <div>
+                    <button
+                      type='submit'
+                      onClick={() => {
+                        formikReply.handleSubmit();
+                        setShowReplyModal(false);
+                      }}
+                    >Yes</button>
+                    <button type="button" onClick={() => setShowReplyModal(false)}>No</button>
+                  </div>
+                </Modal>
               </form>
               {
                 postReplyMessage && <p>{postReplyMessage}</p>
