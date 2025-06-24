@@ -12,7 +12,7 @@ import { genders } from '../../dynamicVariables';
 const Register = () => {
 
   const navigate = useNavigate();
-  const { registerUser } = useContext(UsersContext) as UsersContextTypes;
+  const { registerUser, setJustLoggedIn } = useContext(UsersContext) as UsersContextTypes;
   const [registerMessage, setRegisterMessage] = useState('');
   const [stayLoggedIn, setStayLoggedIn] = useState(false);
   const [rulesAggreed, setRulesAggreed] = useState(false);
@@ -62,9 +62,13 @@ const Register = () => {
         setRegisterMessage(Response.error ?? 'Unsuccessful register.');
         throw new Error('Unsuccessful register.');
       };
+      setJustLoggedIn(true);
       // success message and navigate
       setRegisterMessage(Response.success);
-      setTimeout(() => navigate('/'), 2000);
+      setTimeout(() => {
+        navigate('/');
+        setJustLoggedIn(false);
+      }, 2000);
       // navigate('/');
     }
   });
