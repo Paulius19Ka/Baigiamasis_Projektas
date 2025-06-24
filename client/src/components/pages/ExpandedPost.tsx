@@ -32,7 +32,6 @@ const ExpandedPost = () => {
   const decodedUser = decodeUserFromToken();
   const navigate = useNavigate();
   const [showDeleteModal, setShowDeleteModal] = useState(false);
-  const [showEditModal, setShowEditModal] = useState(false);
   const [showReplyModal, setShowReplyModal] = useState(false);
 
   const initValues: Pick<Post, "title" | "content" | "topic"> = {
@@ -304,23 +303,7 @@ const ExpandedPost = () => {
                   <>
                     {
                       editingTitle || editingContent || editingTopic ?
-                      // <input type="submit" value='Complete Edit' />
-                      <>
-                        <button  type="button" onClick={() => setShowEditModal(true)}>Complete Edit</button>
-                        <Modal isOpen={showEditModal} onClose={() => setShowEditModal(false)}>
-                          <h2>Are you sure you want to edit the post?</h2>
-                          <div>
-                            <button
-                              type='submit'
-                              onClick={() => {
-                                formik.handleSubmit();
-                                setShowEditModal(false);
-                              }}
-                            >Yes</button>
-                            <button type="button" onClick={() => setShowEditModal(false)}>No</button>
-                          </div>
-                        </Modal>
-                      </> :
+                      <input type="submit" value='Complete Edit' /> :
                       null
                     }
                     <button  type="button" onClick={() => setShowDeleteModal(true)}>Delete</button>

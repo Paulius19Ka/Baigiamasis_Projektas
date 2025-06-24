@@ -15,7 +15,6 @@ const ReplyCard = ({ reply, decodedUser, postId }: Props) => {
   const [postReplyEditMessage, setPostReplyEditMessage] = useState('');
   const [deleteMessage, setDeleteMessage] = useState('');
   const [showDeleteModal, setShowDeleteModal] = useState(false);
-  const [showEditModal, setShowEditModal] = useState(false);
 
     const formik = useFormik({
       initialValues: {
@@ -85,20 +84,7 @@ const ReplyCard = ({ reply, decodedUser, postId }: Props) => {
                   touched={formik.touched.reply}
                   inputPlaceholder={'Enter a reply...'}
                 />
-                <button  type="button" onClick={() => setShowEditModal(true)}>Confirm Edit</button>
-                <Modal isOpen={showEditModal} onClose={() => setShowEditModal(false)}>
-                  <h2>Are you sure you want to edit the reply?</h2>
-                  <div>
-                    <button
-                      type='submit'
-                      onClick={() => {
-                        formik.handleSubmit();
-                        setShowEditModal(false);
-                      }}
-                    >Yes</button>
-                    <button type="button" onClick={() => setShowEditModal(false)}>No</button>
-                  </div>
-                </Modal>
+                <input type="submit" value='Confirm Edit' />
               </form>
               {
                 postReplyEditMessage && <p>{postReplyEditMessage}</p>
