@@ -1,25 +1,22 @@
 import { useEffect } from "react";
 import { useNavigate } from "react-router";
 
-type Props = {
-  reason: string
-}
-
-const Forbidden = ({ reason }: Props) => {
+const FourZeroFour = () => {
 
   const navigate = useNavigate();
 
   useEffect(() => {
-    document.title = `Access Denied \u2666 MusicForum`;
+    document.title = `Page Not Found \u2666 MusicForum`;
   }, []);
 
   return (
     <section>
-      <h2>You do not have permission to access this page!</h2>
-      <p>Reason: {reason}</p>
+      <h2>Error</h2>
+      <h1>404</h1>
+      <p>The page You are trying to reach does not exist.</p>
       <button onClick={() => navigate('/')}>Home</button>
     </section>
   );
 }
  
-export default Forbidden;
+export default FourZeroFour;

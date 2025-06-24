@@ -5,6 +5,8 @@ import * as Yup from 'yup';
 import { RepliesContextTypes, Reply, User } from "../../../types";
 import RepliesContext from "../../contexts/RepliesContext";
 import InputField from "./InputField";
+import Modal from "../atoms/Modal";
+import DateFormat from "../atoms/DateFormat";
 
 type Props = { reply: Reply, decodedUser: Omit<User, "role" | "password"> | null, postId: string };
 const ReplyCard = ({ reply, decodedUser, postId }: Props) => {
@@ -13,6 +15,7 @@ const ReplyCard = ({ reply, decodedUser, postId }: Props) => {
   const [editingReply, setEditingReply] = useState(false);
   const [postReplyEditMessage, setPostReplyEditMessage] = useState('');
   const [deleteMessage, setDeleteMessage] = useState('');
+  const [showDeleteModal, setShowDeleteModal] = useState(false);
 
     const formik = useFormik({
       initialValues: {
@@ -65,7 +68,9 @@ const ReplyCard = ({ reply, decodedUser, postId }: Props) => {
         deleteMessage ?
         <p>{deleteMessage}</p> :
         <div>
-          <p>{reply.reply}</p>
+          <>
+            {reply.reply.split('\n\n').map((par, i) => <p key={i}>{par}</p>)}
+          </>
           {
             !editingReply ?
             <p>User: {reply.username}</p> :
@@ -73,7 +78,7 @@ const ReplyCard = ({ reply, decodedUser, postId }: Props) => {
               <form onSubmit={formik.handleSubmit}>
                 <InputField
                   labelText='Reply:'
-                  inputType='text'
+                  inputType='textarea'
                   inputName='reply' inputId='reply'
                   inputValue={formik.values.reply}
                   inputOnChange={formik.handleChange}
@@ -89,15 +94,22 @@ const ReplyCard = ({ reply, decodedUser, postId }: Props) => {
               }
             </div>
           }
-          <p>Replied: {reply.replyDate.slice(0, 10)}, {reply.replyDate.slice(11, 16)}</p>
+          <p>Replied: {<DateFormat date={reply.replyDate} />}</p>
           {
-            reply.lastEditDate && <p>Edited: {reply.lastEditDate.slice(0, 10)}, {reply.lastEditDate.slice(11, 16)}</p>
+            reply.lastEditDate && <p>Edited: {<DateFormat date={reply.lastEditDate} />}</p>
           }
           {
             decodedUser && decodedUser._id === reply.userId &&
             <div>
               <button onClick={replyEdittHandler}>Edit Reply</button>
-              <button onClick={deleteReplyHandler}>Delete</button>
+              <button  type="button" onClick={() => setShowDeleteModal(true)}>Delete</button>
+              <Modal isOpen={showDeleteModal} onClose={() => setShowDeleteModal(false)}>
+                <h2>Are you sure you want to delete this reply?</h2>
+                <div>
+                  <button type="button" onClick={deleteReplyHandler}>Yes</button>
+                  <button type="button" onClick={() => setShowDeleteModal(false)}>No</button>
+                </div>
+              </Modal>
             </div>
           }
         </div>

@@ -1,4 +1,4 @@
-import { useContext } from "react";
+import { useContext, useEffect } from "react";
 import PostsContext from "../contexts/PostsContext";
 import { PostsContextTypes } from "../../types";
 import PostCard from "../UI/molecules/PostCard";
@@ -32,6 +32,10 @@ const Home = () => {
       handleFilter(values);
     }
   });
+
+  useEffect(() => {
+    document.title = `Home \u2666 MusicForum`;
+  }, []);
 
   return (
     <StyledSection>

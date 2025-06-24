@@ -1,6 +1,6 @@
 import { useFormik } from 'formik';
 import * as Yup from 'yup';
-import { useContext, useState } from 'react';
+import { useContext, useEffect, useState } from 'react';
 import { Link, useNavigate } from 'react-router';
 
 import { User, UsersContextTypes } from '../../types';
@@ -12,9 +12,10 @@ import { genders } from '../../dynamicVariables';
 const Register = () => {
 
   const navigate = useNavigate();
-  const { registerUser } = useContext(UsersContext) as UsersContextTypes;
+  const { registerUser, setJustLoggedIn } = useContext(UsersContext) as UsersContextTypes;
   const [registerMessage, setRegisterMessage] = useState('');
   const [stayLoggedIn, setStayLoggedIn] = useState(false);
+  const [rulesAggreed, setRulesAggreed] = useState(false);
 
   const initValues: Omit<User, '_id'> & { passwordConfirm: string }= {
     email: '',
@@ -23,7 +24,8 @@ const Register = () => {
     passwordConfirm: '',
     gender: 'other',
     avatar: '',
-    role: 'user'
+    role: 'user',
+    savedPosts: []
   };
 
   const formik = useFormik({
@@ -60,16 +62,25 @@ const Register = () => {
         setRegisterMessage(Response.error ?? 'Unsuccessful register.');
         throw new Error('Unsuccessful register.');
       };
+      setJustLoggedIn(true);
       // success message and navigate
       setRegisterMessage(Response.success);
-      setTimeout(() => navigate('/'), 2000);
+      setTimeout(() => {
+        navigate('/');
+        setJustLoggedIn(false);
+      }, 2000);
       // navigate('/');
     }
   });
 
+  useEffect(() => {
+    document.title = `Register \u2666 MusicForum`;
+  }, []);
+
   return (
     <section>
       <h2>Register</h2>
+      <Link to='/rules'>Read forum rules.</Link>
       <form onSubmit={formik.handleSubmit}>
         <InputField
           labelText='Email:'
@@ -142,13 +153,25 @@ const Register = () => {
           <div>
             <input
               type='checkbox'
+              name='acceptRules' id='acceptRules'
+              onChange={() => setRulesAggreed(!rulesAggreed)}
+            />
+            <label htmlFor='acceptRules'>I aggree to the rules of the forum</label>
+          </div>
+          <div>
+            <input
+              type='checkbox'
               name='stayLoggedIn' id='stayLoggedIn'
               onChange={() => {setStayLoggedIn(!stayLoggedIn)}}
             />
             <label htmlFor='stayLoggedIn'>Stay logged in after registration</label>
           </div>
         </div>
-        <input type="submit" value='Register' />
+        {
+          rulesAggreed ?
+          <input type="submit" value='Register' /> :
+          <input disabled type="submit" value='Register' />
+        }
       </form>
       {
         registerMessage && <p>{registerMessage}</p>

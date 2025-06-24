@@ -16,9 +16,13 @@
 
   --button-main: #808080;
   --button-hover: #bdbdbd;
+  --button-active: #dcdcdc;
 
   --message-error: #ff5c5c;
   --message-success: #65ff7c;
+
+  --modal-background: #414352;
+  --modal-overlay: #000000a2;
 
   color-scheme: light dark;
   color: var(--font-main);

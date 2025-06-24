@@ -13,7 +13,7 @@ const createAccessJWT = (payload) => {
 };
 
 const createRefreshJWT = (payload) => {
-  return jwt.sign(payload, process.env.JWT_REFRESH_SECRET, { expiresIn: '1d' });
+  return jwt.sign(payload, process.env.JWT_REFRESH_SECRET, { expiresIn: '7d' });
 };
 
 const validateJWT = (providedJWT) => {
@@ -34,8 +34,10 @@ const validateJWT = (providedJWT) => {
 const validateUUID = (providedId, res) => {
   if(!uuidValidate(providedId)){
     console.error({ error: `[${providedId}] is not a valid id. The id must be a valid uuid.` });
-    return res.status(400).send({ error: `[${providedId}] is not a valid id. The id must be a valid uuid.` });
+    res.status(400).send({ error: `[${providedId}] is not a valid id. The id must be a valid uuid.` });
+    return false;
   };
+  return true;
 };
 
 export { connectToDB, createAccessJWT, createRefreshJWT, validateJWT, validateUUID };

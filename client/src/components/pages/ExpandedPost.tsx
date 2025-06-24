@@ -10,13 +10,17 @@ import PostsContext from "../contexts/PostsContext";
 import UsersContext from "../contexts/UsersContext";
 import RepliesContext from "../contexts/RepliesContext";
 import ReplyCard from "../UI/molecules/ReplyCard";
+import Modal from "../UI/atoms/Modal";
+import FourZeroFour from "./FourZeroFour";
+import DateFormat from "../UI/atoms/DateFormat";
 
 const ExpandedPost = () => {
 
   const { id } = useParams();
-  const { editPost, deletePost, scorePost } = useContext(PostsContext) as PostsContextTypes;
+  const { editPost, deletePost, /* scorePost */ } = useContext(PostsContext) as PostsContextTypes;
   const { decodeUserFromToken, savePost } = useContext(UsersContext) as UsersContextTypes;
   const { replies, fetchReplies, postReply, loading, clearReplies } = useContext(RepliesContext) as RepliesContextTypes;
+  const [postLoading, setPostLoading] = useState(true);
   const [post, setPost] = useState<Post | null>(null);
   const [editingTitle, setEditingTitle] = useState<boolean>(false);
   const [editingContent, setEditingContent] = useState<boolean>(false);
@@ -28,6 +32,8 @@ const ExpandedPost = () => {
   const [postReplyMessage, setPostReplyMessage] = useState('');
   const decodedUser = decodeUserFromToken();
   const navigate = useNavigate();
+  const [showDeleteModal, setShowDeleteModal] = useState(false);
+  const [showReplyModal, setShowReplyModal] = useState(false);
 
   const initValues: Pick<Post, "title" | "content" | "topic"> = {
     title: post?.title ?? '',
@@ -157,6 +163,7 @@ const ExpandedPost = () => {
   // update formik values when post loads
   useEffect(() => {
     if(post){
+      document.title = `${post?.title} \u2666 MusicForum`;
       formik.setValues({
         title: post.title,
         content: post.content,
@@ -170,14 +177,34 @@ const ExpandedPost = () => {
   useEffect(() => {
     if(id){
       fetch(`http://localhost:5500/posts/${id}`)
-        .then(res => res.json())
+        .then(res => {
+          if(!res.ok){
+            throw new Error('Post was not found.');
+          };
+          return res.json();
+        })
         .then(data => {
           setPost(data);
           fetchReplies(id);
+        })
+        .finally(() => {
+          setPostLoading(false);
         });
     };
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [id]);
+
+  if(postLoading){
+    return (
+      <p>Post Loading...</p>
+    )
+  };
+
+  if(!post){
+    return (
+      <FourZeroFour />
+    )
+  };
 
   return (
     <section>
@@ -186,7 +213,7 @@ const ExpandedPost = () => {
         <h2>{deleteMessage}</h2> :
         post ?
         <div className="postWrapper">
-          <div className="score">
+          {/* <div className="score">
             {
               decodedUser && 
               <button onClick={() => scorePost(post._id, '+1')}>🔼</button>
@@ -196,11 +223,11 @@ const ExpandedPost = () => {
               decodedUser && 
               <button onClick={() => scorePost(post._id, '-1')}>🔽</button>
             }
-          </div>
-          <p>Posted: {post.postDate ? post.postDate.slice(0, 10): ''}, {post.postDate ? post.postDate.slice(11, 16): ''}</p>
+          </div> */}
+          <p>Posted: {post.postDate ? <DateFormat date={post.postDate} /> : ''}</p>
           {
             post.lastEditDate ?
-            <p>Edited: {post.lastEditDate ? post.lastEditDate.slice(0, 10): ''}, {post.lastEditDate ? post.lastEditDate.slice(11, 16): ''}</p> : <></>
+            <p>Edited: {post.lastEditDate ? <DateFormat date={post.lastEditDate} /> : ''}</p> : <></>
           }
           <p>By: {post.postedBy.username}</p>
           <form onSubmit={formik.handleSubmit}>
@@ -239,7 +266,10 @@ const ExpandedPost = () => {
                 inputPlaceholder={'Enter content...'}
               /> :
               <div>
-                <p>{post.content}</p>
+                {/* <p>{post.content}</p> */}
+                <>
+                  {post.content.split('\n\n').map((par, i) => <p key={i}>{par}</p>)}
+                </>
                 {
                   decodedUser && post.postedBy.userId === decodedUser._id &&
                   <button onClick={() => setEditingContent(true)}>Edit</button>
@@ -280,7 +310,14 @@ const ExpandedPost = () => {
                       <input type="submit" value='Complete Edit' /> :
                       null
                     }
-                    <button onClick={deleteHandler}>Delete</button>
+                    <button  type="button" onClick={() => setShowDeleteModal(true)}>Delete</button>
+                    <Modal isOpen={showDeleteModal} onClose={() => setShowDeleteModal(false)}>
+                      <h2>Are you sure you want to delete this post?</h2>
+                      <div>
+                        <button type="button" onClick={deleteHandler}>Yes</button>
+                        <button type="button" onClick={() => setShowDeleteModal(false)}>No</button>
+                      </div>
+                    </Modal>
                   </>
                 }
               </div>
@@ -295,7 +332,7 @@ const ExpandedPost = () => {
               <form onSubmit={formikReply.handleSubmit}>
                 <InputField
                   labelText='Reply:'
-                  inputType='text'
+                  inputType='textarea'
                   inputName='reply' inputId='reply'
                   inputValue={formikReply.values.reply}
                   inputOnChange={formikReply.handleChange}
@@ -304,7 +341,20 @@ const ExpandedPost = () => {
                   touched={formikReply.touched.reply}
                   inputPlaceholder={'Enter a reply...'}
                 />
-                <input type="submit" value='Post Reply' />
+                <button  type="button" onClick={() => setShowReplyModal(true)}>Post Reply</button>
+                <Modal isOpen={showReplyModal} onClose={() => setShowReplyModal(false)}>
+                  <h2>Are you sure you want to post a reply?</h2>
+                  <div>
+                    <button
+                      type='submit'
+                      onClick={() => {
+                        formikReply.handleSubmit();
+                        setShowReplyModal(false);
+                      }}
+                    >Yes</button>
+                    <button type="button" onClick={() => setShowReplyModal(false)}>No</button>
+                  </div>
+                </Modal>
               </form>
               {
                 postReplyMessage && <p>{postReplyMessage}</p>

@@ -50,7 +50,9 @@ export type UsersContextTypes = {
   } | {
     success: string;
     error?: undefined;
-  }>
+  }>,
+  justLoggedIn: boolean,
+  setJustLoggedIn: React.Dispatch<React.SetStateAction<boolean>>
 };
 
 export type Gender = 'male'| 'female' | 'other';
@@ -197,4 +199,11 @@ export type RepliesContextTypes = {
     error?: undefined;
   }>,
   clearReplies: () => void
+};
+
+// THEME
+
+export type ThemeContextTypes = {
+  theme: string,
+  themeToggle: () => void
 };

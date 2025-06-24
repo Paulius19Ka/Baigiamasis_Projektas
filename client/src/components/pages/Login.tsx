@@ -1,6 +1,6 @@
 import { useFormik } from 'formik';
 import * as Yup from 'yup';
-import { useContext, useState } from 'react';
+import { useContext, useEffect, useState } from 'react';
 import { Link, useNavigate } from 'react-router';
 
 import { User, UsersContextTypes } from '../../types';
@@ -10,7 +10,7 @@ import UsersContext from '../contexts/UsersContext';
 const Login = () => {
 
   const navigate = useNavigate();
-  const { loginUser } = useContext(UsersContext) as UsersContextTypes;
+  const { loginUser, setJustLoggedIn } = useContext(UsersContext) as UsersContextTypes;
   const [loginMessage, setLoginMessage] = useState('');
   const [stayLoggedIn, setStayLoggedIn] = useState(false);
 
@@ -40,12 +40,20 @@ const Login = () => {
         setLoginMessage(Response.error ?? 'Unsuccessful login.');
         throw new Error('Unsuccessful login.');
       };
+      setJustLoggedIn(true);
       // success message and navigate
       setLoginMessage(Response.success);
-      setTimeout(() => navigate('/'), 2000);
+      setTimeout(() => {
+        navigate('/');
+        setJustLoggedIn(false);
+      }, 2000);
       // navigate('/');
     }
   });
+
+  useEffect(() => {
+    document.title = `Login \u2666 MusicForum`;
+  }, []);
 
   return (
     <section>
