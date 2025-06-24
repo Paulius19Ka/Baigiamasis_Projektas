@@ -1,7 +1,28 @@
+import styled from "styled-components";
+
+const StyledSection = styled.section`
+  > img{
+    width: 80%;
+    height: auto;
+    display: block;
+    margin: 0 auto;
+  }
+
+  > p, li{
+    margin: 0;
+    padding: 0;
+  }
+
+  > ul{
+    margin: 0;
+  }
+`;
+
 const AboutUs = () => {
   return (
-    <section>
+    <StyledSection>
       <h2>About the Forum</h2>
+      <img src="/public/media/forumLogo.png" alt="a vinyl record with message symbol on the side" />
       <p>
         Welcome to the ultimate haven for music lovers, collectors, and curious ears alike.
       </p>
@@ -33,7 +54,7 @@ const AboutUs = () => {
       <p>
         Let's make some noise.
       </p>
-    </section>
+    </StyledSection>
   );
 }
  
