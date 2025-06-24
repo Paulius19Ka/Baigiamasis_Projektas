@@ -6,7 +6,7 @@ import PostCard from "../UI/molecules/PostCard";
 
 const SavedPosts = () => {
 
-  const { posts, loading } = useContext(PostsContext) as PostsContextTypes;
+  const { loading } = useContext(PostsContext) as PostsContextTypes;
   const { decodeUserFromToken } = useContext(UsersContext) as UsersContextTypes;
   
   const decodedUser = decodeUserFromToken();
@@ -14,17 +14,21 @@ const SavedPosts = () => {
   const [savedPosts, setSavedPosts] = useState<Post[]>([]);
   const [message, setMessage] = useState('');
 
-  useEffect(() => {
-    if(posts.length){
-      const saved = posts.filter(post => savedPostsIDs.current.includes(post._id));
-      if(!saved.length){
-        setMessage('No saved posts...');
-      } else{
-        setMessage('');
-      };
-      setSavedPosts(saved);
+  const refetchPosts = async () => {
+    const Response = await fetch(`http://localhost:5500/posts`);
+    const allPosts: Post[] = await Response.json();
+    const saved = allPosts.filter(post => savedPostsIDs.current.includes(post._id));
+    if(!saved.length){
+      setMessage('No saved posts...');
+    } else{
+      setMessage('');
     };
-  }, [posts]);
+    setSavedPosts(saved);
+  };
+
+  useEffect(() => {
+    refetchPosts();
+  }, []);
 
   useEffect(() => {
     document.title = `Saved Posts \u2666 MusicForum`;
