@@ -15,6 +15,7 @@ const StyledMain = styled.main`
 
   @media (min-width: 768px){
     background-color: red;
+    min-height: calc(100vh - 60px - 200px - 40px);
     margin: 20px 20px;
   }
 
