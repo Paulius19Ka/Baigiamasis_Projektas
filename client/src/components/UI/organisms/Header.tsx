@@ -138,6 +138,7 @@ const StyledHeader = styled.header`
         }
 
         > a{
+          font-size: 1.15rem;
 
           > img{
             width: 30px;
