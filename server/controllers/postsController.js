@@ -57,7 +57,8 @@ const getAllPosts = async (req, res) => {
 
     if(!DB_RESPONSE.length){
       console.error({ error: `No posts were found.` });
-      return res.status(404).send({ error: `No posts were found.` });
+      // return res.status(404).send({ error: `No posts were found.` });
+      return res.status(200).send([]);
     };
 
     res.send(DB_RESPONSE);
@@ -99,7 +100,8 @@ const getPostCount = async (req, res) => {
 
     if(!DB_RESPONSE.length){
       console.error({ error: `No posts were found.` });
-      return res.status(404).send({ error: `No posts were found.` });
+      // return res.status(404).send({ error: `No posts were found.` });
+      return res.status(200).send({ count: 0 });
     };
 
     res.send({ count: DB_RESPONSE[0]?.count });
