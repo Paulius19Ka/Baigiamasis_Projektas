@@ -91,8 +91,6 @@ export type InputFieldPropTypes = {
 export type PostsContextReducerActionTypes =
 { type: 'setPosts', data: Post[] } |
 { type: 'updateUsernameInPosts', updatedUsername: string, userId: string };
-// { type: 'editPost', updatedPost: Post };
-// { type: 'addPost', newPost: Pick<Post, "title" | "content" | "topic"> };
 
 export type PostsContextTypes = {
   posts: Post[],
