@@ -2,6 +2,8 @@ import { useEffect } from "react";
 import styled from "styled-components";
 
 const StyledSection = styled.section`
+  padding: 0px 10px;
+
   > img{
     width: 80%;
     max-width: 400px;
@@ -29,6 +31,8 @@ const StyledSection = styled.section`
   }
 
   @media (min-width: 768px){
+    padding: 0px 30px;
+
     p, li{
       font-size: 1.05rem;
     }
@@ -39,6 +43,9 @@ const StyledSection = styled.section`
   }
 
   @media (min-width: 1024px){
+    padding: 0px 50px;
+    /* max-width: 70%; */
+    
     p, li{
       font-size: 1.1rem;
     }
