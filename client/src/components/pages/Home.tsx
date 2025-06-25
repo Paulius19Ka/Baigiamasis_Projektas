@@ -34,7 +34,7 @@ const StyledSection = styled.section`
       gap: 5px;
 
       background-color: var(--background-dark);
-      padding: 21px;
+      padding: 15px;
       border-radius: 15px;
 
       > span{
@@ -168,6 +168,15 @@ const StyledSection = styled.section`
           }
         }
       }
+
+      > div:nth-child(4){
+        display: flex;
+        gap: 10px;
+        > button{
+          font-size: 0.9rem;
+          padding: 5px 10px;
+        }
+      }
     }
   }
   
@@ -197,7 +206,7 @@ const StyledSection = styled.section`
 
       > div.sort{
         gap: 10px;
-        padding: 35.2px;
+        padding: 29.2px;
 
         > span{
           font-size: 0.9rem;
@@ -241,6 +250,14 @@ const StyledSection = styled.section`
               padding: 10px 15px;
               font-size: 0.9rem;
             }
+          }
+        }
+
+        > div:nth-child(4){
+          gap: 15px;
+          > button{
+            font-size: 1rem;
+            padding: 5px 10px;
           }
         }
       }
