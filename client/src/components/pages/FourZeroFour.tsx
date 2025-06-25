@@ -74,7 +74,7 @@ const FourZeroFour = () => {
       <h2>Error</h2>
       <h1>404</h1>
       <p>The page You are trying to reach does not exist.</p>
-      <ButtonComponent onClick={() => navigate('/')}>Home</ButtonComponent>
+      <ButtonComponent onClick={() => navigate('/')} type='button'>Home</ButtonComponent>
     </StyledSection>
   );
 }

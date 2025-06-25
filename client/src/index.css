@@ -31,6 +31,8 @@
   color-scheme: light dark;
   color: var(--font-main);
   background-color: var(--background-main);
+
+  --transition-main: ease-out 0.3s;
 }
 
 *{

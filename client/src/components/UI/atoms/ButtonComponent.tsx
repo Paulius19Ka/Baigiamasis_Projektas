@@ -6,9 +6,9 @@ const StyledButton = styled.button`
   color: var(--font-main);
   background-color: var(--accent-main);
   border: none;
-  border-radius: 15px;
-  padding: 5px 10px;
-  transition: ease-out 0.3s;
+  border-radius: 25px;
+  padding: 10px 20px;
+  transition: var(--transition-main);
 
   &:hover{
     background-color: var(--accent-hover);
@@ -19,6 +19,11 @@ const StyledButton = styled.button`
   &:active{
     background-color: var(--accent-active);
     color: var(--accent-main);
+  }
+
+  &:disabled{
+    cursor: not-allowed;
+    background-color: var(--accent-active);
   }
 
   @media (min-width: 768px){
@@ -32,12 +37,14 @@ const StyledButton = styled.button`
 
 type Props = {
   children: ReactNode,
-  onClick: MouseEventHandler<HTMLButtonElement>
+  onClick?: MouseEventHandler<HTMLButtonElement>,
+  type?: 'button' | 'submit' | 'reset',
+  isDisabled?: boolean
 };
 
-const ButtonComponent = ({ onClick, children }: Props) => {
+const ButtonComponent = ({ onClick, children, type, isDisabled }: Props) => {
   return (
-    <StyledButton onClick={onClick}>{ children }</StyledButton>
+    <StyledButton onClick={onClick} type={type} disabled={isDisabled}>{ children }</StyledButton>
   );
 }
  
