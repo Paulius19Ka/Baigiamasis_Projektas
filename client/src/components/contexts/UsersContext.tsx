@@ -139,7 +139,7 @@ const UsersProvider = ({ children }: ChildProp) => {
     // error handling in browser console
     if(!res.ok){
       const errorResponse = await res.json();
-      console.error(`Login failed: ${errorResponse.error}`);
+      // console.error(`Login failed: ${errorResponse.error}`);
       return { error: errorResponse.error };
     };
 

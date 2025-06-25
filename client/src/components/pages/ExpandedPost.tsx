@@ -31,6 +31,16 @@ import CancelIcon from '@mui/icons-material/Cancel';
 
 const StyledSection = styled.section`
   /* padding: 10px; */
+  > h2{
+    text-align: center;
+    padding-top: 20px;
+  }
+
+  > p{
+    margin: 0;
+    text-align: center;
+    padding-top: 20px;
+  }
 
   div.paragraphs{
     display: flex;
@@ -601,7 +611,9 @@ const ExpandedPost = () => {
 
   if(postLoading){
     return (
-      <p>Post Loading...</p>
+      <StyledSection>
+        <p>Post Loading...</p>
+      </StyledSection>
     )
   };
 
@@ -613,8 +625,8 @@ const ExpandedPost = () => {
 
   const score = post._id ? postScores[post._id] ?? post.score : post.score ?? 0;
 
-  const alreadyLiked = decodedUser?.likedPosts.includes(post._id);
-  const alreadyDisliked = decodedUser?.dislikedPosts.includes(post._id);
+  const alreadyLiked = decodedUser?.likedPosts?.includes(post._id);
+  const alreadyDisliked = decodedUser?.dislikedPosts?.includes(post._id);
 
   return (
     <StyledSection>

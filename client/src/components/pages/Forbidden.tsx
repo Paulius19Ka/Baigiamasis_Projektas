@@ -13,6 +13,8 @@ const StyledSection = styled.section`
 
   > h2{
     font-size: 1.3rem;
+    text-align: center;
+    margin: 0;
   }
 
   > p{
@@ -61,8 +63,8 @@ const Forbidden = ({ reason }: Props) => {
 
   return (
     <StyledSection>
+      <p>{reason}</p>
       <h2>You do not have permission to access this page!</h2>
-      <p>Reason: {reason}</p>
       {/* <button onClick={() => navigate('/')}>Home</button> */}
       <ButtonComponent onClick={() => navigate('/')} type='button'>Home</ButtonComponent>
     </StyledSection>

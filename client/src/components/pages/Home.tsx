@@ -192,6 +192,7 @@ const StyledSection = styled.section`
     > p{
       width: 100%;
       min-width: 100%;
+      text-align: center;
     }
   }
 
