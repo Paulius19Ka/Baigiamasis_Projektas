@@ -104,7 +104,7 @@ const StyledFooter = styled.footer`
     }
 
     > div.linksAndCopyrights{
-      max-width: 200px;
+      max-width: 220px;
 
       > span{
         font-size: 1rem;

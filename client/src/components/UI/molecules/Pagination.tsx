@@ -77,6 +77,21 @@ const Pagination = () => {
   const { filteredDataCount, currentPage, pageSize, changePage } = useContext(PostsContext) as PostsContextTypes;
   const lastPage = Math.ceil(filteredDataCount / pageSize.current);
 
+  if(filteredDataCount === 0){
+    return (
+      <StyledDiv className="pagination">
+        <div>
+          <button disabled>{`<`}</button>
+          <button disabled>{`0`}</button>
+          <button disabled>{`>`}</button>
+        </div>
+        <div>
+          <p>No posts found.</p>
+        </div>
+      </StyledDiv>
+    )
+  }
+
   return (
     <StyledDiv className="pagination">
       <div>

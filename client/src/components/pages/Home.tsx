@@ -181,7 +181,9 @@ const StyledSection = styled.section`
   }
   
   > div.posts{
+    min-height: calc(100vh - 40px - 200px - 172.38px - 10px - 20px - 25px - 10px);
     width: 100%;
+    margin-top: 10px;
 
     display: flex;
     flex-direction: column;
@@ -264,8 +266,10 @@ const StyledSection = styled.section`
     }
 
     > div.posts{
+      min-height: calc(100vh - 60px - 200px - 172.38px - 20px - 40px - 26px - 80px);
       width: 80%;
       margin: auto;
+      margin-top: 20px;
       gap: 20px;
 
     }
@@ -367,7 +371,7 @@ const Home = () => {
           </div>
         </form>
       </div>
-      <Pagination />
+      {/* <Pagination /> */}
       <div className="posts">
         {
           loading ? <p>Loading posts...</p> :
@@ -379,6 +383,7 @@ const Home = () => {
           ) : <p>No posts were found...</p>
         }
       </div>
+      <Pagination />
     </StyledSection>
   );
 }

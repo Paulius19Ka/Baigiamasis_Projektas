@@ -31,6 +31,16 @@ import CancelIcon from '@mui/icons-material/Cancel';
 
 const StyledSection = styled.section`
   /* padding: 10px; */
+
+  div.paragraphs{
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+
+    > p{
+      margin: 0;
+    }
+  }
   > div.postWrapper{
     display: flex;
     flex-direction: column;
@@ -210,6 +220,7 @@ const StyledSection = styled.section`
       > div:nth-child(3){
 
         > p{
+          color: var(--font-active);
           font-size: 1rem;
         }
       }
@@ -658,9 +669,9 @@ const ExpandedPost = () => {
                 inputPlaceholder={'Enter content...'}
               /> :
               <div>
-                <>
+                <div className="paragraphs">
                   {post.content.split('\n\n').map((par, i) => <p key={i}>{par}</p>)}
-                </>
+                </div>
                 {
                   decodedUser && post.postedBy.userId === decodedUser._id &&
                   <EditIcon onClick={() => setEditingContent(true)}/>
