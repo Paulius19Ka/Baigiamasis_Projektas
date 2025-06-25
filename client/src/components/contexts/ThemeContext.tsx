@@ -19,8 +19,9 @@ const ThemeProvider = ({ children }: ChildProp) => {
     document.documentElement.style.setProperty('--font-active', theme === 'dark' ? '#a1a1a1' : '#656565');
 
     // background
-    document.documentElement.style.setProperty('--background-main', theme === 'dark' ? '#202128' : '#e1e1e1');
-    document.documentElement.style.setProperty('--background-dark', theme === 'dark' ? '#121317' : '#898989');
+    document.documentElement.style.setProperty('--background-main', theme === 'dark' ? '#202128' : '#d2d2d2');
+    document.documentElement.style.setProperty('--background-dark', theme === 'dark' ? '#121317' : '#e9e9e9');
+    document.documentElement.style.setProperty('--background-darker', theme === 'dark' ? '#08090a' : '#ffffff');
 
     // accent
     document.documentElement.style.setProperty('--accent-main', theme === 'dark' ? '#6ed6ff' : '#00b7ff');
@@ -28,9 +29,9 @@ const ThemeProvider = ({ children }: ChildProp) => {
     document.documentElement.style.setProperty('--accent-active', theme === 'dark' ? '#8caab8' : '#00678f');
 
     // button
-    document.documentElement.style.setProperty('--button-main', theme === 'dark' ? '#808080' : '#ffffff');
-    document.documentElement.style.setProperty('--button-hover', theme === 'dark' ? '#bdbdbd' : '#dadada');
-    document.documentElement.style.setProperty('--button-active', theme === 'dark' ? '#dcdcdc' : '#a2a2a2');
+    document.documentElement.style.setProperty('--button-main', theme === 'dark' ? '#808080' : '#808080');
+    document.documentElement.style.setProperty('--button-hover', theme === 'dark' ? '#bdbdbd' : '#bdbdbd');
+    document.documentElement.style.setProperty('--button-active', theme === 'dark' ? '#dcdcdc' : '#dcdcdc');
 
     // message
     document.documentElement.style.setProperty('--message-error', theme === 'dark' ? '#ff5c5c' : '#991717');

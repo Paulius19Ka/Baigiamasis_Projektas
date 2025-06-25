@@ -9,6 +9,150 @@ import InputField from "../UI/molecules/InputField";
 import { topics } from "../../dynamicVariables";
 import PostsContext from "../contexts/PostsContext";
 import Modal from "../UI/atoms/Modal";
+import styled from "styled-components";
+import ButtonComponent from "../UI/atoms/ButtonComponent";
+
+const StyledSection = styled.section`
+  padding: 20px 20px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 20px;
+  > h2{
+    margin: 0;
+    font-size: 1.6rem;
+  }
+
+  > p{
+    margin: 0;
+    font-size: 1rem;
+  }
+
+  > form{
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+
+    min-width: 260px;
+
+    > div{
+      min-height: 85px;
+
+      > p{
+        margin: 0;
+        color: var(--message-error);
+        font-size: 0.8rem;
+      }
+
+      > div{
+        display: flex;
+        flex-direction: column;
+
+        > input, textarea, select{
+          color: var(--font-main);
+          padding: 10px 20px;
+          background-color: var(--background-dark);
+          border: none;
+          border-radius: 5px;
+          font-size: 1rem;
+          transition: var(--transition-main);
+
+          &::placeholder{
+            color: var(--button-main);
+          }
+
+          &:hover{
+            color: var(--font-main);
+            background-color: var(--modal-background);
+
+            &::placeholder{
+              color: var(--background-dark);
+            }
+          }
+          
+          &:focus{
+            background-color: var(--modal-background);
+            outline: none;
+
+            &::placeholder{
+              color: var(--background-dark);
+            }
+          }
+        }
+
+        > select{
+          color: var(--font-main);
+          
+          &:hover{
+            color: var(--font-main);
+            background-color: var(--background-dark);
+          }
+
+          &:focus{
+            background-color: var(--background-dark);
+            outline: none;
+  
+            &::placeholder{
+              color: var(--background-dark);
+            }
+          }
+        }
+
+      }
+    }
+
+    > div:nth-child(2){
+      min-height: 160px;
+    }
+
+    > button{
+      align-self: center;
+    }
+  }
+
+  > p{
+    margin: 0;
+  }
+
+  > p.message-success{
+    font-size: 0.8rem;
+    color: var(--message-success);
+  }
+
+  > p.message-error{
+    font-size: 0.8rem;
+    color: var(--message-error);
+  }
+
+  > p.redirect{
+    
+    > a{
+      color: var(--accent-main);
+      transition: var(--transition-main);
+
+      &:hover{
+        color: var(--accent-hover);
+      }
+
+      &:active{
+        color: var(--accent-active);
+      }
+    }
+  }
+
+  > a{
+    color: var(--accent-main);
+    transition: var(--transition-main);
+
+    &:hover{
+      color: var(--accent-hover);
+    }
+
+    &:active{
+      color: var(--accent-active);
+    }
+  }
+`;
 
 const CreatePost = () => {
 
@@ -17,6 +161,7 @@ const CreatePost = () => {
   const decodedUser = decodeUserFromToken();
   const [userId, setUserId] = useState<string | null>(null);
   const [postMessage, setPostMessage] = useState('');
+  const [postMsgType, setPostMsgType] = useState<'success' | 'error' | ''>('');
   const navigate = useNavigate();
   const [showModal, setShowModal] = useState(false);
 
@@ -42,12 +187,12 @@ const CreatePost = () => {
     initialValues: initValues,
     validationSchema: Yup.object({
       title: Yup.string()
-        .min(5, 'Title must be longer than 5 symbols.')
-        .max(100, 'Title must be shorter than 100 symbols.')
+        .min(5, 'Must be longer than 5 symbols.')
+        .max(100, 'Must be shorter than 100 symbols.')
         .required('Enter the title.'),
       content: Yup.string()
-        .min(20, 'The post description must be longer than 20 symbols.')
-        .max(2000, 'The post description must be shorter than 2000 symbols.')
+        .min(20, 'Must be longer than 20 symbols.')
+        .max(2000, 'Must be shorter than 2000 symbols.')
         .required('Enter the post description'),
       topic: Yup.string()
         .oneOf(topics, 'Invalid topic selected.')
@@ -55,26 +200,29 @@ const CreatePost = () => {
     }),
     onSubmit: async (values) => {
       if(!userId){
+        setPostMsgType('error');
         setPostMessage('Failed to retrieve ID.');
         throw new Error('Failed to retrieve ID.');
       };
 
       const Response = await createPost(values, userId);
       if('error' in Response){
+        setPostMsgType('error');
         setPostMessage('Failed to create new thread.');
         throw new Error('Failed to create new thread.');
       };
+      setPostMsgType('success');
       setPostMessage('Successfully created a new thread.');
       setTimeout(() => navigate('/'), 2000);
     }
   })
 
   return (
-    <section>
+    <StyledSection>
       {
         decodedUser ?
         <>
-          <h2>Create new thread</h2>
+          <h2>Create a new thread</h2>
           <form onSubmit={formik.handleSubmit}>
             <InputField
               labelText='Title:'
@@ -109,7 +257,7 @@ const CreatePost = () => {
               touched={formik.touched.topic}
               selectOps={topics}
             />
-            <button  type="button" onClick={() => setShowModal(true)}>Submit Post</button>
+            <ButtonComponent isDisabled={!!Object.keys(formik.errors).length} type="button" onClick={() => setShowModal(true)}>Submit Post</ButtonComponent>
             <Modal isOpen={showModal} onClose={() => setShowModal(false)}>
               <h2>Are you sure you want to submit post?</h2>
               <div>
@@ -125,14 +273,14 @@ const CreatePost = () => {
             </Modal>
           </form>
           {
-            postMessage && <p>{postMessage}</p>
+            postMessage && <p className={`message-${postMsgType}`}>{postMessage}</p>
           }
         </> :
         <>
-          <p>Please <Link to='/login'>login</Link> or <Link to='/register'>register</Link> to create a new thread.</p>
+          <p className='redirect'>Please <Link to='/login'>login</Link> or <Link to='/register'>register</Link> to create a new thread.</p>
         </>
       }
-    </section>
+    </StyledSection>
   );
 }
  

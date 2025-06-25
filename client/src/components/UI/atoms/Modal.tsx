@@ -16,6 +16,7 @@ const StyledDiv = styled.div`
   div.modalContent{
     position: fixed;
     width: 80%;
+    max-width: 420px;
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
@@ -31,6 +32,7 @@ const StyledDiv = styled.div`
       gap: 10px;
 
       > h2{
+        font-size: 1.4rem;
         margin: 0;
       }
 
@@ -40,21 +42,22 @@ const StyledDiv = styled.div`
         align-items: center;
 
         > button{
-          font-size: 1rem;
+          font-size: 1.1rem;
           color: var(--font-main);
-          background-color: var(--button-main);
+          background-color: var(--accent-main);
           border: none;
-          padding: 2px, 5px;
-          border-radius: 3px;
+          padding: 8px 16px;
+          border-radius: 50px;
           cursor: pointer;
+          transition: var(--transition-main);
   
           &:hover{
-            background-color: var(--button-hover);
-            color: var(--button-main);
+            background-color: var(--accent-hover);
+            color: var(--font-hover);
           }
   
           &:active{
-            background-color: var(--button-active);
+            background-color: var(--accent-active);
             color: var(--font-active);
           }
         }
@@ -62,10 +65,12 @@ const StyledDiv = styled.div`
     }
 
     > svg{
+      font-size: 2rem;
       position: fixed;
       top: 5px;
       right: 5px;
       cursor: pointer;
+      transition: var(--transition-main);
 
       &:hover{
         color: var(--accent-main);
@@ -73,6 +78,46 @@ const StyledDiv = styled.div`
 
       &:active{
         color: var(--accent-active);
+      }
+    }
+  }
+
+  @media (min-width: 768px){
+
+    div.modalContent{
+      width: 50%;
+      padding: 40px;
+
+      > div > h2{
+        font-size: 1.5rem;
+      }
+
+      > div > div > button{
+        font-size: 1.3rem;
+      }
+
+      > svg{
+        font-size: 2.2rem;
+      }
+    }
+  }
+
+  @media (min-width: 1024px){
+
+    div.modalContent{
+      max-width: 550px;
+      padding: 50px;
+
+      > div > h2{
+        font-size: 1.6rem;
+      }
+
+      > div > div > button{
+        font-size: 1.5rem;
+      }
+
+      > svg{
+        font-size: 2.4rem;
       }
     }
   }

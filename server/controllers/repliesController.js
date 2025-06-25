@@ -40,7 +40,7 @@ const getAllRepliesByPostId = async (req, res) => {
     // decide whether to show in console later
     if(!DB_RESPONSE.length){
       console.error({ error: `No replies were found.` });
-      return res.status(404).send({ error: `No replies were found.` });
+      // return res.status(404).send({ error: `No replies were found.` });
     };
     res.send(DB_RESPONSE);
   } catch(err){

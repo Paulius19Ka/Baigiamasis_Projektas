@@ -9,15 +9,160 @@ import InputField from "../UI/molecules/InputField";
 import { Link, useNavigate } from "react-router";
 import { genders } from "../../dynamicVariables";
 import Modal from "../UI/atoms/Modal";
+import ButtonComponent from "../UI/atoms/ButtonComponent";
 
 const StyledSection = styled.section`
+  padding: 20px 20px;
   display: flex;
   flex-direction: column;
+  align-items: center;
+  gap: 20px;
 
   > img{
-    width: 150px;
-    height: 150px;
-    object-fit: cover;
+      width: 150px;
+      height: 150px;
+      object-fit: cover;
+      border-radius: 15px;
+    }
+  > h2{
+    margin: 0;
+    font-size: 1.6rem;
+  }
+
+  > p{
+    margin: 0;
+    font-size: 1rem;
+  }
+
+  > form{
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+
+    min-width: 260px;
+
+    > div{
+      min-height: 85px;
+
+      > p{
+        margin: 0;
+        color: var(--message-error);
+        font-size: 0.8rem;
+      }
+
+      > div{
+        display: flex;
+        flex-direction: column;
+
+        > input{
+          color: var(--font-main);
+          padding: 10px 20px;
+          background-color: var(--background-dark);
+          border: none;
+          border-radius: 5px;
+          font-size: 1rem;
+          transition: var(--transition-main);
+
+          &::placeholder{
+            color: var(--button-main);
+          }
+
+          &:hover{
+            color: var(--font-main);
+            background-color: var(--modal-background);
+
+            &::placeholder{
+              color: var(--background-dark);
+            }
+          }
+          
+          &:focus{
+            background-color: var(--modal-background);
+            outline: none;
+
+            &::placeholder{
+              color: var(--background-dark);
+            }
+          }
+        }
+      }
+    }
+
+    > button{
+      align-self: center;
+    }
+
+    > div.checkbox{
+      min-height: unset;
+
+      > div{
+        flex-direction: row;
+        justify-content: flex-start;
+        gap: 5px;
+
+        > input{
+          height: 18px;
+          width: 18px;
+        }
+      }
+    }
+  }
+
+  > p{
+    margin: 0;
+  }
+
+  > p.message-success{
+    font-size: 0.8rem;
+    color: var(--message-success);
+  }
+
+  > p.message-error{
+    font-size: 0.8rem;
+    color: var(--message-error);
+  }
+
+  > p.redirect{
+    
+    > a{
+      color: var(--accent-main);
+      transition: var(--transition-main);
+
+      &:hover{
+        color: var(--accent-hover);
+      }
+
+      &:active{
+        color: var(--accent-active);
+      }
+    }
+  }
+
+  > a{
+    color: var(--accent-main);
+    transition: var(--transition-main);
+
+    &:hover{
+      color: var(--accent-hover);
+    }
+
+    &:active{
+      color: var(--accent-active);
+    }
+  }
+
+  @media (min-width: 768px){
+    > img{
+      width: 200px;
+      height: 200px;
+    }
+  }
+
+  @media (min-width: 1024px){
+    > img{
+      width: 250px;
+      height: 250px;
+    }
   }
 `;
 
@@ -28,6 +173,7 @@ const UserPage = () => {
   // console.log(decodedUser);
   const [userId, setUserId] = useState<string | null>(null);
   const [editMessage, setEditMessage] = useState('');
+  const [editMsgType, setEditMsgType] = useState<'success' | 'error' | ''>('');
   const navigate = useNavigate();
   const [showModal, setShowModal] = useState(false);
 
@@ -43,7 +189,7 @@ const UserPage = () => {
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  const initValues: Omit<User, '_id' | 'role' | 'password' | 'savedPosts'> & { oldPassword?: string, password?: string, passwordConfirm?: string }= {
+  const initValues: Omit<User, '_id' | 'role' | 'password' | 'savedPosts' | 'likedPosts' | 'dislikedPosts'> & { oldPassword?: string, password?: string, passwordConfirm?: string }= {
     email: decodedUser?.email || '',
     username: decodedUser?.username || '',
     oldPassword: '',
@@ -68,25 +214,17 @@ const UserPage = () => {
         .required('Enter a username.')
         .trim(),
       oldPassword: Yup.string()
-        .matches(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,20}$/, 'Password must have: lower case character, upper case character, number, special symbol, 8-20 symbols long.')
-        // .required('Enter a password.')
-        // .when('password', {
-        //   is: (val: string) => !!val,
-        //   then: (schema) => schema.required('Enter the old password.')
-        // })
+        .matches(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,20}$/, 'Min 8 chars: upper, lower, number, symbol.')
         .trim(),
       password: Yup.string()
-        // .notOneOf([Yup.ref('oldPassword')], 'New password must be different than the old password.')
-        .matches(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,20}$/, 'Password must have: lower case character, upper case character, number, special symbol, 8-20 symbols long.')
-        // .required('Enter a password.')
+        .matches(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,20}$/, 'Min 8 chars: upper, lower, number, symbol.')
         .when('oldPassword', {
           is: (val: string) => !!val,
-          then: (schema) => schema.notOneOf([Yup.ref('oldPassword')], 'New password must be different than the old password.')
+          then: (schema) => schema.notOneOf([Yup.ref('oldPassword')], 'Enter a different password.')
         })
         .trim(),
       passwordConfirm: Yup.string()
         .oneOf([Yup.ref('password')], 'Passwords must match.')
-        // .required('Confirm password.')
         .when('password', {
           is: (val: string) => !!val,
           then: (schema) => schema.required('Confirm password.')
@@ -99,6 +237,7 @@ const UserPage = () => {
     }),
     onSubmit: async (values) => {
       if(!userId){
+        setEditMsgType('error');
         setEditMessage('Failed to retrieve ID.');
         throw new Error('Failed to retrieve ID.');
       };
@@ -124,6 +263,7 @@ const UserPage = () => {
       const Response = await editUser(finalValues, userId);
       if('error' in Response){
         // !!!! add error message on site as well
+        setEditMsgType('error');
         setEditMessage(Response.error ?? 'Unsuccessful edit.');
         throw new Error('Unsuccessful edit.');
       };
@@ -140,9 +280,9 @@ const UserPage = () => {
       dispatch({ type: 'setUser', userData: updatedUser as Omit<User, 'password'> });
 
       // success message and navigate
+      setEditMsgType('success');
       setEditMessage(Response.success);
       setTimeout(() => navigate('/'), 2000);
-      // navigate('/');
     }
   });
 
@@ -236,8 +376,7 @@ const UserPage = () => {
               touched={formik.touched.avatar}
               inputPlaceholder={'Enter a new avatar url...'}
             />
-            {/* <input type="submit" value="Edit"/> */}
-            <button  type="button" onClick={() => setShowModal(true)}>Edit</button>
+            <ButtonComponent isDisabled={!!Object.keys(formik.errors).length} type="button" onClick={() => setShowModal(true)}>Edit</ButtonComponent>
             <Modal isOpen={showModal} onClose={() => setShowModal(false)}>
               <h2>Are you sure you want to edit user details?</h2>
               <div>
@@ -253,7 +392,7 @@ const UserPage = () => {
             </Modal>
           </form>
           {
-            editMessage && <p>{editMessage}</p>
+            editMessage && <p className={`message-${editMsgType}`}>{editMessage}</p>
           }
         </> :
         <>

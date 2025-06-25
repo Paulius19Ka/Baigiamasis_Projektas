@@ -1,4 +1,63 @@
 import { useEffect } from "react";
+import styled from "styled-components";
+
+const StyledSection = styled.section`
+  padding: 0px 10px;
+  > ol{
+    list-style-type: upper-roman;
+    padding-left: 20px;
+
+    > li{
+      margin: 10px 0px;
+      > h3{
+        margin: 0;
+        font-size: 1.1rem;
+        font-weight: 600;
+      }
+
+      > p{
+        margin: 0;
+        font-size: 1rem;
+      }
+    }
+  }
+
+  @media (min-width: 768px){
+    padding: 0px 30px;
+
+    > ol{
+
+      > li{
+
+        > p{
+          font-size: 1.05rem;
+        }
+
+        > h3{
+          font-size: 1.1rem;
+        }
+      }
+    }
+  }
+
+  @media (min-width: 1024px){
+    padding: 0px 50px;
+
+    > ol{
+
+      > li{
+
+        > p{
+          font-size: 1.1rem;
+        }
+        
+        > h3{
+          font-size: 1.15rem;
+        }
+      }
+    }
+  }
+`;
 
 const ForumRules = () => {
 
@@ -7,7 +66,7 @@ const ForumRules = () => {
   }, []);
 
   return (
-    <section>
+    <StyledSection>
       <h2>Forum Rules</h2>
       <ol>
         <li>
@@ -53,7 +112,7 @@ const ForumRules = () => {
           </p>
         </li>
       </ol>
-    </section>
+    </StyledSection>
   );
 }
  

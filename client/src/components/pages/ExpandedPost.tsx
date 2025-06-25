@@ -2,6 +2,7 @@ import { useContext, useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router";
 import { useFormik } from "formik";
 import * as Yup from 'yup';
+import styled from "styled-components";
 
 import { Post, PostsContextTypes, RepliesContextTypes, UsersContextTypes } from "../../types";
 import InputField from "../UI/molecules/InputField";
@@ -13,12 +14,415 @@ import ReplyCard from "../UI/molecules/ReplyCard";
 import Modal from "../UI/atoms/Modal";
 import FourZeroFour from "./FourZeroFour";
 import DateFormat from "../UI/atoms/DateFormat";
+import { formatScore } from "../../helpers";
+
+// ICONS
+import ThumbUpOffAltIcon from '@mui/icons-material/ThumbUpOffAlt';
+import ThumbUpAltIcon from '@mui/icons-material/ThumbUpAlt';
+import ThumbDownOffAltIcon from '@mui/icons-material/ThumbDownOffAlt';
+import ThumbDownAltIcon from '@mui/icons-material/ThumbDownAlt';
+import FavoriteBorderIcon from '@mui/icons-material/FavoriteBorder';
+import FavoriteIcon from '@mui/icons-material/Favorite';
+import ReplyIcon from '@mui/icons-material/Reply';
+import DeleteIcon from '@mui/icons-material/Delete';
+import EditIcon from '@mui/icons-material/Edit';
+import CheckCircleIcon from '@mui/icons-material/CheckCircle';
+import CancelIcon from '@mui/icons-material/Cancel';
+
+const StyledSection = styled.section`
+  /* padding: 10px; */
+  > h2{
+    text-align: center;
+    padding-top: 20px;
+  }
+
+  > p{
+    margin: 0;
+    text-align: center;
+    padding-top: 20px;
+  }
+
+  div.paragraphs{
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+
+    > p{
+      margin: 0;
+    }
+  }
+  > div.postWrapper{
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+
+    /* border: 1px solid var(--background-darker); */
+    background-color: var(--background-dark);
+    border-radius: 15px;
+    padding: 16px;
+
+    > p{
+      margin: 0;
+    }
+
+    > div.score{
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+
+      > span{
+        font-size: 0.8rem;
+        width: 32px;
+        height: 32px;
+        border: 1px solid var(--accent-main);
+        border-radius: 100%;
+        background-color: var(--background-main);
+        color: var(--accent-main);
+        cursor: default;
+
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+
+      > div{
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+
+        > span{
+          font-size: 1rem;
+          margin-left: auto;
+          color: var(--font-hover);
+        }
+
+        > span:nth-child(2){
+          font-size: 0.8rem;
+          font-weight: 400;
+          color: var(--button-main);
+        }
+      }
+    }
+
+    > div.posterInfo{
+      align-self: flex-end;
+
+      > span{
+        font-size: 0.9rem;
+        color: var(--font-hover);
+      }
+    }
+
+    > form{
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+
+      > div{
+        display: flex;
+
+        > h2{
+          color: var(--accent-hover);
+          font-size: 1.6rem;
+        }
+
+        > p{
+          color: var(--font-main);
+          margin: 0;
+          font-size: 1.1rem;
+        }
+
+        > svg{
+          color: var(--font-main);
+          font-size: 2rem;
+          margin-left: auto;
+          transition: var(--transition-main);
+
+          &:hover{
+            cursor: pointer;
+            color: var(--accent-main);
+          }
+
+          &:active{
+            cursor: pointer;
+            color: var(--accent-active);
+          }
+        }
+
+        > button{
+          border: none;
+          background-color: rgba(255, 0, 0, 0);
+          padding: 0;
+          
+          > svg{
+            color: var(--font-main);
+            font-size: 2rem;
+            transition: var(--transition-main);
+
+            &:hover{
+              cursor: pointer;
+              color: var(--accent-main);
+            }
+  
+            &:active{
+              cursor: pointer;
+              color: var(--accent-active);
+            }
+          }
+        }
+
+        > div{
+          display: flex;
+          flex-direction: column;
+
+          > input, textarea, select{
+            color: var(--font-main);
+            padding: 10px 20px;
+            background-color: var(--background-darker);
+            border: none;
+            border-radius: 5px;
+            font-size: 1rem;
+            transition: var(--transition-main);
+
+            &::placeholder{
+              color: var(--button-main);
+            }
+
+            &:hover{
+              color: var(--font-main);
+              background-color: var(--background-main);
+
+              &::placeholder{
+                color: var(--background-dark);
+              }
+            }
+            
+            &:focus{
+              background-color: var(--background-main);
+              outline: none;
+
+              &::placeholder{
+                color: var(--background-dark);
+              }
+            }
+          }
+
+          > select{
+            color: var(--font-main);
+            
+            &:hover{
+              color: var(--font-main);
+              background-color: var(--background-darker);
+            }
+
+            &:focus{
+              background-color: var(--background-darker);
+              outline: none;
+    
+              &::placeholder{
+                color: var(--background-dark);
+              }
+            }
+          }
+        }
+      }
+
+      > div:nth-child(3){
+
+        > p{
+          color: var(--font-active);
+          font-size: 1rem;
+        }
+      }
+
+      > div:nth-child(4){
+        gap: 10px;
+        justify-content: flex-end;
+        
+        > svg{
+          color: var(--font-main);
+          margin-left: unset;
+          transition: var(--transition-main);
+
+          &:hover{
+            cursor: pointer;
+            color: var(--accent-main);
+          }
+  
+          &:active{
+            cursor: pointer;
+            color: var(--accent-active);
+          }
+        }
+
+      }
+    }
+
+    > div.postReply{
+      
+      > form{
+        display: flex;
+        flex-direction: column;
+        gap: 5px;
+
+        > div{
+
+          > div{
+            display: flex;
+            flex-direction: column;
+
+            > textarea{
+              color: var(--font-main);
+              padding: 10px 20px;
+              background-color: var(--background-darker);
+              border: none;
+              border-radius: 5px;
+              font-size: 1rem;
+              transition: var(--transition-main);
+
+              &::placeholder{
+                color: var(--button-main);
+              }
+
+              &:hover{
+                color: var(--font-main);
+                background-color: var(--background-main);
+
+                &::placeholder{
+                  color: var(--background-dark);
+                }
+              }
+              
+              &:focus{
+                background-color: var(--background-main);
+                outline: none;
+
+                &::placeholder{
+                  color: var(--background-dark);
+                }
+              }
+            }
+          }
+        }
+
+        > div.replyButtons{
+          display: flex;
+          align-items: center;
+          justify-content: flex-end;
+
+          > button{
+            border: none;
+            background-color: rgba(255, 0, 0, 0);
+            padding: 0;
+            
+            > svg{
+              color: var(--font-main);
+              font-size: 2rem;
+              transition: var(--transition-main);
+
+              &:hover{
+                cursor: pointer;
+                color: var(--accent-main);
+              }
+    
+              &:active{
+                cursor: pointer;
+                color: var(--accent-active);
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+
+  > div.repliesWrapper{
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    padding-top: 10px;
+  }
+
+  @media (min-width: 768px){
+    padding: 10px 40px;
+
+    > div.postWrapper{
+      padding: 24px;
+
+      > div.score{
+
+        > span{
+          font-size: 0.9rem;
+          width: 40px;
+          height: 40px;
+          border: 2px solid var(--accent-main);
+        }
+
+        > div{
+
+          > span{
+            font-size: 1.1rem;
+          }
+
+          > span:nth-child(2){
+            font-size: 0.9rem;
+          }
+        }
+      }
+
+      > div.posterInfo{
+
+        > span{
+          font-size: 1rem;
+        }
+      }
+
+      > form{
+        gap: 30px;
+
+        > div{
+
+          > h2{
+            font-size: 1.7rem;
+          }
+
+          > p{
+            font-size: 1.2rem;
+          }
+
+          > div{
+
+            > input, textarea, select, label{
+              font-size: 1.1rem;
+            }
+          }
+        }
+
+        > div:nth-child(3){
+
+          > p{
+            font-size: 1.1rem;
+          }
+        }
+      }
+    }
+  }
+
+  > div.repliesWrapper{
+    gap: 20px;
+    padding-top: 20px;
+  }
+
+  @media (min-width: 1024px){
+
+  }
+`;
 
 const ExpandedPost = () => {
 
   const { id } = useParams();
   const { editPost, deletePost, /* scorePost */ } = useContext(PostsContext) as PostsContextTypes;
-  const { decodeUserFromToken, savePost } = useContext(UsersContext) as UsersContextTypes;
+  const { decodeUserFromToken, savePost, likeOrDislike, postScores } = useContext(UsersContext) as UsersContextTypes;
   const { replies, fetchReplies, postReply, loading, clearReplies } = useContext(RepliesContext) as RepliesContextTypes;
   const [postLoading, setPostLoading] = useState(true);
   const [post, setPost] = useState<Post | null>(null);
@@ -33,7 +437,6 @@ const ExpandedPost = () => {
   const decodedUser = decodeUserFromToken();
   const navigate = useNavigate();
   const [showDeleteModal, setShowDeleteModal] = useState(false);
-  const [showReplyModal, setShowReplyModal] = useState(false);
 
   const initValues: Pick<Post, "title" | "content" | "topic"> = {
     title: post?.title ?? '',
@@ -126,6 +529,17 @@ const ExpandedPost = () => {
     }, 2000);
   };
 
+  const likeOrDislikeHandler = async (emoteType: 'like' | 'dislike') => {
+    if(!post?._id){
+      return null;
+    }
+    const response = await likeOrDislike(post?._id, emoteType);
+
+    if('error' in response){
+      console.error(response.error);
+    };
+  };
+
   const savePostHandler = async () => {
     if(!post?._id){
       setDeleteMessage(`Failed to retrieve Post ID.`);
@@ -147,6 +561,7 @@ const ExpandedPost = () => {
   };
 
   const replyPostHandler = async () => {
+    setPostReplyMessage('');
     if(!postingReply){
       setPostingReply(true);
     };
@@ -196,7 +611,9 @@ const ExpandedPost = () => {
 
   if(postLoading){
     return (
-      <p>Post Loading...</p>
+      <StyledSection>
+        <p>Post Loading...</p>
+      </StyledSection>
     )
   };
 
@@ -206,35 +623,33 @@ const ExpandedPost = () => {
     )
   };
 
+  const score = post._id ? postScores[post._id] ?? post.score : post.score ?? 0;
+
+  const alreadyLiked = decodedUser?.likedPosts?.includes(post._id);
+  const alreadyDisliked = decodedUser?.dislikedPosts?.includes(post._id);
+
   return (
-    <section>
+    <StyledSection>
       {
         deleteMessage ?
         <h2>{deleteMessage}</h2> :
         post ?
         <div className="postWrapper">
-          {/* <div className="score">
-            {
-              decodedUser && 
-              <button onClick={() => scorePost(post._id, '+1')}>🔼</button>
-            }
-            <p>Score: {post.score}</p>
-            {
-              decodedUser && 
-              <button onClick={() => scorePost(post._id, '-1')}>🔽</button>
-            }
-          </div> */}
-          <p>Posted: {post.postDate ? <DateFormat date={post.postDate} /> : ''}</p>
-          {
-            post.lastEditDate ?
-            <p>Edited: {post.lastEditDate ? <DateFormat date={post.lastEditDate} /> : ''}</p> : <></>
-          }
-          <p>By: {post.postedBy.username}</p>
+          <div className="score">
+            <span>{formatScore(score)}</span>
+            <div>
+              <span>Posted {post.postDate ? <DateFormat date={post.postDate} /> : ''}</span>
+              {post.lastEditDate && <span><i>Edited {<DateFormat date={post.lastEditDate} />}</i></span>}
+            </div>
+          </div>
+          <div className="posterInfo">
+            <span>Posted By: <b>{post.postedBy.username}</b></span>
+          </div>
           <form onSubmit={formik.handleSubmit}>
             {
               editingTitle ?
               <InputField
-                labelText='Title:'
+                labelText='Title'
                 inputType='text'
                 inputName='title' inputId='title'
                 inputValue={formik.values.title}
@@ -248,14 +663,14 @@ const ExpandedPost = () => {
                 <h2>{post.title}</h2>
                 {
                   decodedUser && post.postedBy.userId === decodedUser._id &&
-                  <button onClick={() => setEditingTitle(true)}>Edit</button>
+                  <EditIcon onClick={() => setEditingTitle(true)}/>
                 }
               </div>
             }
             {
               editingContent ?
               <InputField
-                labelText='Content:'
+                labelText='Content'
                 inputType='textarea'
                 inputName='content' inputId='content'
                 inputValue={formik.values.content}
@@ -266,20 +681,19 @@ const ExpandedPost = () => {
                 inputPlaceholder={'Enter content...'}
               /> :
               <div>
-                {/* <p>{post.content}</p> */}
-                <>
+                <div className="paragraphs">
                   {post.content.split('\n\n').map((par, i) => <p key={i}>{par}</p>)}
-                </>
+                </div>
                 {
                   decodedUser && post.postedBy.userId === decodedUser._id &&
-                  <button onClick={() => setEditingContent(true)}>Edit</button>
+                  <EditIcon onClick={() => setEditingContent(true)}/>
                 }
               </div>
             }
             {
               editingTopic ?
               <InputField
-                labelText='Topic:'
+                labelText='Topic'
                 inputType='select'
                 inputName='topic' inputId='topic'
                 inputValue={formik.values.topic}
@@ -293,24 +707,47 @@ const ExpandedPost = () => {
                 <p>Topic: {post.topic}</p>
                 {
                   decodedUser && post.postedBy.userId === decodedUser._id &&
-                  <button onClick={() => setEditingTopic(true)}>Edit</button>
+                  <EditIcon onClick={() => setEditingTopic(true)}/>
                 }
               </div>
             }
             {
               decodedUser &&
               <div>
-                <button type="button" onClick={replyPostHandler}>Reply</button>
-                <button type="button" onClick={savePostHandler}>{saveBtnText}</button>
+                {
+                  alreadyLiked ?
+                  <ThumbUpAltIcon type="button" onClick={() => likeOrDislikeHandler('like')} /> :
+                  <ThumbUpOffAltIcon type="button" onClick={() => likeOrDislikeHandler('like')} />
+                }
+                {
+                  alreadyDisliked ?
+                  <ThumbDownAltIcon type="button" onClick={() => likeOrDislikeHandler('dislike')} /> :
+                  <ThumbDownOffAltIcon type="button" onClick={() => likeOrDislikeHandler('dislike')} />
+                }
+                <ReplyIcon type="button" onClick={replyPostHandler}/>
+                {
+                  saveBtnText === 'Save' ?
+                  <FavoriteBorderIcon  type="button" onClick={savePostHandler}/> :
+                  <FavoriteIcon  type="button" onClick={savePostHandler}/>
+                }
                 {
                   post.postedBy.userId === decodedUser._id &&
                   <>
+                    <DeleteIcon type="button" onClick={() => setShowDeleteModal(true)}/>
                     {
                       editingTitle || editingContent || editingTopic ?
-                      <input type="submit" value='Complete Edit' /> :
+                      <>
+                        <button type= 'button' onClick={() => {
+                          setEditingTitle(false);
+                          setEditingContent(false);
+                          setEditingTopic(false);
+                        }}><CancelIcon /></button>
+                        <button type="submit">
+                          <CheckCircleIcon />
+                        </button>
+                      </> :
                       null
                     }
-                    <button  type="button" onClick={() => setShowDeleteModal(true)}>Delete</button>
                     <Modal isOpen={showDeleteModal} onClose={() => setShowDeleteModal(false)}>
                       <h2>Are you sure you want to delete this post?</h2>
                       <div>
@@ -328,10 +765,10 @@ const ExpandedPost = () => {
           }
           {
             postingReply &&
-            <div>
+            <div className="postReply">
               <form onSubmit={formikReply.handleSubmit}>
                 <InputField
-                  labelText='Reply:'
+                  labelText='Reply'
                   inputType='textarea'
                   inputName='reply' inputId='reply'
                   inputValue={formikReply.values.reply}
@@ -341,20 +778,14 @@ const ExpandedPost = () => {
                   touched={formikReply.touched.reply}
                   inputPlaceholder={'Enter a reply...'}
                 />
-                <button  type="button" onClick={() => setShowReplyModal(true)}>Post Reply</button>
-                <Modal isOpen={showReplyModal} onClose={() => setShowReplyModal(false)}>
-                  <h2>Are you sure you want to post a reply?</h2>
-                  <div>
-                    <button
-                      type='submit'
-                      onClick={() => {
-                        formikReply.handleSubmit();
-                        setShowReplyModal(false);
-                      }}
-                    >Yes</button>
-                    <button type="button" onClick={() => setShowReplyModal(false)}>No</button>
-                  </div>
-                </Modal>
+                <div className="replyButtons">
+                  <button type= 'button' onClick={() => {
+                    setPostingReply(false);
+                  }}><CancelIcon /></button>
+                  <button type="submit">
+                    <CheckCircleIcon />
+                  </button>
+                </div>
               </form>
               {
                 postReplyMessage && <p>{postReplyMessage}</p>
@@ -385,7 +816,7 @@ const ExpandedPost = () => {
           <p>No replies.</p>
         ) : null
       }
-    </section>
+    </StyledSection>
   );
 }
  

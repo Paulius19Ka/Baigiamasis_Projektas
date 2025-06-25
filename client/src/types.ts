@@ -51,8 +51,17 @@ export type UsersContextTypes = {
     success: string;
     error?: undefined;
   }>,
+  likeOrDislike: (postId: string, emoteType: "like" | "dislike") => Promise<{
+    error: string;
+    success?: undefined;
+  } | {
+    success: string;
+    error?: undefined;
+  }>,
   justLoggedIn: boolean,
-  setJustLoggedIn: React.Dispatch<React.SetStateAction<boolean>>
+  setJustLoggedIn: React.Dispatch<React.SetStateAction<boolean>>,
+  postScores: Record<string, number>,
+  updatePostScore: (postId: string, newScore: number) => void
 };
 
 export type Gender = 'male'| 'female' | 'other';
@@ -65,7 +74,9 @@ export type User = {
   gender: Gender,
   role: 'admin' | 'user',
   avatar: string,
-  savedPosts: string[]
+  savedPosts: string[],
+  likedPosts: string[],
+  dislikedPosts: string[]
 };
 
 // INPUT FIELD
@@ -91,8 +102,6 @@ export type InputFieldPropTypes = {
 export type PostsContextReducerActionTypes =
 { type: 'setPosts', data: Post[] } |
 { type: 'updateUsernameInPosts', updatedUsername: string, userId: string };
-// { type: 'editPost', updatedPost: Post };
-// { type: 'addPost', newPost: Pick<Post, "title" | "content" | "topic"> };
 
 export type PostsContextTypes = {
   posts: Post[],

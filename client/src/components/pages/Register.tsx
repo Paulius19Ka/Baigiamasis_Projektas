@@ -7,13 +7,149 @@ import { User, UsersContextTypes } from '../../types';
 import InputField from '../UI/molecules/InputField';
 import UsersContext from '../contexts/UsersContext';
 import { genders } from '../../dynamicVariables';
+import styled from 'styled-components';
+import ButtonComponent from '../UI/atoms/ButtonComponent';
 
+const StyledSection = styled.section`
+  padding: 20px 20px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 20px;
+  > h2{
+    margin: 0;
+    font-size: 1.6rem;
+  }
+
+  > p{
+    margin: 0;
+    font-size: 1rem;
+  }
+
+  > form{
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+
+    min-width: 260px;
+
+    > div{
+      min-height: 85px;
+
+      > p{
+        margin: 0;
+        color: var(--message-error);
+        font-size: 0.8rem;
+      }
+
+      > div{
+        display: flex;
+        flex-direction: column;
+
+        > input{
+          color: var(--font-main);
+          padding: 10px 20px;
+          background-color: var(--background-dark);
+          border: none;
+          border-radius: 5px;
+          font-size: 1rem;
+          transition: var(--transition-main);
+
+          &::placeholder{
+            color: var(--button-main);
+          }
+
+          &:hover{
+            color: var(--font-main);
+            background-color: var(--modal-background);
+
+            &::placeholder{
+              color: var(--background-dark);
+            }
+          }
+          
+          &:focus{
+            background-color: var(--modal-background);
+            outline: none;
+
+            &::placeholder{
+              color: var(--background-dark);
+            }
+          }
+        }
+      }
+    }
+
+    > button{
+      align-self: center;
+    }
+
+    > div.checkbox{
+      min-height: unset;
+
+      > div{
+        flex-direction: row;
+        justify-content: flex-start;
+        gap: 5px;
+
+        > input{
+          height: 18px;
+          width: 18px;
+        }
+      }
+    }
+  }
+
+  > p{
+    margin: 0;
+  }
+
+  > p.message-success{
+    font-size: 0.8rem;
+    color: var(--message-success);
+  }
+
+  > p.message-error{
+    font-size: 0.8rem;
+    color: var(--message-error);
+  }
+
+  > p.redirect{
+    
+    > a{
+      color: var(--accent-main);
+      transition: var(--transition-main);
+
+      &:hover{
+        color: var(--accent-hover);
+      }
+
+      &:active{
+        color: var(--accent-active);
+      }
+    }
+  }
+
+  > a{
+    color: var(--accent-main);
+    transition: var(--transition-main);
+
+    &:hover{
+      color: var(--accent-hover);
+    }
+
+    &:active{
+      color: var(--accent-active);
+    }
+  }
+`;
 
 const Register = () => {
 
   const navigate = useNavigate();
   const { registerUser, setJustLoggedIn } = useContext(UsersContext) as UsersContextTypes;
   const [registerMessage, setRegisterMessage] = useState('');
+  const [registerMsgType, setRegisterMsgType] = useState<'success' | 'error' | ''>('');
   const [stayLoggedIn, setStayLoggedIn] = useState(false);
   const [rulesAggreed, setRulesAggreed] = useState(false);
 
@@ -25,7 +161,9 @@ const Register = () => {
     gender: 'other',
     avatar: '',
     role: 'user',
-    savedPosts: []
+    savedPosts: [],
+    likedPosts: [],
+    dislikedPosts: []
   };
 
   const formik = useFormik({
@@ -43,7 +181,7 @@ const Register = () => {
         .required('Enter a username.')
         .trim(),
       password: Yup.string()
-        .matches(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,20}$/, 'Password must have: lower case character, upper case character, number, special symbol, 8-20 symbols long.')
+        .matches(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,20}$/, 'Min 8 chars: upper, lower, number, symbol.')
         .required('Enter a password.')
         .trim(),
       passwordConfirm: Yup.string()
@@ -59,11 +197,13 @@ const Register = () => {
       const Response = await registerUser(values, stayLoggedIn);
       if('error' in Response){
         // !!!! add error message on site as well
+        setRegisterMsgType('error');
         setRegisterMessage(Response.error ?? 'Unsuccessful register.');
         throw new Error('Unsuccessful register.');
       };
       setJustLoggedIn(true);
       // success message and navigate
+      setRegisterMsgType('success');
       setRegisterMessage(Response.success);
       setTimeout(() => {
         navigate('/');
@@ -78,12 +218,12 @@ const Register = () => {
   }, []);
 
   return (
-    <section>
+    <StyledSection>
       <h2>Register</h2>
       <Link to='/rules'>Read forum rules.</Link>
       <form onSubmit={formik.handleSubmit}>
         <InputField
-          labelText='Email:'
+          labelText='Email'
           inputType='email'
           inputName='email' inputId='email'
           inputValue={formik.values.email}
@@ -91,10 +231,10 @@ const Register = () => {
           inputOnBlur={formik.handleBlur}
           errors={formik.errors.email}
           touched={formik.touched.email}
-          inputPlaceholder={'yourEmail@mail.com'}
+          inputPlaceholder={'Enter an email...'}
         />
         <InputField
-          labelText='Username:'
+          labelText='Username'
           inputType='text'
           inputName='username' inputId='username'
           inputValue={formik.values.username}
@@ -105,7 +245,7 @@ const Register = () => {
           inputPlaceholder={'Enter a username...'}
         />
         <InputField
-          labelText='Password:'
+          labelText='Password'
           inputType='password'
           inputName='password' inputId='password'
           inputValue={formik.values.password}
@@ -116,7 +256,7 @@ const Register = () => {
           inputPlaceholder={'Enter a password...'}
         />
         <InputField
-          labelText='Confirm Password:'
+          labelText='Confirm Password'
           inputType='password'
           inputName='passwordConfirm' inputId='passwordConfirm'
           inputValue={formik.values.passwordConfirm}
@@ -126,8 +266,8 @@ const Register = () => {
           touched={formik.touched.passwordConfirm}
           inputPlaceholder={'Confirm the password...'}
         />
-        <InputField // !!! needs to be radio or select
-          labelText='Gender:'
+        <InputField
+          labelText='Gender'
           inputType='radio'
           inputName='gender' inputId='gender'
           inputValue={formik.values.gender}
@@ -139,7 +279,7 @@ const Register = () => {
           radioOps={genders}
         />
         <InputField
-          labelText='Avatar:'
+          labelText='Avatar'
           inputType='url'
           inputName='avatar' inputId='avatar'
           inputValue={formik.values.avatar}
@@ -149,7 +289,7 @@ const Register = () => {
           touched={formik.touched.avatar}
           inputPlaceholder={'Enter an avatar url...'}
         />
-        <div>
+        <div className='checkbox'>
           <div>
             <input
               type='checkbox'
@@ -169,15 +309,15 @@ const Register = () => {
         </div>
         {
           rulesAggreed ?
-          <input type="submit" value='Register' /> :
-          <input disabled type="submit" value='Register' />
+          <ButtonComponent type='submit'>Register</ButtonComponent> :
+          <ButtonComponent isDisabled={true} type='submit'>Register</ButtonComponent>
         }
       </form>
       {
-        registerMessage && <p>{registerMessage}</p>
+        registerMessage && <p className={`message-${registerMsgType}`}>{registerMessage}</p>
       }
-      <p>Already have an account? Click <Link to='/login'>here to login</Link>.</p>
-    </section>
+      <p className='redirect'>Already have an account? Click <Link to='/login'>here to login</Link>.</p>
+    </StyledSection>
   );
 }
  

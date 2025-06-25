@@ -21,6 +21,7 @@ const StyledFooter = styled.footer`
 
   > div{
     width: 50%;
+    max-width: 200px;
     align-items: center;
     justify-content: center;
   }
@@ -84,6 +85,30 @@ const StyledFooter = styled.footer`
 
     > span{
       font-size: 0.9rem;
+    }
+  }
+
+  @media (min-width: 768px){
+    > div.siteLinks{
+
+      > h6{
+        font-size: 0.92rem;
+      }
+      
+      > div{
+
+        > a{
+          font-size: 0.9rem;
+        }
+      }
+    }
+
+    > div.linksAndCopyrights{
+      max-width: 220px;
+
+      > span{
+        font-size: 1rem;
+      }
     }
   }
 `;

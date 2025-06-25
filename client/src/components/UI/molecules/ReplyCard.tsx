@@ -1,12 +1,186 @@
 import { useContext, useState } from "react";
 import { useFormik } from "formik";
 import * as Yup from 'yup';
+import styled from "styled-components";
 
 import { RepliesContextTypes, Reply, User } from "../../../types";
 import RepliesContext from "../../contexts/RepliesContext";
 import InputField from "./InputField";
 import Modal from "../atoms/Modal";
 import DateFormat from "../atoms/DateFormat";
+
+// ICONS
+import DeleteIcon from '@mui/icons-material/Delete';
+import EditIcon from '@mui/icons-material/Edit';
+import CheckCircleIcon from '@mui/icons-material/CheckCircle';
+import CancelIcon from '@mui/icons-material/Cancel';
+
+const StyledDiv = styled.div`
+  background-color: var(--background-dark);
+  border-radius: 15px;
+  padding: 16px;
+
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+
+  > p{
+    margin: 0;
+    font-size: 1rem;
+  }
+
+  > div.replyInfo{
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    > span{
+      font-size: 0.9rem;
+      color: var(--font-hover);
+    }
+
+    > div.dates{
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+  
+      > span{
+        font-size: 1rem;
+        margin-left: auto;
+        color: var(--font-hover);
+      }
+  
+      > span:nth-child(2){
+        font-size: 0.8rem;
+        font-weight: 400;
+        color: var(--button-main);
+      }
+    }
+  }
+
+  > div.buttonArea{
+    display: flex;
+    gap: 10px;
+    margin-left: auto;
+
+    > svg{
+      color: var(--font-main);
+      font-size: 1.8rem;
+      transition: var(--transition-main);
+      
+      &:hover{
+        cursor: pointer;
+        color: var(--accent-main);
+      }
+
+      &:active{
+        cursor: pointer;
+        color: var(--accent-active);
+      }
+    }
+  }
+
+  > div{
+
+    > form{
+      display: flex;
+      align-items: flex-end;
+      gap: 10px;
+
+      > div{
+
+        > div{
+          display: flex;
+          flex-direction: column;
+
+          > textarea{
+            color: var(--font-main);
+            padding: 10px 20px;
+            background-color: var(--background-darker);
+            border: none;
+            border-radius: 5px;
+            font-size: 1rem;
+            transition: var(--transition-main);
+
+            &::placeholder{
+              color: var(--button-main);
+            }
+
+            &:hover{
+              color: var(--font-main);
+              background-color: var(--background-main);
+
+              &::placeholder{
+                color: var(--background-dark);
+              }
+            }
+            
+            &:focus{
+              background-color: var(--background-main);
+              outline: none;
+
+              &::placeholder{
+                color: var(--background-dark);
+              }
+            }
+          }
+        }
+      }
+
+      > button{
+        border: none;
+        background-color: rgba(255, 0, 0, 0);
+        padding: 0;
+        
+        > svg{
+          color: var(--font-main);
+          font-size: 2rem;
+          transition: var(--transition-main);
+
+          &:hover{
+            cursor: pointer;
+            color: var(--accent-main);
+          }
+  
+          &:active{
+            cursor: pointer;
+            color: var(--accent-active);
+          }
+        }
+      }
+    }
+  }
+
+  @media (min-width: 768px){
+    padding: 24px;
+
+    > p{
+      font-size: 1.1rem;
+    }
+
+    > div.replyInfo{
+
+      > span{
+        font-size: 1rem;
+      }
+
+      > div.dates{
+
+        > span{
+          font-size: 1.1rem;
+        }
+
+        > span:nth-child(2){
+          font-size: 0.9rem;
+        }
+      }
+    }
+  }
+
+  @media (min-width: 1024px){
+
+  }
+`;
 
 type Props = { reply: Reply, decodedUser: Omit<User, "role" | "password"> | null, postId: string };
 const ReplyCard = ({ reply, decodedUser, postId }: Props) => {
@@ -67,13 +241,20 @@ const ReplyCard = ({ reply, decodedUser, postId }: Props) => {
       {
         deleteMessage ?
         <p>{deleteMessage}</p> :
-        <div>
-          <>
-            {reply.reply.split('\n\n').map((par, i) => <p key={i}>{par}</p>)}
-          </>
+        <StyledDiv>
+          <div className="replyInfo">
+            <span>Posted By: <b>{reply.username}</b></span>
+            <div className="dates">
+              <span>Posted {reply.replyDate ? <DateFormat date={reply.replyDate} /> : ''}</span>
+              {reply.lastEditDate && <span><i>Edited {<DateFormat date={reply.lastEditDate} />}</i></span>}
+            </div>
+          </div>
           {
             !editingReply ?
-            <p>User: {reply.username}</p> :
+            <>
+              {/* <p>Posted By: {reply.username}</p> */}
+              {reply.reply.split('\n\n').map((par, i) => <p key={i}>{par}</p>)}
+            </> :
             <div>
               <form onSubmit={formik.handleSubmit}>
                 <InputField
@@ -87,22 +268,23 @@ const ReplyCard = ({ reply, decodedUser, postId }: Props) => {
                   touched={formik.touched.reply}
                   inputPlaceholder={'Enter a reply...'}
                 />
-                <input type="submit" value='Confirm Edit' />
+                <button type= 'button' onClick={() => {
+                  setEditingReply(false);
+                }}><CancelIcon /></button>
+                <button type="submit">
+                  <CheckCircleIcon />
+                </button>
               </form>
               {
                 postReplyEditMessage && <p>{postReplyEditMessage}</p>
               }
             </div>
           }
-          <p>Replied: {<DateFormat date={reply.replyDate} />}</p>
-          {
-            reply.lastEditDate && <p>Edited: {<DateFormat date={reply.lastEditDate} />}</p>
-          }
           {
             decodedUser && decodedUser._id === reply.userId &&
-            <div>
-              <button onClick={replyEdittHandler}>Edit Reply</button>
-              <button  type="button" onClick={() => setShowDeleteModal(true)}>Delete</button>
+            <div className="buttonArea">
+              <EditIcon onClick={replyEdittHandler}/>
+              <DeleteIcon type="button" onClick={() => setShowDeleteModal(true)}/>
               <Modal isOpen={showDeleteModal} onClose={() => setShowDeleteModal(false)}>
                 <h2>Are you sure you want to delete this reply?</h2>
                 <div>
@@ -112,7 +294,7 @@ const ReplyCard = ({ reply, decodedUser, postId }: Props) => {
               </Modal>
             </div>
           }
-        </div>
+        </StyledDiv>
       }
     </>
   );

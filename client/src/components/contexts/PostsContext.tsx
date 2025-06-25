@@ -6,12 +6,6 @@ const reducer = (state: Post[], action: PostsContextReducerActionTypes) => {
   switch(action.type){
     case 'setPosts':
       return action.data;
-    // case 'editPost':
-    //   return state.map(post =>
-    //     post._id === action.updatedPost._id ?
-    //     { ...post, ...action.updatedPost } :
-    //     post
-    //   );
     case 'updateUsernameInPosts':
       return state.map(post =>
         post.postedBy.userId === action.userId ?
@@ -38,6 +32,7 @@ const PostsProvider = ({ children }: ChildProp) => {
   const resetFilterAndSort = () => {
     filterString.current = '';
     sortString.current = '';
+    currentPage.current = 1;
     fetchPosts();
     getFilteredDataCount();
   };
@@ -60,7 +55,8 @@ const PostsProvider = ({ children }: ChildProp) => {
   };
 
   const handleSort = (e: React.MouseEvent<HTMLButtonElement>) => {
-    sortString.current = `${(e.target as HTMLButtonElement).value}`;
+    sortString.current = `${(e.currentTarget as HTMLButtonElement).value}`;
+    currentPage.current = 1;
     fetchPosts();
   };
 
@@ -101,11 +97,6 @@ const PostsProvider = ({ children }: ChildProp) => {
       return { error: Back_Response.error };
     };
 
-    // dispatch({
-    //   type: 'addPost',
-    //   newPost: readyToSendPost
-    // });
-
     fetchPosts();
     getFilteredDataCount();
 
@@ -132,11 +123,6 @@ const PostsProvider = ({ children }: ChildProp) => {
     };
 
     const Back_Response = await res.json();
-
-    // dispatch({
-    //   type: 'editPost',
-    //   updatedPost: { ...Back_Response, _id: id }
-    // });
 
     fetchPosts();
 

@@ -23,6 +23,7 @@ const UsersProvider = ({ children }: ChildProp) => {
   const [loggedInUser, dispatch] = useReducer(reducer, null);
   const { updateUsernameInPosts } = useContext(PostsContext) as PostsContextTypes;
   const [justLoggedIn, setJustLoggedIn] = useState(false);
+  const [postScores, setPostScores] = useState<Record<string, number>>({});
 
   type LoginResponse = { error: string } | { success: string, userData: Omit<User, 'password'> };
   type RegistrationResponse = { error: string } | { success: string, userData: User };
@@ -81,6 +82,50 @@ const UsersProvider = ({ children }: ChildProp) => {
     return { success: Back_Response.success };
   };
 
+  // LIKE/DISLIKE
+  const likeOrDislike = async (postId: string, emoteType: 'like' | 'dislike') => {
+    if(!loggedInUser?._id){
+      console.error(`User not logged in.`);
+      return { error: `User not logged in.` };
+    };
+
+    const endpoint = `http://localhost:5500/users/${loggedInUser._id}/${emoteType}Post/${postId}`;
+
+    const res = await fetch(endpoint, {
+      method: "POST",
+      headers: {
+        "Content-Type":"application/json"
+      }
+    });
+
+    const Back_Response = await res.json();
+
+    // error handling in browser console
+    if(!res.ok){
+      console.error(`Failed to ${emoteType} post: ${Back_Response.error}`);
+      return { error: Back_Response.error };
+    };
+
+    if(typeof Back_Response.updatedScore === 'number'){
+      updatePostScore(postId, Back_Response.updatedScore);
+    };
+    
+    if(Back_Response.updatedToken){
+      if(localStorage.getItem('accessToken')){
+        localStorage.setItem('accessToken', Back_Response.updatedToken);
+      } else if(sessionStorage.getItem('accessToken')){
+        sessionStorage.setItem('accessToken', Back_Response.updatedToken);
+      };
+    };
+
+    return { success: Back_Response.success };
+  };
+
+  const updatePostScore = (postId: string, newScore: number) => {
+    setPostScores(prev => ({ ...prev, [postId]: newScore }));
+  };
+
+
   // LOGIN
   const loginUser = async (userData: Pick<User, 'email' | 'password'>, stayLoggedIn: boolean) => {
     const res = await fetch(`http://localhost:5500/users/login`, {
@@ -94,7 +139,7 @@ const UsersProvider = ({ children }: ChildProp) => {
     // error handling in browser console
     if(!res.ok){
       const errorResponse = await res.json();
-      console.error(`Login failed: ${errorResponse.error}`);
+      // console.error(`Login failed: ${errorResponse.error}`);
       return { error: errorResponse.error };
     };
 
@@ -173,7 +218,7 @@ const UsersProvider = ({ children }: ChildProp) => {
 
     if(!res.ok){
       const errorResponse = await res.json();
-      console.error(`Edit failed: ${errorResponse.error}`);
+      // console.error(`Edit failed: ${errorResponse.error}`);
       return { error: errorResponse.error };
     };
 
@@ -247,7 +292,7 @@ const UsersProvider = ({ children }: ChildProp) => {
             console.error('Error: ', data.error);
             localStorage.removeItem('accessToken');
           } else {
-            console.log('Session resumed');
+            // console.log('Session resumed');
             dispatch({
               type: 'setUser',
               userData: data.userData
@@ -270,7 +315,10 @@ const UsersProvider = ({ children }: ChildProp) => {
         dispatch,
         savePost,
         justLoggedIn,
-        setJustLoggedIn
+        setJustLoggedIn,
+        likeOrDislike,
+        postScores,
+        updatePostScore
       }}
     >
       { children }

@@ -62,6 +62,7 @@ const StyledHeader = styled.header`
         cursor: pointer;
         width: 27px;
         height: auto;
+        transition: var(--transition-main);
 
         &:hover{
           color: var(--accent-hover);
@@ -84,6 +85,7 @@ const StyledHeader = styled.header`
       cursor: pointer;
       width: 27px;
       height: auto;
+      transition: var(--transition-main);
 
       &:hover{
         color: var(--accent-hover);
@@ -118,6 +120,40 @@ const StyledHeader = styled.header`
     }
   }
 
+  @media (min-width: 768px){
+    height: 60px;
+    padding: 0px 20px;
+
+    a{
+
+      > svg{
+        width: 32px;
+      }
+    }
+
+    ul{
+
+      > li{
+  
+        > svg{
+          width: 32px;
+        }
+
+        > a{
+          font-size: 1.15rem;
+
+          > img{
+            width: 30px;
+            height: 30px;
+          }
+        }
+      }
+    }
+  }
+
+  @media (min-width: 1024px){
+    padding: 0px 30px;
+  }
 `;
 
 const Header = () => {
@@ -167,7 +203,6 @@ const Header = () => {
               </li>
             </> :
             <>
-              <li><ArrowBackIcon onClick={() => navigate(-1)} /></li>
               <li><NavLink to='/rules' ><GavelIcon /></NavLink></li>
               <li><NavLink to='/about' ><InfoIcon /></NavLink></li>
               <li><Link to='/register'>Register</Link></li>

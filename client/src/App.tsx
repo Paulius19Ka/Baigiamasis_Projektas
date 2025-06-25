@@ -17,22 +17,23 @@ import FourZeroFour from "./components/pages/FourZeroFour"
 
 const App = () => {
 
-  const { loggedInUser, justLoggedIn } = useContext(UsersContext) as UsersContextTypes;
+  const { justLoggedIn, decodeUserFromToken } = useContext(UsersContext) as UsersContextTypes;
+  const decodedUser = decodeUserFromToken();
 
   return (
     <>
       <Routes>
         <Route path='' element={<MainOutlet />} >
           <Route index element={<Home />} />
-          <Route path='savedPosts' element={loggedInUser ? <SavedPosts /> : <Forbidden reason={`You must login to access this page.`} />} />
-          <Route path='user' element={loggedInUser ? <User /> : <Forbidden reason={`You must login to access this page.`} />} />
-          <Route path='newPost' element={loggedInUser ? <CreatePost /> : <Forbidden reason={`You must login to access this page.`} />} />
+          <Route path='savedPosts' element={decodedUser ? <SavedPosts /> : <Forbidden reason={`You must login to access this page.`} />} />
+          <Route path='user' element={decodedUser ? <User /> : <Forbidden reason={`You must login to access this page.`} />} />
+          <Route path='newPost' element={decodedUser ? <CreatePost /> : <Forbidden reason={`You must login to access this page.`} />} />
           <Route path='post/:topic/:title/:id' element={<ExpandedPost />} />
           <Route path='rules' element={<ForumRules />} />
           <Route path='about' element={<AboutUs />} />
         </Route>
-        <Route path='register' element={!loggedInUser || justLoggedIn ? <Register /> : <Forbidden reason={`You are already logged in.`} />} />
-        <Route path='login' element={!loggedInUser || justLoggedIn ? <Login /> : <Forbidden reason={`You are already logged in.`} />} />
+        <Route path='register' element={!decodedUser || justLoggedIn ? <Register /> : <Forbidden reason={`You are already logged in.`} />} />
+        <Route path='login' element={!decodedUser || justLoggedIn ? <Login /> : <Forbidden reason={`You are already logged in.`} />} />
         <Route path='*' element={<FourZeroFour />} />
       </Routes>
     </>

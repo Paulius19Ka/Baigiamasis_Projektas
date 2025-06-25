@@ -2,11 +2,17 @@ import { useEffect } from "react";
 import styled from "styled-components";
 
 const StyledSection = styled.section`
+  padding: 0px 10px;
+
   > img{
     width: 80%;
+    max-width: 400px;
     height: auto;
     display: block;
     margin: 0 auto;
+    margin-top: 10px;
+    margin-bottom: 10px;
+    border-radius: 10px;
   }
 
   > p, li{
@@ -14,8 +20,39 @@ const StyledSection = styled.section`
     padding: 0;
   }
 
+  > p{
+    padding: 10px 0px;
+  }
+
   > ul{
     margin: 0;
+    list-style-type: circle;
+    padding-left: 20px;
+  }
+
+  @media (min-width: 768px){
+    padding: 0px 30px;
+
+    p, li{
+      font-size: 1.05rem;
+    }
+
+    img{
+      max-width: 500px;
+    }
+  }
+
+  @media (min-width: 1024px){
+    padding: 0px 50px;
+    /* max-width: 70%; */
+    
+    p, li{
+      font-size: 1.1rem;
+    }
+
+    img{
+      max-width: 550px;
+    }
   }
 `;
 
@@ -35,10 +72,10 @@ const AboutUs = () => {
       <p>
         Our discussion forum is built for anyone who finds joy in rhythm, melody, and meaningful conversation. Whether you're a lifelong vinyl hunter, a concert regular, or just someone exploring genres, you're in the right place.
       </p>
+      <p>
+        Here, you'll find spaces to talk about:
+      </p>
       <ul>
-        <p>
-          Here, you'll find spaces to talk about:
-        </p>
         <li>🎵 General musings and everyday music banter</li>
         <li>📣 Releases - be the first to know and share what's hot</li>
         <li>💿 Collecting tips, trades, and prized finds</li>
