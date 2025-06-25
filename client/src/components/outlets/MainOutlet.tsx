@@ -7,11 +7,15 @@ const StyledMain = styled.main`
   /* total height - header - footer - (margin top + margin bottom) */
   min-height: calc(100vh - 40px - 200px - 20px);
 
-  margin: 10px 10px;
+  margin: 10px 16px;
 
-  display: flex;
+  /* display: flex;
   flex-direction: column;
-  align-items: center;
+  align-items: center; */
+  
+  > section{
+    margin: 0 auto;
+  }
 
   h1, h2, h3, h4, h5, h6{
     margin: 0;
@@ -23,11 +27,11 @@ const StyledMain = styled.main`
 
   @media (min-width: 768px){
     min-height: calc(100vh - 60px - 200px - 40px);
-    margin: 20px 20px;
+    margin: 20px 24px;
   }
 
   @media (min-width: 1024px){
-    margin: 20px 30px;
+    margin: 20px 32px;
 
     > section{
       max-width: 70%;

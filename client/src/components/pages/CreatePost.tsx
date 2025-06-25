@@ -80,8 +80,10 @@ const StyledSection = styled.section`
         }
 
         > select{
-
+          color: var(--font-main);
+          
           &:hover{
+            color: var(--font-main);
             background-color: var(--background-dark);
           }
 

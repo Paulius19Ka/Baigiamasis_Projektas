@@ -54,7 +54,7 @@ const PostsProvider = ({ children }: ChildProp) => {
   };
 
   const handleSort = (e: React.MouseEvent<HTMLButtonElement>) => {
-    sortString.current = `${(e.target as HTMLButtonElement).value}`;
+    sortString.current = `${(e.currentTarget as HTMLButtonElement).value}`;
     fetchPosts();
   };
 
