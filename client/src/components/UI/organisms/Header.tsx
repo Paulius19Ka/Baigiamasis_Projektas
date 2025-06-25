@@ -62,6 +62,7 @@ const StyledHeader = styled.header`
         cursor: pointer;
         width: 27px;
         height: auto;
+        transition: var(--transition-main);
 
         &:hover{
           color: var(--accent-hover);
@@ -84,6 +85,7 @@ const StyledHeader = styled.header`
       cursor: pointer;
       width: 27px;
       height: auto;
+      transition: var(--transition-main);
 
       &:hover{
         color: var(--accent-hover);

@@ -40,21 +40,22 @@ const StyledDiv = styled.div`
         align-items: center;
 
         > button{
-          font-size: 1rem;
+          font-size: 1.1rem;
           color: var(--font-main);
-          background-color: var(--button-main);
+          background-color: var(--accent-main);
           border: none;
-          padding: 2px, 5px;
-          border-radius: 3px;
+          padding: 8px 16px;
+          border-radius: 15px;
           cursor: pointer;
+          transition: var(--transition-main);
   
           &:hover{
-            background-color: var(--button-hover);
-            color: var(--button-main);
+            background-color: var(--accent-hover);
+            color: var(--font-hover);
           }
   
           &:active{
-            background-color: var(--button-active);
+            background-color: var(--accent-active);
             color: var(--font-active);
           }
         }
@@ -66,6 +67,7 @@ const StyledDiv = styled.div`
       top: 5px;
       right: 5px;
       cursor: pointer;
+      transition: var(--transition-main);
 
       &:hover{
         color: var(--accent-main);
