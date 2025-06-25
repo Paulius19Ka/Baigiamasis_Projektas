@@ -17,6 +17,8 @@ import ThumbUpOffAltIcon from '@mui/icons-material/ThumbUpOffAlt';
 import ThumbUpAltIcon from '@mui/icons-material/ThumbUpAlt';
 import ThumbDownOffAltIcon from '@mui/icons-material/ThumbDownOffAlt';
 import ThumbDownAltIcon from '@mui/icons-material/ThumbDownAlt';
+import FavoriteBorderIcon from '@mui/icons-material/FavoriteBorder';
+import FavoriteIcon from '@mui/icons-material/Favorite';
 
 const ExpandedPost = () => {
 
@@ -323,7 +325,12 @@ const ExpandedPost = () => {
                   <ThumbDownOffAltIcon type="button" onClick={() => likeOrDislikeHandler('dislike')} />
                 }
                 <button type="button" onClick={replyPostHandler}>Reply</button>
-                <button type="button" onClick={savePostHandler}>{saveBtnText}</button>
+                {/* <button type="button" onClick={savePostHandler}>{saveBtnText}</button> */}
+                {
+                  saveBtnText === 'Save' ?
+                  <FavoriteBorderIcon  type="button" onClick={savePostHandler}/> :
+                  <FavoriteIcon  type="button" onClick={savePostHandler}/>
+                }
                 {
                   post.postedBy.userId === decodedUser._id &&
                   <>
