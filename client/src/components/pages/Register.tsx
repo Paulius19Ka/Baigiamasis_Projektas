@@ -50,6 +50,7 @@ const StyledSection = styled.section`
           padding: 10px 20px;
           background-color: var(--background-dark);
           border: none;
+          border-radius: 5px;
           font-size: 1rem;
           transition: var(--transition-main);
 
@@ -58,6 +59,7 @@ const StyledSection = styled.section`
           }
 
           &:hover{
+            color: var(--font-main);
             background-color: var(--modal-background);
 
             &::placeholder{
