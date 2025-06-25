@@ -18,7 +18,7 @@ const ExpandedPost = () => {
 
   const { id } = useParams();
   const { editPost, deletePost, /* scorePost */ } = useContext(PostsContext) as PostsContextTypes;
-  const { decodeUserFromToken, savePost, likeOrDislike } = useContext(UsersContext) as UsersContextTypes;
+  const { decodeUserFromToken, savePost, likeOrDislike, postScores } = useContext(UsersContext) as UsersContextTypes;
   const { replies, fetchReplies, postReply, loading, clearReplies } = useContext(RepliesContext) as RepliesContextTypes;
   const [postLoading, setPostLoading] = useState(true);
   const [post, setPost] = useState<Post | null>(null);
@@ -34,6 +34,8 @@ const ExpandedPost = () => {
   const navigate = useNavigate();
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [showReplyModal, setShowReplyModal] = useState(false);
+
+  const score = post?._id ? postScores[post._id] ?? post.score : post?.score ?? 0;
 
   const initValues: Pick<Post, "title" | "content" | "topic"> = {
     title: post?.title ?? '',
@@ -225,15 +227,7 @@ const ExpandedPost = () => {
         post ?
         <div className="postWrapper">
           <div className="score">
-            {/* {
-              decodedUser && 
-              <button onClick={() => scorePost(post._id, '+1')}>🔼</button>
-            } */}
-            <p>Score: {post.score}</p>
-            {/* {
-              decodedUser && 
-              <button onClick={() => scorePost(post._id, '-1')}>🔽</button>
-            } */}
+            <p>Score: {score}</p>
           </div>
           <p>Posted: {post.postDate ? <DateFormat date={post.postDate} /> : ''}</p>
           {

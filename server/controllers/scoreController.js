@@ -69,7 +69,8 @@ const likePost = async (req, res) => {
     const editedUser = await client.db('Final_Project').collection('users').findOne(filter);
     const { password, ...userData } = editedUser;
     const accessToken = createAccessJWT(userData);
-    res.header('Authorization', accessToken).send({ success: `Post liked successfully.`, updatedToken: accessToken });
+    const updatedPost = await client.db('Final_Project').collection('posts').findOne({ _id: postId });
+    res.header('Authorization', accessToken).send({ success: `Post liked successfully.`, updatedToken: accessToken, updatedScore: updatedPost.score });
   } catch(err){
     console.error(err);
     res.status(500).send({ error: err, message: `Something went wrong with server.` });
@@ -120,7 +121,8 @@ const dislikePost = async (req, res) => {
     const editedUser = await client.db('Final_Project').collection('users').findOne(filter);
     const { password, ...userData } = editedUser;
     const accessToken = createAccessJWT(userData);
-    res.header('Authorization', accessToken).send({ success: `Post disliked successfully.`, updatedToken: accessToken });
+    const updatedPost = await client.db('Final_Project').collection('posts').findOne({ _id: postId });
+    res.header('Authorization', accessToken).send({ success: `Post disliked successfully.`, updatedToken: accessToken, updatedScore: updatedPost.score });
   } catch(err){
     console.error(err);
     res.status(500).send({ error: err, message: `Something went wrong with server.` });

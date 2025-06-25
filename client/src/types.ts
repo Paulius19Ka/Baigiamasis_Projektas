@@ -59,7 +59,9 @@ export type UsersContextTypes = {
     error?: undefined;
   }>,
   justLoggedIn: boolean,
-  setJustLoggedIn: React.Dispatch<React.SetStateAction<boolean>>
+  setJustLoggedIn: React.Dispatch<React.SetStateAction<boolean>>,
+  postScores: Record<string, number>,
+  updatePostScore: (postId: string, newScore: number) => void
 };
 
 export type Gender = 'male'| 'female' | 'other';

@@ -1,7 +1,9 @@
 import styled from "styled-components";
-import { Post } from "../../../types";
+import { Post, UsersContextTypes } from "../../../types";
 import { Link } from "react-router";
 import DateFormat from "../atoms/DateFormat";
+import UsersContext from "../../contexts/UsersContext";
+import { useContext } from "react";
 
 const StyledDiv = styled.div`
   border: solid 1px var(--font-main);
@@ -24,6 +26,10 @@ const StyledDiv = styled.div`
 type Props = { post: Post };
 const PostCard = ({ post }: Props) => {
 
+  const { postScores } = useContext(UsersContext) as UsersContextTypes;
+
+  const score = post?._id ? postScores[post._id] ?? post.score : post?.score ?? 0;
+
   // title to lower case, replace spaces with dashes, remove special characters, remove hyphens that follow each other
   const postTitle = post.title.trim().toLowerCase().replace(/\s+/g, '-').replace(/[^a-z0-9-]/g, '').replace(/-+/g, '-');
   const postTopic = post.topic.trim().toLowerCase();
@@ -34,7 +40,7 @@ const PostCard = ({ post }: Props) => {
     <StyledDiv>
       {/* <span>Last edited: {post.lastEditDate}</span> */}
       <div className="heading">
-        <span>{post.score}</span>
+        <span>{score}</span>
         {/* <h3><Link to={`post/${post._id}/${postTitle}`}>{post.title}</Link></h3> */}
         <h3><Link to={`/post/${postTopic}/${postTitle}/${post._id}`}>{post.title}</Link></h3>
         <span>{post.postDate ? <DateFormat date={post.postDate} /> : ''}</span>
