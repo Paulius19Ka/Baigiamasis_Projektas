@@ -13,6 +13,10 @@ import ReplyCard from "../UI/molecules/ReplyCard";
 import Modal from "../UI/atoms/Modal";
 import FourZeroFour from "./FourZeroFour";
 import DateFormat from "../UI/atoms/DateFormat";
+import ThumbUpOffAltIcon from '@mui/icons-material/ThumbUpOffAlt';
+import ThumbUpAltIcon from '@mui/icons-material/ThumbUpAlt';
+import ThumbDownOffAltIcon from '@mui/icons-material/ThumbDownOffAlt';
+import ThumbDownAltIcon from '@mui/icons-material/ThumbDownAlt';
 
 const ExpandedPost = () => {
 
@@ -34,8 +38,6 @@ const ExpandedPost = () => {
   const navigate = useNavigate();
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [showReplyModal, setShowReplyModal] = useState(false);
-
-  const score = post?._id ? postScores[post._id] ?? post.score : post?.score ?? 0;
 
   const initValues: Pick<Post, "title" | "content" | "topic"> = {
     title: post?.title ?? '',
@@ -219,6 +221,11 @@ const ExpandedPost = () => {
     )
   };
 
+  const score = post._id ? postScores[post._id] ?? post.score : post.score ?? 0;
+
+  const alreadyLiked = decodedUser?.likedPosts.includes(post._id);
+  const alreadyDisliked = decodedUser?.dislikedPosts.includes(post._id);
+
   return (
     <section>
       {
@@ -305,9 +312,16 @@ const ExpandedPost = () => {
             {
               decodedUser &&
               <div>
-
-                <button type="button" onClick={() => likeOrDislikeHandler('like')}>Like</button>
-                <button type="button" onClick={() => likeOrDislikeHandler('dislike')}>Dislike</button>
+                {
+                  alreadyLiked ?
+                  <ThumbUpAltIcon type="button" onClick={() => likeOrDislikeHandler('like')} /> :
+                  <ThumbUpOffAltIcon type="button" onClick={() => likeOrDislikeHandler('like')} />
+                }
+                {
+                  alreadyDisliked ?
+                  <ThumbDownAltIcon type="button" onClick={() => likeOrDislikeHandler('dislike')} /> :
+                  <ThumbDownOffAltIcon type="button" onClick={() => likeOrDislikeHandler('dislike')} />
+                }
                 <button type="button" onClick={replyPostHandler}>Reply</button>
                 <button type="button" onClick={savePostHandler}>{saveBtnText}</button>
                 {

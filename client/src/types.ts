@@ -74,7 +74,9 @@ export type User = {
   gender: Gender,
   role: 'admin' | 'user',
   avatar: string,
-  savedPosts: string[]
+  savedPosts: string[],
+  likedPosts: string[],
+  dislikedPosts: string[]
 };
 
 // INPUT FIELD
