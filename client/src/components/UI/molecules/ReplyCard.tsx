@@ -64,6 +64,7 @@ const StyledDiv = styled.div`
     margin-left: auto;
 
     > svg{
+      color: var(--font-main);
       font-size: 1.8rem;
       transition: var(--transition-main);
       
@@ -130,20 +131,21 @@ const StyledDiv = styled.div`
         border: none;
         background-color: rgba(255, 0, 0, 0);
         padding: 0;
-        transition: var(--transition-main);
-
+        
         > svg{
+          color: var(--font-main);
           font-size: 2rem;
-        }
+          transition: var(--transition-main);
 
-        &:hover{
-          cursor: pointer;
-          color: var(--accent-main);
-        }
-
-        &:active{
-          cursor: pointer;
-          color: var(--accent-active);
+          &:hover{
+            cursor: pointer;
+            color: var(--accent-main);
+          }
+  
+          &:active{
+            cursor: pointer;
+            color: var(--accent-active);
+          }
         }
       }
     }

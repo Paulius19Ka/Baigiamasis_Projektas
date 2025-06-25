@@ -113,6 +113,7 @@ const StyledSection = styled.section`
         }
 
         > svg{
+          color: var(--font-main);
           font-size: 2rem;
           margin-left: auto;
           transition: var(--transition-main);
@@ -132,20 +133,21 @@ const StyledSection = styled.section`
           border: none;
           background-color: rgba(255, 0, 0, 0);
           padding: 0;
-          transition: var(--transition-main);
-
+          
           > svg{
+            color: var(--font-main);
             font-size: 2rem;
-          }
+            transition: var(--transition-main);
 
-          &:hover{
-            cursor: pointer;
-            color: var(--accent-main);
-          }
-
-          &:active{
-            cursor: pointer;
-            color: var(--accent-active);
+            &:hover{
+              cursor: pointer;
+              color: var(--accent-main);
+            }
+  
+            &:active{
+              cursor: pointer;
+              color: var(--accent-active);
+            }
           }
         }
 
@@ -217,7 +219,97 @@ const StyledSection = styled.section`
         justify-content: flex-end;
         
         > svg{
+          color: var(--font-main);
           margin-left: unset;
+          transition: var(--transition-main);
+
+          &:hover{
+            cursor: pointer;
+            color: var(--accent-main);
+          }
+  
+          &:active{
+            cursor: pointer;
+            color: var(--accent-active);
+          }
+        }
+
+      }
+    }
+
+    > div.postReply{
+      
+      > form{
+        display: flex;
+        flex-direction: column;
+        gap: 5px;
+
+        > div{
+
+          > div{
+            display: flex;
+            flex-direction: column;
+
+            > textarea{
+              color: var(--font-main);
+              padding: 10px 20px;
+              background-color: var(--background-darker);
+              border: none;
+              border-radius: 5px;
+              font-size: 1rem;
+              transition: var(--transition-main);
+
+              &::placeholder{
+                color: var(--button-main);
+              }
+
+              &:hover{
+                color: var(--font-main);
+                background-color: var(--background-main);
+
+                &::placeholder{
+                  color: var(--background-dark);
+                }
+              }
+              
+              &:focus{
+                background-color: var(--background-main);
+                outline: none;
+
+                &::placeholder{
+                  color: var(--background-dark);
+                }
+              }
+            }
+          }
+        }
+
+        > div.replyButtons{
+          display: flex;
+          align-items: center;
+          justify-content: flex-end;
+
+          > button{
+            border: none;
+            background-color: rgba(255, 0, 0, 0);
+            padding: 0;
+            
+            > svg{
+              color: var(--font-main);
+              font-size: 2rem;
+              transition: var(--transition-main);
+
+              &:hover{
+                cursor: pointer;
+                color: var(--accent-main);
+              }
+    
+              &:active{
+                cursor: pointer;
+                color: var(--accent-active);
+              }
+            }
+          }
         }
       }
     }
@@ -324,7 +416,6 @@ const ExpandedPost = () => {
   const decodedUser = decodeUserFromToken();
   const navigate = useNavigate();
   const [showDeleteModal, setShowDeleteModal] = useState(false);
-  const [showReplyModal, setShowReplyModal] = useState(false);
 
   const initValues: Pick<Post, "title" | "content" | "topic"> = {
     title: post?.title ?? '',
@@ -449,6 +540,7 @@ const ExpandedPost = () => {
   };
 
   const replyPostHandler = async () => {
+    setPostReplyMessage('');
     if(!postingReply){
       setPostingReply(true);
     };
@@ -650,10 +742,10 @@ const ExpandedPost = () => {
           }
           {
             postingReply &&
-            <div>
+            <div className="postReply">
               <form onSubmit={formikReply.handleSubmit}>
                 <InputField
-                  labelText='Reply:'
+                  labelText='Reply'
                   inputType='textarea'
                   inputName='reply' inputId='reply'
                   inputValue={formikReply.values.reply}
@@ -663,20 +755,14 @@ const ExpandedPost = () => {
                   touched={formikReply.touched.reply}
                   inputPlaceholder={'Enter a reply...'}
                 />
-                <button  type="button" onClick={() => setShowReplyModal(true)}>Post Reply</button>
-                <Modal isOpen={showReplyModal} onClose={() => setShowReplyModal(false)}>
-                  <h2>Are you sure you want to post a reply?</h2>
-                  <div>
-                    <button
-                      type='submit'
-                      onClick={() => {
-                        formikReply.handleSubmit();
-                        setShowReplyModal(false);
-                      }}
-                    >Yes</button>
-                    <button type="button" onClick={() => setShowReplyModal(false)}>No</button>
-                  </div>
-                </Modal>
+                <div className="replyButtons">
+                  <button type= 'button' onClick={() => {
+                    setPostingReply(false);
+                  }}><CancelIcon /></button>
+                  <button type="submit">
+                    <CheckCircleIcon />
+                  </button>
+                </div>
               </form>
               {
                 postReplyMessage && <p>{postReplyMessage}</p>

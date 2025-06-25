@@ -218,7 +218,7 @@ const UsersProvider = ({ children }: ChildProp) => {
 
     if(!res.ok){
       const errorResponse = await res.json();
-      console.error(`Edit failed: ${errorResponse.error}`);
+      // console.error(`Edit failed: ${errorResponse.error}`);
       return { error: errorResponse.error };
     };
 
@@ -292,7 +292,7 @@ const UsersProvider = ({ children }: ChildProp) => {
             console.error('Error: ', data.error);
             localStorage.removeItem('accessToken');
           } else {
-            console.log('Session resumed');
+            // console.log('Session resumed');
             dispatch({
               type: 'setUser',
               userData: data.userData
