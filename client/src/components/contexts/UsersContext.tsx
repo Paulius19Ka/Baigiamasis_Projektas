@@ -81,6 +81,42 @@ const UsersProvider = ({ children }: ChildProp) => {
     return { success: Back_Response.success };
   };
 
+  // LIKE/DISLIKE
+  const likeOrDislike = async (postId: string, emoteType: 'like' | 'dislike') => {
+    if(!loggedInUser?._id){
+      console.error(`User not logged in.`);
+      return { error: `User not logged in.` };
+    };
+
+    const endpoint = `http://localhost:5500/users/${loggedInUser._id}/${emoteType}Post/${postId}`;
+
+    const res = await fetch(endpoint, {
+      method: "POST",
+      headers: {
+        "Content-Type":"application/json"
+      }
+    });
+
+    // error handling in browser console
+    if(!res.ok){
+      const errorResponse = await res.json();
+      console.error(`Failed to ${emoteType} post: ${errorResponse.error}`);
+      return { error: errorResponse.error };
+    };
+
+    const Back_Response = await res.json();
+
+    if(Back_Response.updatedToken){
+      if(localStorage.getItem('accessToken')){
+        localStorage.setItem('accessToken', Back_Response.updatedToken);
+      } else if(sessionStorage.getItem('accessToken')){
+        sessionStorage.setItem('accessToken', Back_Response.updatedToken);
+      };
+    };
+
+    return { success: Back_Response.success };
+  };
+
   // LOGIN
   const loginUser = async (userData: Pick<User, 'email' | 'password'>, stayLoggedIn: boolean) => {
     const res = await fetch(`http://localhost:5500/users/login`, {
@@ -270,7 +306,8 @@ const UsersProvider = ({ children }: ChildProp) => {
         dispatch,
         savePost,
         justLoggedIn,
-        setJustLoggedIn
+        setJustLoggedIn,
+        likeOrDislike
       }}
     >
       { children }

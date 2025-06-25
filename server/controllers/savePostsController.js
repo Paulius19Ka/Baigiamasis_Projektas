@@ -17,13 +17,6 @@ const savePost = async (req, res) => {
       return res.status(404).send({ error: `User with ID: ${userId} was not found.`});
     };
 
-    if(DB_Response.matchedCount > 0){
-      await client.db('Final_Project').collection('posts').updateOne(
-        { _id: postId },
-        { $inc: { score: 1 } }
-      );
-    };
-
     const editedUser = await client.db('Final_Project').collection('users').findOne(filter);
     const { password, ...userData } = editedUser;
     const accessToken = createAccessJWT(userData);
@@ -74,13 +67,6 @@ const removeSavedPost = async (req, res) => {
     const DB_Response = await client.db('Final_Project').collection('users').updateOne(filter, update);
     if(DB_Response.matchedCount === 0){
       return res.status(404).send({ error: `User with ID: ${userId} was not found.`});
-    };
-
-    if(DB_Response.matchedCount > 0){
-      await client.db('Final_Project').collection('posts').updateOne(
-        { _id: postId },
-        { $inc: { score: -1 } }
-      );
     };
 
     const editedUser = await client.db('Final_Project').collection('users').findOne(filter);

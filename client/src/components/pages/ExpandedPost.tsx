@@ -18,7 +18,7 @@ const ExpandedPost = () => {
 
   const { id } = useParams();
   const { editPost, deletePost, /* scorePost */ } = useContext(PostsContext) as PostsContextTypes;
-  const { decodeUserFromToken, savePost } = useContext(UsersContext) as UsersContextTypes;
+  const { decodeUserFromToken, savePost, likeOrDislike } = useContext(UsersContext) as UsersContextTypes;
   const { replies, fetchReplies, postReply, loading, clearReplies } = useContext(RepliesContext) as RepliesContextTypes;
   const [postLoading, setPostLoading] = useState(true);
   const [post, setPost] = useState<Post | null>(null);
@@ -124,6 +124,17 @@ const ExpandedPost = () => {
       setDeleteMessage('');
       navigate('/');
     }, 2000);
+  };
+
+  const likeOrDislikeHandler = async (emoteType: 'like' | 'dislike') => {
+    if(!post?._id){
+      return null;
+    }
+    const response = await likeOrDislike(post?._id, emoteType);
+
+    if('error' in response){
+      console.error(response.error);
+    };
   };
 
   const savePostHandler = async () => {
@@ -300,6 +311,9 @@ const ExpandedPost = () => {
             {
               decodedUser &&
               <div>
+
+                <button type="button" onClick={() => likeOrDislikeHandler('like')}>Like</button>
+                <button type="button" onClick={() => likeOrDislikeHandler('dislike')}>Dislike</button>
                 <button type="button" onClick={replyPostHandler}>Reply</button>
                 <button type="button" onClick={savePostHandler}>{saveBtnText}</button>
                 {

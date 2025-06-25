@@ -51,6 +51,13 @@ export type UsersContextTypes = {
     success: string;
     error?: undefined;
   }>,
+  likeOrDislike: (postId: string, emoteType: "like" | "dislike") => Promise<{
+    error: string;
+    success?: undefined;
+  } | {
+    success: string;
+    error?: undefined;
+  }>,
   justLoggedIn: boolean,
   setJustLoggedIn: React.Dispatch<React.SetStateAction<boolean>>
 };
