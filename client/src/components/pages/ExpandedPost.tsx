@@ -13,12 +13,18 @@ import ReplyCard from "../UI/molecules/ReplyCard";
 import Modal from "../UI/atoms/Modal";
 import FourZeroFour from "./FourZeroFour";
 import DateFormat from "../UI/atoms/DateFormat";
+
+// ICONS
 import ThumbUpOffAltIcon from '@mui/icons-material/ThumbUpOffAlt';
 import ThumbUpAltIcon from '@mui/icons-material/ThumbUpAlt';
 import ThumbDownOffAltIcon from '@mui/icons-material/ThumbDownOffAlt';
 import ThumbDownAltIcon from '@mui/icons-material/ThumbDownAlt';
 import FavoriteBorderIcon from '@mui/icons-material/FavoriteBorder';
 import FavoriteIcon from '@mui/icons-material/Favorite';
+import ReplyIcon from '@mui/icons-material/Reply';
+import DeleteIcon from '@mui/icons-material/Delete';
+import EditIcon from '@mui/icons-material/Edit';
+import CheckCircleIcon from '@mui/icons-material/CheckCircle';
 
 const ExpandedPost = () => {
 
@@ -262,7 +268,7 @@ const ExpandedPost = () => {
                 <h2>{post.title}</h2>
                 {
                   decodedUser && post.postedBy.userId === decodedUser._id &&
-                  <button onClick={() => setEditingTitle(true)}>Edit</button>
+                  <EditIcon onClick={() => setEditingTopic(true)}/>
                 }
               </div>
             }
@@ -286,7 +292,7 @@ const ExpandedPost = () => {
                 </>
                 {
                   decodedUser && post.postedBy.userId === decodedUser._id &&
-                  <button onClick={() => setEditingContent(true)}>Edit</button>
+                  <EditIcon onClick={() => setEditingTopic(true)}/>
                 }
               </div>
             }
@@ -307,7 +313,7 @@ const ExpandedPost = () => {
                 <p>Topic: {post.topic}</p>
                 {
                   decodedUser && post.postedBy.userId === decodedUser._id &&
-                  <button onClick={() => setEditingTopic(true)}>Edit</button>
+                  <EditIcon onClick={() => setEditingTopic(true)}/>
                 }
               </div>
             }
@@ -324,8 +330,7 @@ const ExpandedPost = () => {
                   <ThumbDownAltIcon type="button" onClick={() => likeOrDislikeHandler('dislike')} /> :
                   <ThumbDownOffAltIcon type="button" onClick={() => likeOrDislikeHandler('dislike')} />
                 }
-                <button type="button" onClick={replyPostHandler}>Reply</button>
-                {/* <button type="button" onClick={savePostHandler}>{saveBtnText}</button> */}
+                <ReplyIcon type="button" onClick={replyPostHandler}/>
                 {
                   saveBtnText === 'Save' ?
                   <FavoriteBorderIcon  type="button" onClick={savePostHandler}/> :
@@ -334,12 +339,14 @@ const ExpandedPost = () => {
                 {
                   post.postedBy.userId === decodedUser._id &&
                   <>
+                    <DeleteIcon type="button" onClick={() => setShowDeleteModal(true)}/>
                     {
                       editingTitle || editingContent || editingTopic ?
-                      <input type="submit" value='Complete Edit' /> :
+                      <button type="submit">
+                        <CheckCircleIcon />
+                      </button> :
                       null
                     }
-                    <button  type="button" onClick={() => setShowDeleteModal(true)}>Delete</button>
                     <Modal isOpen={showDeleteModal} onClose={() => setShowDeleteModal(false)}>
                       <h2>Are you sure you want to delete this post?</h2>
                       <div>
