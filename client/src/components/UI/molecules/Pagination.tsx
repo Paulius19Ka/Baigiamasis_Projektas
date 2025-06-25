@@ -1,6 +1,72 @@
 import { useContext } from "react";
 import PostsContext from "../../contexts/PostsContext";
 import { PostsContextTypes } from "../../../types";
+import styled from "styled-components";
+
+const StyledDiv = styled.div`
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin: 10px 0px;
+
+  > div{
+    display: flex;
+    gap: 5px;
+    align-items: center;
+
+    > p{
+      margin: 0;
+      font-size: 0.9rem;
+    }
+
+    > button{
+      font-size: 0.8rem;
+      background-color: var(--accent-main);
+      color: var(--font-main);
+      border: none;
+      padding: 5px 10px;
+      border-radius: 10px;
+      transition: var(--transition-main);
+
+      &:hover{
+        background-color: var(--accent-hover);
+        color: var(--font-main);
+        cursor: pointer;
+      }
+
+      &:active{
+        background-color: var(--accent-active);
+        color: var(--accent-main);
+      }
+
+      &:disabled{
+        cursor: default;
+        background-color: var(--accent-active);
+      }
+    }
+  }
+
+  @media (min-width: 768px){
+
+  > div{
+
+    > p{
+      font-size: 1rem;
+    }
+
+    > button{
+      font-size: 0.9rem;
+    }
+  }
+  }
+
+  @media (min-width: 1024px){
+
+  > div{
+
+  }
+  }
+`;
 
 const Pagination = () => {
 
@@ -8,7 +74,7 @@ const Pagination = () => {
   const lastPage = Math.ceil(filteredDataCount / pageSize.current);
 
   return (
-    <div>
+    <StyledDiv className="pagination">
       <div>
         <button
           disabled={currentPage.current === 1 ? true : false}
@@ -71,7 +137,7 @@ const Pagination = () => {
       <div>
         <p>{(currentPage.current - 1) * pageSize.current + 1}-{currentPage.current * pageSize.current > filteredDataCount ? filteredDataCount : currentPage.current * pageSize.current} of {filteredDataCount} posts</p>
       </div>
-    </div>
+    </StyledDiv>
   );
 }
  

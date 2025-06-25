@@ -25,7 +25,7 @@ const StyledSection = styled.section`
     align-items: flex-end;
     justify-content: space-between;
 
-    margin-bottom: 20px;
+    /* margin-bottom: 20px; */
 
     > div.sort{
       display: flex;
@@ -182,6 +182,10 @@ const StyledSection = styled.section`
       min-width: 100%;
     }
   }
+
+  > div.pagination{
+
+  }
 `;
 
 const Home = () => {
@@ -267,6 +271,7 @@ const Home = () => {
           </div>
         </form>
       </div>
+      <Pagination />
       <div className="posts">
         {
           loading ? <p>Loading posts...</p> :
@@ -278,7 +283,6 @@ const Home = () => {
           ) : <p>No posts were found...</p>
         }
       </div>
-      <Pagination />
     </StyledSection>
   );
 }

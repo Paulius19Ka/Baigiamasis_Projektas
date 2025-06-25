@@ -8,10 +8,6 @@ const StyledMain = styled.main`
   min-height: calc(100vh - 40px - 200px - 20px);
 
   margin: 10px 16px;
-
-  /* display: flex;
-  flex-direction: column;
-  align-items: center; */
   
   > section{
     margin: 0 auto;
