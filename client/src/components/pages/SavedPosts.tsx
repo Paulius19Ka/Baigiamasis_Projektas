@@ -3,6 +3,33 @@ import PostsContext from "../contexts/PostsContext";
 import { Post, PostsContextTypes, UsersContextTypes } from "../../types";
 import UsersContext from "../contexts/UsersContext";
 import PostCard from "../UI/molecules/PostCard";
+import styled from "styled-components";
+
+const StyledSection = styled.section`
+  
+  > div.posts{
+    width: 100%;
+    margin-top: 10px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  @media (min-width: 768px){
+  > div.posts{
+    width: 80%;
+    margin: auto;
+    margin-top: 20px;
+    gap: 20px;
+  }
+  }
+
+  @media (min-width: 1024px){
+    > div.posts{
+      width: unset;
+    }
+  }
+`;
 
 const SavedPosts = () => {
 
@@ -35,7 +62,7 @@ const SavedPosts = () => {
   }, []);
 
   return (
-    <section>
+    <StyledSection>
       <h2>Saved Posts</h2>
       <div className="posts">
         {
@@ -48,7 +75,7 @@ const SavedPosts = () => {
           ) : <p>{message}</p>
         }
       </div>
-    </section>
+    </StyledSection>
   );
 }
  
