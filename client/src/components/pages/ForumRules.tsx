@@ -2,6 +2,7 @@ import { useEffect } from "react";
 import styled from "styled-components";
 
 const StyledSection = styled.section`
+  padding: 0px 10px;
   > ol{
     list-style-type: upper-roman;
     padding-left: 20px;
@@ -22,6 +23,8 @@ const StyledSection = styled.section`
   }
 
   @media (min-width: 768px){
+    padding: 0px 30px;
+
     > ol{
 
       > li{
@@ -38,6 +41,8 @@ const StyledSection = styled.section`
   }
 
   @media (min-width: 1024px){
+    padding: 0px 50px;
+
     > ol{
 
       > li{
