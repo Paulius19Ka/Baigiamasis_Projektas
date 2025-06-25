@@ -55,6 +55,7 @@ const StyledSection = styled.section`
         flex-direction: column;
 
         > input{
+          color: var(--font-main);
           padding: 10px 20px;
           background-color: var(--background-dark);
           border: none;
@@ -63,7 +64,7 @@ const StyledSection = styled.section`
           transition: var(--transition-main);
 
           &::placeholder{
-            color: var(--modal-background);
+            color: var(--button-main);
           }
 
           &:hover{

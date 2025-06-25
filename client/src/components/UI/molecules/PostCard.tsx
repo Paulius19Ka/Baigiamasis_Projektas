@@ -1,16 +1,23 @@
 import styled from "styled-components";
 import { Post, UsersContextTypes } from "../../../types";
 import { Link } from "react-router";
-import DateFormat from "../atoms/DateFormat";
+
 import UsersContext from "../../contexts/UsersContext";
 import { useContext } from "react";
 
 const StyledDiv = styled.div`
-  border: solid 1px var(--font-main);
-  padding: 5px;
+  background-color: var(--background-dark);
+  padding: 16px;
+  border-radius: 15px;
+  transition: var(--transition-slow);
 
   display: flex;
   flex-direction: column;
+  gap: 15px;
+
+  &:hover{
+    background-color: var(--background-darker);
+  }
 
   > div{
     display: flex;
@@ -19,6 +26,145 @@ const StyledDiv = styled.div`
     gap: 10px;
     > h3{
       margin: 0;
+      font-size: 1.1rem;
+      margin-right: auto;
+
+      > a{
+        text-decoration: none;
+        color: var(--accent-main);
+
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        max-width: 160px;
+        display: inline-block;
+        transition: var(--transition-main);
+
+        &:hover{
+          color: var(--accent-hover);
+          cursor: pointer;
+        }
+
+        &:active{
+          color: var(--accent-active);
+        }
+      }
+    }
+
+    > span{
+      font-size: 1rem;
+    }
+  }
+
+  > div.heading{
+
+    > span:nth-child(1){
+      font-size: 0.8rem;
+      width: 32px;
+      height: 32px;
+      border: 1px solid var(--accent-main);
+      border-radius: 100%;
+      background-color: var(--background-main);
+      color: var(--accent-main);
+      cursor: default;
+
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    > div{
+      display: flex;
+      flex-direction: column;
+      > span{
+        font-size: 0.8rem;
+        margin-left: auto;
+        color: var(--font-hover);
+      }
+
+      > span:nth-child(2){
+        font-size: 0.6rem;
+        font-weight: 400;
+        color: var(--button-main);
+      }
+    }
+  }
+
+  > div.info{
+    display: flex;
+    justify-content: flex-end;
+    gap: 25px;
+    
+    > span{
+      font-size: 0.8rem;
+      color: var(--font-hover);
+    }
+  }
+
+  @media (min-width: 768px){
+    padding: 32px;
+    gap: 25px;
+
+    > div{
+      gap: 20px;
+
+      > h3{
+        font-size: 1.3rem;
+      }
+
+      > span{
+        font-size: 1.1rem;
+      }
+    }
+
+    > div.heading{
+
+      > h3{
+        
+        > a{
+          max-width: 280px;
+        }
+      }
+
+      > span:nth-child(1){
+        font-size: 0.9rem;
+        width: 40px;
+        height: 40px;
+        border: 2px solid var(--accent-main);
+      }
+
+      > div{
+
+        > span{
+          font-size: 0.9rem;
+        }
+
+        > span:nth-child(2){
+          font-size: 0.7rem;
+        }
+      }
+    }
+
+    > div.info{
+      gap: 50px;
+
+      > span{
+        font-size: 0.9rem;
+      }
+    }
+  }
+
+  @media (min-width: 1024px){
+    min-width: 700px;
+
+    > div.heading{
+
+      > h3{
+        
+        > a{
+          max-width: 420px;
+        }
+      }
     }
   }
 `;
@@ -30,6 +176,42 @@ const PostCard = ({ post }: Props) => {
 
   const score = post?._id ? postScores[post._id] ?? post.score : post?.score ?? 0;
 
+  const formatScore = (rawScore: number): string => {
+    if(rawScore >= 1000){
+      return `${(rawScore / 1000).toFixed(1).replace(/\.0$/, '')}k`;
+    };
+    if(rawScore <= -1000){
+      return `${(rawScore / 1000).toFixed(1).replace(/\.0$/, '')}k`;
+    };
+    return rawScore.toString();
+  }
+
+  const formatDate = (date: string | Date): string => {
+    const currentDate = new Date();
+    const inputDate = new Date(date);
+    // seconds between now and input date
+    const differenceSec = Math.floor((currentDate.getTime() - inputDate.getTime()) / 1000);
+    const differenceMin = Math.floor(differenceSec / 60);
+    const differenceHours = Math.floor(differenceMin / 60);
+    const differenceDays = Math.floor(differenceHours / 24);
+    const differenceMonths = Math.floor(differenceDays / 30);
+    const differenceYears = Math.floor(differenceMonths / 12);
+
+    if(differenceSec < 60){
+      return `${differenceSec} second${differenceSec !== 1 ? 's' : ''} ago`;
+    } else if(differenceMin < 60){
+      return `${differenceMin} minute${differenceMin !== 1 ? 's' : ''} ago`;
+    } else if(differenceHours < 24){
+      return `${differenceHours} hour${differenceHours !== 1 ? 's' : ''} ago`;
+    } else if(differenceDays < 30){
+      return `${differenceDays} day${differenceDays !== 1 ? 's' : ''} ago`;
+    } else if(differenceMonths < 12){
+      return `${differenceMonths} month${differenceMonths !== 1 ? 's' : ''} ago`;
+    } else {
+      return `${differenceYears} year${differenceYears !== 1 ? 's' : ''} ago`;
+    };
+  };
+
   // title to lower case, replace spaces with dashes, remove special characters, remove hyphens that follow each other
   const postTitle = post.title.trim().toLowerCase().replace(/\s+/g, '-').replace(/[^a-z0-9-]/g, '').replace(/-+/g, '-');
   const postTopic = post.topic.trim().toLowerCase();
@@ -38,24 +220,31 @@ const PostCard = ({ post }: Props) => {
 
   return (
     <StyledDiv>
-      {/* <span>Last edited: {post.lastEditDate}</span> */}
       <div className="heading">
-        <span>{score}</span>
-        {/* <h3><Link to={`post/${post._id}/${postTitle}`}>{post.title}</Link></h3> */}
+        <span>{formatScore(score)}</span>
+        {/* <h3><Link to={`/post/${postTopic}/${postTitle}/${post._id}`}>{post.title.length > 16 ? `${post.title.slice(0, 16)}...` : post.title}</Link></h3> */}
         <h3><Link to={`/post/${postTopic}/${postTitle}/${post._id}`}>{post.title}</Link></h3>
-        <span>{post.postDate ? <DateFormat date={post.postDate} /> : ''}</span>
+        {/* {
+          post.lastEditDate ?
+          <span>Edited {formatDate(post.lastEditDate)}</span> :
+          <span>Posted {formatDate(post.postDate)}</span>
+        } */}
+        <div>
+          <span>Posted {formatDate(post.postDate)}</span>
+          {post.lastEditDate && <span><i>Edited {formatDate(post.lastEditDate)}</i></span>}
+        </div>
       </div>
       <div className="content">
         <span>{paragraphZero.length > 150 ? `${paragraphZero.slice(0, 150)}...` : paragraphZero}</span>
       </div>
       <div className="info">
-        <span>Topic: {post.topic}</span>
+        <span>{post.topic}</span>
         {
           post.replyCount ?
           <span>Replies: {post.replyCount}</span> :
           <span>No Replies...</span>
         }
-        <span>By: {post.postedBy?.username ?? ''}</span>
+        <span>{post.postedBy?.username ?? ''}</span>
       </div>
     </StyledDiv>
   );

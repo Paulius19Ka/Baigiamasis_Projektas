@@ -66,6 +66,7 @@ const StyledSection = styled.section`
             
 
             > svg{
+              color: var(--font-main);
               font-size: 2rem;
               transition: var(--transition-main);
             }
@@ -175,7 +176,7 @@ const StyledSection = styled.section`
 
     display: flex;
     flex-direction: column;
-    gap: 5px;
+    gap: 10px;
 
     > p{
       width: 100%;
@@ -185,6 +186,84 @@ const StyledSection = styled.section`
 
   > div.pagination{
 
+  }
+
+  @media (min-width: 768px){
+    
+    > div.tools{
+      width: 80%;
+      min-width: 80%;
+      margin: 0 auto;
+
+      > div.sort{
+        gap: 10px;
+        padding: 35.2px;
+
+        > span{
+          font-size: 0.9rem;
+        }
+
+        > div{
+
+          > span{
+            font-size: 0.9rem;
+          }
+
+          > div{
+
+            > button{
+
+              > svg{
+
+                font-size: 2.2rem;
+              }
+            }
+          }
+        }
+      }
+
+      > form{
+        gap: 10px;
+
+        > span{
+          font-size: 0.9rem;
+        }
+
+        > div{
+
+          > label{
+            font-size: 0.9rem;
+          }
+
+          > div{
+
+            > input, select{
+              padding: 10px 15px;
+              font-size: 0.9rem;
+            }
+          }
+        }
+      }
+    }
+
+    > div.posts{
+      width: 80%;
+      margin: auto;
+      gap: 20px;
+
+    }
+  }
+
+  @media (min-width: 1024px){
+
+    > div.tools{
+      width: unset;
+      min-width: unset;
+    }
+
+    > div.posts{
+      width: unset;
+    }
   }
 `;
 

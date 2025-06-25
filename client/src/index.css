@@ -13,6 +13,7 @@
 
   --background-main: #202128;
   --background-dark: #121317;
+  --background-darker: #08090a;
 
   --accent-main: #6ed6ff;
   --accent-hover: #c2eeff;
@@ -33,6 +34,7 @@
   background-color: var(--background-main);
 
   --transition-main: ease-out 0.3s;
+  --transition-slow: ease-out 0.6s;
 }
 
 *{
