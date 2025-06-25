@@ -61,7 +61,9 @@ const register = async (req, res) => {
     gender: gender,
     avatar: avatar || "",
     role: 'user',
-    savedPosts: []
+    savedPosts: [],
+    likedPosts: [],
+    dislikedPosts: []
   };
   const client = await connectToDB();
   try{

@@ -32,6 +32,7 @@ const PostsProvider = ({ children }: ChildProp) => {
   const resetFilterAndSort = () => {
     filterString.current = '';
     sortString.current = '';
+    currentPage.current = 1;
     fetchPosts();
     getFilteredDataCount();
   };
