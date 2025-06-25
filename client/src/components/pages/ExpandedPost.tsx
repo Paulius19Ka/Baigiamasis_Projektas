@@ -213,17 +213,17 @@ const ExpandedPost = () => {
         <h2>{deleteMessage}</h2> :
         post ?
         <div className="postWrapper">
-          {/* <div className="score">
-            {
+          <div className="score">
+            {/* {
               decodedUser && 
               <button onClick={() => scorePost(post._id, '+1')}>🔼</button>
-            }
+            } */}
             <p>Score: {post.score}</p>
-            {
+            {/* {
               decodedUser && 
               <button onClick={() => scorePost(post._id, '-1')}>🔽</button>
-            }
-          </div> */}
+            } */}
+          </div>
           <p>Posted: {post.postDate ? <DateFormat date={post.postDate} /> : ''}</p>
           {
             post.lastEditDate ?
