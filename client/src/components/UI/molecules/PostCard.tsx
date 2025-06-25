@@ -4,6 +4,7 @@ import { Link } from "react-router";
 
 import UsersContext from "../../contexts/UsersContext";
 import { useContext } from "react";
+import { formatDate, formatScore } from "../../../helpers";
 
 const StyledDiv = styled.div`
   background-color: var(--background-dark);
@@ -176,42 +177,6 @@ const PostCard = ({ post }: Props) => {
 
   const score = post?._id ? postScores[post._id] ?? post.score : post?.score ?? 0;
 
-  const formatScore = (rawScore: number): string => {
-    if(rawScore >= 1000){
-      return `${(rawScore / 1000).toFixed(1).replace(/\.0$/, '')}k`;
-    };
-    if(rawScore <= -1000){
-      return `${(rawScore / 1000).toFixed(1).replace(/\.0$/, '')}k`;
-    };
-    return rawScore.toString();
-  }
-
-  const formatDate = (date: string | Date): string => {
-    const currentDate = new Date();
-    const inputDate = new Date(date);
-    // seconds between now and input date
-    const differenceSec = Math.floor((currentDate.getTime() - inputDate.getTime()) / 1000);
-    const differenceMin = Math.floor(differenceSec / 60);
-    const differenceHours = Math.floor(differenceMin / 60);
-    const differenceDays = Math.floor(differenceHours / 24);
-    const differenceMonths = Math.floor(differenceDays / 30);
-    const differenceYears = Math.floor(differenceMonths / 12);
-
-    if(differenceSec < 60){
-      return `${differenceSec} second${differenceSec !== 1 ? 's' : ''} ago`;
-    } else if(differenceMin < 60){
-      return `${differenceMin} minute${differenceMin !== 1 ? 's' : ''} ago`;
-    } else if(differenceHours < 24){
-      return `${differenceHours} hour${differenceHours !== 1 ? 's' : ''} ago`;
-    } else if(differenceDays < 30){
-      return `${differenceDays} day${differenceDays !== 1 ? 's' : ''} ago`;
-    } else if(differenceMonths < 12){
-      return `${differenceMonths} month${differenceMonths !== 1 ? 's' : ''} ago`;
-    } else {
-      return `${differenceYears} year${differenceYears !== 1 ? 's' : ''} ago`;
-    };
-  };
-
   // title to lower case, replace spaces with dashes, remove special characters, remove hyphens that follow each other
   const postTitle = post.title.trim().toLowerCase().replace(/\s+/g, '-').replace(/[^a-z0-9-]/g, '').replace(/-+/g, '-');
   const postTopic = post.topic.trim().toLowerCase();
@@ -222,13 +187,7 @@ const PostCard = ({ post }: Props) => {
     <StyledDiv>
       <div className="heading">
         <span>{formatScore(score)}</span>
-        {/* <h3><Link to={`/post/${postTopic}/${postTitle}/${post._id}`}>{post.title.length > 16 ? `${post.title.slice(0, 16)}...` : post.title}</Link></h3> */}
         <h3><Link to={`/post/${postTopic}/${postTitle}/${post._id}`}>{post.title}</Link></h3>
-        {/* {
-          post.lastEditDate ?
-          <span>Edited {formatDate(post.lastEditDate)}</span> :
-          <span>Posted {formatDate(post.postDate)}</span>
-        } */}
         <div>
           <span>Posted {formatDate(post.postDate)}</span>
           {post.lastEditDate && <span><i>Edited {formatDate(post.lastEditDate)}</i></span>}
