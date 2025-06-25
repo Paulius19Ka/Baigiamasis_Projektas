@@ -8,6 +8,10 @@ import InputField from "./InputField";
 import Modal from "../atoms/Modal";
 import DateFormat from "../atoms/DateFormat";
 
+// ICONS
+import DeleteIcon from '@mui/icons-material/Delete';
+import EditIcon from '@mui/icons-material/Edit';
+
 type Props = { reply: Reply, decodedUser: Omit<User, "role" | "password"> | null, postId: string };
 const ReplyCard = ({ reply, decodedUser, postId }: Props) => {
 
@@ -101,8 +105,8 @@ const ReplyCard = ({ reply, decodedUser, postId }: Props) => {
           {
             decodedUser && decodedUser._id === reply.userId &&
             <div>
-              <button onClick={replyEdittHandler}>Edit Reply</button>
-              <button  type="button" onClick={() => setShowDeleteModal(true)}>Delete</button>
+              <EditIcon onClick={replyEdittHandler}/>
+              <DeleteIcon type="button" onClick={() => setShowDeleteModal(true)}/>
               <Modal isOpen={showDeleteModal} onClose={() => setShowDeleteModal(false)}>
                 <h2>Are you sure you want to delete this reply?</h2>
                 <div>
